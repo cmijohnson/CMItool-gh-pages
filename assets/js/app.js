@@ -26,21 +26,44 @@ async function init() {
 
     applyTheme();
 
-    // Fetch Dynamic Data
-    try {
-        const response = await fetch('api/main.php');
-        const data = await response.json();
+    // 使用 data.js 中的静态数据（已通过 script 标签加载）
+    // 如果 Firebase 可用，尝试加载动态数据
+    if (window.firebaseDB) {
+        try {
+            // 尝试从 Firestore 加载工具数据
+            const toolsSnapshot = await firebaseDB.collection('tools').where('isActive', '==', true).get();
+            if (!toolsSnapshot.empty) {
+                const tools = [];
+                toolsSnapshot.forEach(doc => {
+                    tools.push({ id: doc.id, ...doc.data() });
+                });
+                window.CMI_TOOLS = tools;
+                console.log('从 Firestore 加载了', tools.length, '个工具');
+            }
 
-        window.CMI_TOOLS = data.tools;
-        window.CMI_CHANGELOGS = data.changelogs;
-        window.CMI_MESSAGES = data.messages;
-        window.CMI_SETTINGS = data.settings;
+            // 加载更新日志
+            const changelogsSnapshot = await firebaseDB.collection('changelogs').orderBy('date', 'desc').get();
+            if (!changelogsSnapshot.empty) {
+                window.CMI_CHANGELOGS = [];
+                changelogsSnapshot.forEach(doc => {
+                    window.CMI_CHANGELOGS.push({ id: doc.id, ...doc.data() });
+                });
+            }
 
-        if (data.status === 'offline') {
-            window.location.reload(); // Fallback to PHP check
+            // 加载设置
+            const settingsDoc = await firebaseDB.collection('settings').doc('site').get();
+            if (settingsDoc.exists) {
+                window.CMI_SETTINGS = settingsDoc.data();
+            }
+
+            // 检查站点状态
+            if (window.CMI_SETTINGS && window.CMI_SETTINGS.site_status === 'offline') {
+                document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-size:2rem;color:#666;">网站维护中...</div>';
+                return;
+            }
+        } catch (e) {
+            console.warn("Firebase 数据加载失败，使用静态数据:", e);
         }
-    } catch (e) {
-        console.error("Failed to load dynamic data:", e);
     }
 
     renderApp();

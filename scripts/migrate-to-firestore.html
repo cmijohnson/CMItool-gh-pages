@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase 数据迁移工具</title>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: system-ui, sans-serif; padding: 2rem; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { margin-bottom: 1rem; color: #333; }
+        .section { margin-bottom: 2rem; padding: 1rem; background: #f9f9f9; border-radius: 8px; }
+        .section h2 { margin-bottom: 1rem; color: #555; font-size: 1.1rem; }
+        textarea { width: 100%; height: 200px; padding: 1rem; border: 1px solid #ddd; border-radius: 6px; font-family: monospace; font-size: 14px; resize: vertical; }
+        button { padding: 0.75rem 1.5rem; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 1rem; }
+        button:hover { background: #2563eb; }
+        button:disabled { background: #9ca3af; cursor: not-allowed; }
+        .status { margin-top: 1rem; padding: 1rem; border-radius: 6px; }
+        .success { background: #d1fae5; color: #065f46; }
+        .error { background: #fee2e2; color: #991b1b; }
+        .info { background: #dbeafe; color: #1e40af; }
+        .log { margin-top: 1rem; padding: 1rem; background: #1f2937; color: #10b981; border-radius: 6px; font-family: monospace; font-size: 12px; max-height: 300px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 Firebase 数据迁移工具</h1>
+        <p style="color: #666; margin-bottom: 2rem;">将 SQL 数据导入到 Firebase Firestore</p>
+
+        <div class="section">
+            <h2>1. Firebase 配置</h2>
+            <textarea id="config" placeholder='粘贴你的 Firebase 配置 JSON:
+{
+  "apiKey": "...",
+  "authDomain": "...",
+  "projectId": "...",
+  "storageBucket": "...",
+  "messagingSenderId": "...",
+  "appId": "..."
+}'></textarea>
+            <button onclick="initFirebase()">初始化 Firebase</button>
+        </div>
+
+        <div class="section">
+            <h2>2. 工具数据（从 data.js 复制 TOOLS 数组）</h2>
+            <textarea id="tools-data" placeholder='粘贴 TOOLS 数组内容（从 data.js 复制）'></textarea>
+            <button onclick="migrateTools()" id="btn-tools">迁移工具数据</button>
+        </div>
+
+        <div class="section">
+            <h2>3. 更新日志数据</h2>
+            <textarea id="changelogs-data" placeholder='粘贴 changelogs 数组 JSON'></textarea>
+            <button onclick="migrateChangelogs()" id="btn-changelogs">迁移更新日志</button>
+        </div>
+
+        <div class="section">
+            <h2>4. 设置数据</h2>
+            <textarea id="settings-data" placeholder='粘贴 settings JSON 对象：
+{
+  "site_status": "online",
+  "team_intro_zh": "...",
+  "team_intro_en": "..."
+}'></textarea>
+            <button onclick="migrateSettings()" id="btn-settings">迁移设置数据</button>
+        </div>
+
+        <div id="status"></div>
+        <div id="log" class="log" style="display: none;"></div>
+    </div>
+
+    <script>
+        let db = null;
+
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            logDiv.style.display = 'block';
+            logDiv.innerHTML += '> ' + message + '\n';
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'status ' + type;
+            statusDiv.textContent = message;
+        }
+
+        function initFirebase() {
+            try {
+                const config = JSON.parse(document.getElementById('config').value);
+                firebase.initializeApp(config);
+                db = firebase.firestore();
+                showStatus('Firebase 初始化成功！', 'success');
+                log('Firebase 已连接到项目: ' + config.projectId);
+            } catch (error) {
+                showStatus('初始化失败: ' + error.message, 'error');
+                log('错误: ' + error.message);
+            }
+        }
+
+        async function migrateTools() {
+            if (!db) {
+                showStatus('请先初始化 Firebase', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('btn-tools');
+            btn.disabled = true;
+            btn.textContent = '迁移中...';
+
+            try {
+                const toolsText = document.getElementById('tools-data').value;
+                const tools = eval('(' + toolsText + ')');
+
+                log('开始迁移 ' + tools.length + ' 个工具...');
+
+                const batch = db.batch();
+                let count = 0;
+
+                for (const tool of tools) {
+                    const docRef = db.collection('tools').doc(tool.id);
+                    batch.set(docRef, {
+                        name: tool.name,
+                        description: tool.description,
+                        icon: tool.icon,
+                        category: tool.category,
+                        subCategory: tool.subCategory || null,
+                        size: tool.size,
+                        url: tool.url || null,
+                        component: tool.component || null,
+                        isBeta: tool.isBeta || false,
+                        isActive: true,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    count++;
+
+                    // Firestore batch 限制 500 个操作
+                    if (count % 400 === 0) {
+                        await batch.commit();
+                        log('已提交 ' + count + ' 个文档');
+                    }
+                }
+
+                // 提交剩余的
+                if (count % 400 !== 0) {
+                    await batch.commit();
+                }
+
+                showStatus('成功迁移 ' + count + ' 个工具！', 'success');
+                log('工具数据迁移完成');
+            } catch (error) {
+                showStatus('迁移失败: ' + error.message, 'error');
+                log('错误: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '迁移工具数据';
+            }
+        }
+
+        async function migrateChangelogs() {
+            if (!db) {
+                showStatus('请先初始化 Firebase', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('btn-changelogs');
+            btn.disabled = true;
+            btn.textContent = '迁移中...';
+
+            try {
+                const changelogsText = document.getElementById('changelogs-data').value;
+                const changelogs = eval('(' + changelogsText + ')');
+
+                log('开始迁移 ' + changelogs.length + ' 条更新日志...');
+
+                for (const log of changelogs) {
+                    await db.collection('changelogs').add({
+                        version: log.version,
+                        date: log.date,
+                        title: log.title,
+                        type: log.type,
+                        items: log.items,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+
+                showStatus('成功迁移 ' + changelogs.length + ' 条更新日志！', 'success');
+                log('更新日志迁移完成');
+            } catch (error) {
+                showStatus('迁移失败: ' + error.message, 'error');
+                log('错误: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '迁移更新日志';
+            }
+        }
+
+        async function migrateSettings() {
+            if (!db) {
+                showStatus('请先初始化 Firebase', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('btn-settings');
+            btn.disabled = true;
+            btn.textContent = '迁移中...';
+
+            try {
+                const settingsText = document.getElementById('settings-data').value;
+                const settings = JSON.parse(settingsText);
+
+                log('开始迁移设置数据...');
+
+                await db.collection('settings').doc('site').set(settings);
+
+                showStatus('设置数据迁移成功！', 'success');
+                log('设置数据迁移完成');
+            } catch (error) {
+                showStatus('迁移失败: ' + error.message, 'error');
+                log('错误: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '迁移设置数据';
+            }
+        }
+    </script>
+</body>
+</html>

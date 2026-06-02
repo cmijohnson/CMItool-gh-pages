@@ -1,150 +1,278 @@
-# Ultra-Simple-LNMP-Architecture-Navigation-Hub
-# CMItool 2.0 - Similan Intelligent Hub (细米兰阁中枢导航)
+# CMItool 2.0 - GitHub Pages 版本
+
+细米兰阁中枢导航的纯前端版本，使用 Firebase 替代 PHP+MySQL 后端，可直接托管到 GitHub Pages。
 
 <p align="center">
-  <a href="http://testfile.cmiteam.top" target="_blank">
+  <a href="https://你的用户名.github.io/CMItool-gh-pages/" target="_blank">
     <img src="https://img.shields.io/badge/Demo-Live%20Preview-success?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Demo">
   </a>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/PHP-7.4%2B-777BB4?style=flat-square&logo=php&logoColor=white" alt="PHP">
-  <img src="https://img.shields.io/badge/MySQL-5.7%2B-4479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL">
+  <img src="https://img.shields.io/badge/Firebase-10.12-FFCA28?style=flat-square&logo=firebase&logoColor=white" alt="Firebase">
   <img src="https://img.shields.io/badge/TailwindCSS-3.4-38B2AC?style=flat-square&logo=tailwindcss&logoColor=white" alt="TailwindCSS">
-  <img src="https://img.shields.io/github/license/cmijohnson/Ultra-Simple-LNMP-Architecture-Navigation-Hub?style=flat-square" alt="License">
-  <img src="https://img.shields.io/github/stars/cmijohnson/Ultra-Simple-LNMP-Architecture-Navigation-Hub?style=flat-square" alt="Stars">
+  <img src="https://img.shields.io/github/license/你的用户名/CMItool-gh-pages?style=flat-square" alt="License">
 </p>
 
-[English](#english) | [中文](#chinese)
+## ✨ 特性
 
----
+- 🎨 玻璃拟态 UI 设计，支持深色模式
+- 🚀 纯前端驱动，极速加载
+- 🔧 丰富的本地工具（量子时钟、JSON 格式化等）
+- 🌐 中英文双语切换
+- 📱 移动端响应式设计
+- 🔐 Firebase 用户认证（邮箱/密码 + Google 登录）
+- 💾 Firestore 云端数据存储
 
-<a name="english"></a>
-## 🇬🇧 English
+## 🚀 快速开始
 
-### Introduction
-**CMItool 2.0** (Similan Intelligent Hub) is a lightweight, aesthetically modern web navigation portal and toolbox.
-**🔗 Live Demo**: [http://testfile.cmiteam.top](http://testfile.cmiteam.top)
+### 1. Fork 或克隆仓库
 
-> [!NOTE]
-> This project is designed to be privacy-first. Most tools run entirely in your browser.
-
-### ✨ Key Features
-- **🎨 Modern UI**: Glassmorphism design, dark mode support, and smooth animations.
-- **🛠 Local Tools**: Privacy-first browser-based tools (Quantum Clock, JSON Formatter, etc.).
-- **🌍 Bilingual**: English & Chinese support.
-- **🔐 Secure Auth**: Role-based access control (Admin/User).
-- ** Responsive**: Mobile-first design.
-
-### 📸 Screenshots
-![PixPin_2026-01-08_00-48-59](./photos/PixPin_2026-01-08_00-48-59.png)
-![PixPin_2026-01-08_00-48-45](./photos/PixPin_2026-01-08_00-48-45.png)
-![PixPin_2026-01-08_00-48-38](./photos/PixPin_2026-01-08_00-48-38.png)
-![PixPin_2026-01-08_00-48-23](./photos/PixPin_2026-01-08_00-48-23.png)
-### 📂 File Structure
-```
-cmitool/
-├── api/                   # Backend API Endpoints
-│   ├── main.php           # Core data fetcher
-│   └── messages.php       # Message board handler
-├── assets/                # Frontend Assets
-│   ├── css/               # Tailwind & Custom styles
-│   └── js/                # App logic (app.js, tools.js)
-├── includes/              # Configuration & Helpers
-│   └── db.php             # Database connection
-├── admin_dashboard.php    # Admin Control Panel
-├── index.php              # Main Landing Page
-├── login.php              # Login Page
-├── register.php           # Registration Page
-├── install.sql            # Database Schema
-└── maintenance.php        # Maintenance Mode Page
+```bash
+git clone https://github.com/你的用户名/CMItool-gh-pages.git
+cd CMItool-gh-pages
 ```
 
-### 🛠 Technology Stack
-- **Frontend**: HTML5, Vanilla JavaScript, Tailwind CSS.
-- **Backend**: PHP 7.4+ (Native).
-- **Database**: MySQL 5.7+.
+### 2. 创建 Firebase 项目
 
-### 🚀 Installation & Deployment
-*(See Chinese section for detailed guide)*
-1. Clone repo.
-2. Import `install.sql`.
-3. Configure `includes/db.php`.
-4. Deploy.
+1. 访问 [Firebase Console](https://console.firebase.google.com)
+2. 点击「创建项目」
+3. 输入项目名称（如 `cmi-tool`）
+4. 启用 Google Analytics（可选）
 
-### License
+### 3. 配置 Firebase
+
+#### 3.1 添加 Web 应用
+
+1. 在项目概览页面点击「Web」图标（`</>`）
+2. 输入应用昵称（如 `cmi-tool-web`）
+3. 复制生成的配置对象
+
+#### 3.2 启用认证方式
+
+1. 左侧菜单选择「Authentication」
+2. 点击「开始使用」
+3. 在「Sign-in method」标签页启用：
+   - ✅ Email/Password（邮箱密码）
+   - ✅ Google（Google 登录）
+
+#### 3.3 创建 Firestore 数据库
+
+1. 左侧菜单选择「Firestore Database」
+2. 点击「创建数据库」
+3. 选择「以测试模式开始」（开发阶段）
+4. 选择数据库位置（建议 `asia-east1` 或 `asia-southeast1`）
+
+#### 3.4 更新配置文件
+
+编辑 `assets/js/firebase-config.js`，填入你的 Firebase 配置：
+
+```javascript
+const firebaseConfig = {
+    apiKey: "你的 API Key",
+    authDomain: "你的项目.firebaseapp.com",
+    projectId: "你的项目 ID",
+    storageBucket: "你的项目.appspot.com",
+    messagingSenderId: "你的发送者 ID",
+    appId: "你的应用 ID"
+};
+```
+
+### 4. 迁移数据（可选）
+
+如果你想使用 Firebase 存储动态数据：
+
+1. 打开 `scripts/migrate-to-firestore.html`
+2. 填入 Firebase 配置
+3. 从 `assets/js/data.js` 复制数据
+4. 点击迁移按钮
+
+### 5. 部署到 GitHub Pages
+
+#### 方法一：直接部署
+
+1. 将代码推送到 GitHub
+2. 进入仓库 Settings → Pages
+3. Source 选择 `Deploy from a branch`
+4. Branch 选择 `main`，文件夹选择 `/ (root)`
+5. 点击 Save
+
+#### 方法二：使用 GitHub Actions（推荐）
+
+创建 `.github/workflows/deploy.yml`：
+
+```yaml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v4
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+      - id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+## 📁 项目结构
+
+```
+CMItool-gh-pages/
+├── index.html                 # 主页面
+├── assets/
+│   ├── css/
+│   │   └── style.css         # 自定义样式
+│   ├── js/
+│   │   ├── firebase-config.js # Firebase 配置
+│   │   ├── auth.js           # 用户认证模块
+│   │   ├── data.js           # 静态数据（工具、翻译）
+│   │   ├── tools.js          # 工具组件
+│   │   └── app.js            # 应用主逻辑
+│   └── vendor/               # 第三方库
+│       ├── tailwind.min.js
+│       ├── lucide.min.js
+│       └── fonts.css
+├── scripts/
+│   └── migrate-to-firestore.html  # 数据迁移工具
+├── photos/                   # 项目截图
+├── README.md
+└── LICENSE
+```
+
+## 🔧 本地开发
+
+使用任意静态文件服务器：
+
+```bash
+# 使用 Python
+python -m http.server 8000
+
+# 使用 Node.js (npx)
+npx serve .
+
+# 使用 VS Code Live Server 扩展
+# 右键 index.html → Open with Live Server
+```
+
+访问 `http://localhost:8000` 即可预览。
+
+## 📝 自定义
+
+### 修改工具列表
+
+编辑 `assets/js/data.js` 中的 `TOOLS` 数组：
+
+```javascript
+{
+    id: 'your-tool-id',
+    name: { en: 'Tool Name', zh: '工具名称' },
+    description: { en: 'Description', zh: '描述' },
+    icon: 'icon-name',  // Lucide 图标名称
+    category: 'Tool',   // Recommend/International/SmartUJS/Tool/Info/External
+    size: 'small',      // small/medium/large
+    url: 'https://...', // 外部链接（可选）
+    component: 'component-name' // 内置组件（可选）
+}
+```
+
+### 修改翻译
+
+编辑 `assets/js/data.js` 中的 `TRANSLATIONS` 对象。
+
+### 修改样式
+
+编辑 `assets/css/style.css` 或修改 Tailwind 配置。
+
+## 🔒 安全规则
+
+### Firestore 安全规则示例
+
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 工具数据：所有人可读，仅管理员可写
+    match /tools/{toolId} {
+      allow read: if true;
+      allow write: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // 更新日志：所有人可读，仅管理员可写
+    match /changelogs/{logId} {
+      allow read: if true;
+      allow write: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // 用户数据：仅本人可读写
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // 留言板：所有人可读，登录用户可创建，仅本人可删除
+    match /messages/{messageId} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow delete: if request.auth != null &&
+        resource.data.userId == request.auth.uid;
+    }
+  }
+}
+```
+
+## 🆚 与原版对比
+
+| 功能 | 原版 (PHP+MySQL) | GitHub Pages 版 |
+|------|------------------|-----------------|
+| 托管方式 | 自建服务器 LNMP | GitHub Pages |
+| 后端语言 | PHP 7.4+ | 无（纯前端） |
+| 数据库 | MySQL 5.7+ | Firebase Firestore |
+| 用户认证 | 自定义 PHP Session | Firebase Auth |
+| 动态数据 | ✅ | ✅ (Firebase) |
+| 静态数据 | ✅ | ✅ (data.js) |
+| 部署难度 | 需要服务器 | 简单（推送到 GitHub） |
+| 费用 | 服务器费用 | 免费（Firebase 免费额度） |
+
+## 📸 截图
+
+![主页](./photos/PixPin_2026-01-08_00-48-59.png)
+![工具](./photos/PixPin_2026-01-08_00-48-45.png)
+![深色模式](./photos/PixPin_2026-01-08_00-48-38.png)
+![移动端](./photos/PixPin_2026-01-08_00-48-23.png)
+
+## 📄 许可证
+
 [MIT](LICENSE)
 
----
+## 🙏 致谢
 
-<a name="chinese"></a>
-## 🇨🇳 中文 (Chinese)
+- [Tailwind CSS](https://tailwindcss.com)
+- [Lucide Icons](https://lucide.dev)
+- [Firebase](https://firebase.google.com)
+- [CMI 团队](https://www.cmiteam.top)
 
-### 项目简介
-**CMItool 2.0** (细米兰阁中枢导航) 是一个专为大学生和极客设计的轻量级、高颜值 Web 导航与工具箱平台。
-**🔗 在线演示**: [http://testfile.cmiteam.top](http://testfile.cmiteam.top)
+## 📞 联系我们
 
-### ✨ 核心功能
-- **🎨 现代设计**: 玻璃拟态风格，完美适配深色模式。
-- **🛠 本地工具**: 量子时钟、JSON 格式化等纯前端工具。
-- **🌍 双语支持**: 中/英一键切换。
-- **🔐 权限管理**: 完备的用户/管理员系统。
-
-###  目录结构
-```
-cmitool/
-├── api/                   # 后端 API 接口
-│   ├── main.php           # 核心数据获取
-│   └── messages.php       # 留言板处理
-├── assets/                # 前端资源
-│   ├── css/               # 样式文件
-│   └── js/                # 核心逻辑 (app.js, tools.js)
-├── includes/              # 配置与助手函数
-│   └── db.php             # 数据库连接
-├── admin_dashboard.php    # 管理员后台
-├── index.php              # 首页
-├── login.php              # 登录页
-├── register.php           # 注册页
-├── install.sql            # 数据库安装文件
-└── maintenance.php        # 维护模式页面
-```
-
-### 🛠 技术栈
-- **前端**: HTML5, 原生 JavaScript, Tailwind CSS.
-- **后端**: PHP 7.4+ (无框架).
-- **数据库**: MySQL 5.7+.
-
-### 🚀 部署指南
-
-1.  **获取代码**
-    ```bash
-    git clone https://github.com/cmijohnson/Ultra-Simple-LNMP-Architecture-Navigation-Hub.git
-    cd Ultra-Simple-LNMP-Architecture-Navigation-Hub
-    ```
-
-2.  **数据库配置**
-    - 创建数据库 `cmitool`。
-    - 导入 `install.sql`。
-    - *默认管理员*: `admin` / `admin123`
-
-3.  **连接配置**
-    - 修改 `includes/db.php` 填入数据库信息。
-
-4.  **启动**
-    - 上传至服务器根目录即可。
-
-### 🤝 参与贡献
-欢迎 Pull Request！
-
-### 开源协议
-[MIT](LICENSE)
+- 官网：https://www.cmiteam.top
+- 邮箱：contact@cmiteam.top
 
 ---
 
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=cmijohnson/Ultra-Simple-LNMP-Architecture-Navigation-Hub&type=Date)](https://star-history.com/#cmijohnson/Ultra-Simple-LNMP-Architecture-Navigation-Hub&Date)
-
-
-
-
+**CMItool Labs · 细米科技工作室**
