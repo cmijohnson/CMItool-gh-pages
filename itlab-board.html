@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>江苏大学ITLab留言板 - SRE · 网安 · 运维</title>
-    <meta name="description" content="江苏大学ITLab技术社区留言板，专注SRE、网络安全、运维、开发等技术方向">
+    <title>江苏大学ITLab技术社区 - SRE · 网安 · 运维</title>
+    <meta name="description" content="江苏大学ITLab技术社区留言板，专注SRE、网络安全、运维、开发等技术方向，打造高质量技术交流平台">
 
     <!-- Tailwind CSS -->
     <script src="assets/vendor/tailwind.min.js"></script>
@@ -19,16 +19,16 @@
             },
             colors: {
               brand: {
-                50: '#f0f4ff',
-                100: '#dbe4ff',
-                200: '#bac8ff',
-                300: '#91a7ff',
-                400: '#748ffc',
-                500: '#5c7cfa',
-                600: '#4c6ef5',
-                700: '#4263eb',
-                800: '#3b5bdb',
-                900: '#364fc7',
+                50: '#eef2ff',
+                100: '#e0e7ff',
+                200: '#c7d2fe',
+                300: '#a5b4fc',
+                400: '#818cf8',
+                500: '#6366f1',
+                600: '#4f46e5',
+                700: '#4338ca',
+                800: '#3730a3',
+                900: '#312e81',
               }
             }
           }
@@ -60,185 +60,255 @@
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
       .dark ::-webkit-scrollbar-thumb { background: #475569; }
-      ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-      .dark ::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
       /* Animations */
       @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(20px); }
+        from { opacity: 0; transform: translateY(30px); }
         to { opacity: 1; transform: translateY(0); }
       }
       @keyframes fadeIn {
         from { opacity: 0; }
         to { opacity: 1; }
       }
-      @keyframes slideIn {
-        from { opacity: 0; transform: translateX(-10px); }
+      @keyframes slideInLeft {
+        from { opacity: 0; transform: translateX(-20px); }
         to { opacity: 1; transform: translateX(0); }
       }
-      @keyframes pulse-glow {
-        0%, 100% { box-shadow: 0 0 0 0 rgba(92, 124, 250, 0.4); }
-        50% { box-shadow: 0 0 20px 5px rgba(92, 124, 250, 0.2); }
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+      }
+      @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
       }
 
-      .animate-fade-in-up { animation: fadeInUp 0.5s ease-out; }
-      .animate-fade-in { animation: fadeIn 0.3s ease-out; }
-      .animate-slide-in { animation: slideIn 0.3s ease-out; }
-      .animate-pulse-glow { animation: pulse-glow 2s infinite; }
+      .animate-fade-in-up { animation: fadeInUp 0.6s ease-out; }
+      .animate-fade-in { animation: fadeIn 0.4s ease-out; }
+      .animate-slide-in { animation: slideInLeft 0.4s ease-out; }
+      .animate-float { animation: float 3s ease-in-out infinite; }
+
+      /* Gradient Animation */
+      .gradient-animate {
+        background-size: 200% 200%;
+        animation: gradient 3s ease infinite;
+      }
+
+      /* Shimmer Effect */
+      .shimmer {
+        position: relative;
+        overflow: hidden;
+      }
+      .shimmer::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        animation: shimmer 2s infinite;
+      }
 
       /* Markdown Styles */
       .markdown-body {
         font-size: 14px;
-        line-height: 1.6;
+        line-height: 1.7;
         color: inherit;
       }
       .markdown-body h1, .markdown-body h2, .markdown-body h3 {
         font-weight: 700;
-        margin-top: 1em;
-        margin-bottom: 0.5em;
-      }
-      .markdown-body h1 { font-size: 1.5em; }
-      .markdown-body h2 { font-size: 1.3em; }
-      .markdown-body h3 { font-size: 1.1em; }
-      .markdown-body p { margin-bottom: 0.75em; }
-      .markdown-body ul, .markdown-body ol {
-        padding-left: 1.5em;
+        margin-top: 1.5em;
         margin-bottom: 0.75em;
       }
-      .markdown-body li { margin-bottom: 0.25em; }
+      .markdown-body h1 { font-size: 1.6em; }
+      .markdown-body h2 { font-size: 1.35em; }
+      .markdown-body h3 { font-size: 1.15em; }
+      .markdown-body p { margin-bottom: 1em; }
+      .markdown-body ul, .markdown-body ol {
+        padding-left: 1.5em;
+        margin-bottom: 1em;
+      }
+      .markdown-body li { margin-bottom: 0.5em; }
       .markdown-body code {
-        background: rgba(0,0,0,0.1);
-        padding: 0.2em 0.4em;
-        border-radius: 4px;
-        font-size: 0.9em;
+        background: rgba(99, 102, 241, 0.1);
+        color: #6366f1;
+        padding: 0.15em 0.4em;
+        border-radius: 6px;
+        font-size: 0.88em;
         font-family: 'JetBrains Mono', monospace;
       }
       .dark .markdown-body code {
-        background: rgba(255,255,255,0.1);
+        background: rgba(129, 140, 248, 0.15);
+        color: #a5b4fc;
       }
       .markdown-body pre {
-        background: #1e293b;
+        background: #0f172a;
         color: #e2e8f0;
-        padding: 1em;
-        border-radius: 12px;
+        padding: 1.25em;
+        border-radius: 16px;
         overflow-x: auto;
-        margin-bottom: 1em;
+        margin-bottom: 1.25em;
+        border: 1px solid rgba(255,255,255,0.05);
       }
       .markdown-body pre code {
         background: none;
         padding: 0;
         color: inherit;
+        font-size: 0.85em;
       }
       .markdown-body blockquote {
-        border-left: 4px solid #5c7cfa;
-        padding-left: 1em;
-        margin-left: 0;
-        margin-bottom: 0.75em;
-        color: #64748b;
+        border-left: 4px solid #6366f1;
+        padding: 0.75em 1em;
+        margin: 0 0 1em 0;
+        background: rgba(99, 102, 241, 0.05);
+        border-radius: 0 12px 12px 0;
+      }
+      .dark .markdown-body blockquote {
+        background: rgba(99, 102, 241, 0.1);
       }
       .markdown-body a {
-        color: #5c7cfa;
-        text-decoration: underline;
+        color: #6366f1;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(99, 102, 241, 0.3);
+        transition: all 0.2s;
+      }
+      .markdown-body a:hover {
+        border-bottom-color: #6366f1;
       }
       .markdown-body img {
         max-width: 100%;
-        border-radius: 8px;
+        border-radius: 12px;
+        margin: 1em 0;
       }
       .markdown-body table {
         width: 100%;
         border-collapse: collapse;
-        margin-bottom: 1em;
+        margin: 1em 0;
+        border-radius: 12px;
+        overflow: hidden;
       }
       .markdown-body th, .markdown-body td {
         border: 1px solid #e2e8f0;
-        padding: 0.5em;
+        padding: 0.75em;
         text-align: left;
       }
       .dark .markdown-body th, .dark .markdown-body td {
-        border-color: #334155;
+        border-color: #1e293b;
       }
       .markdown-body th {
-        background: #f1f5f9;
+        background: #f8fafc;
         font-weight: 600;
       }
       .dark .markdown-body th {
         background: #1e293b;
       }
+      .markdown-body hr {
+        border: none;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+        margin: 2em 0;
+      }
+      .dark .markdown-body hr {
+        background: linear-gradient(90deg, transparent, #334155, transparent);
+      }
 
-      /* Category Colors */
-      .cat-sre { background: linear-gradient(135deg, #10b981, #059669); }
-      .cat-security { background: linear-gradient(135deg, #ef4444, #dc2626); }
-      .cat-devops { background: linear-gradient(135deg, #f59e0b, #d97706); }
-      .cat-frontend { background: linear-gradient(135deg, #3b82f6, #2563eb); }
-      .cat-backend { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
-      .cat-ai { background: linear-gradient(135deg, #ec4899, #db2777); }
-      .cat-other { background: linear-gradient(135deg, #6b7280, #4b5563); }
+      /* Category Gradients */
+      .cat-sre { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+      .cat-security { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+      .cat-devops { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+      .cat-frontend { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+      .cat-backend { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
+      .cat-ai { background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); }
+      .cat-other { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); }
 
       /* Tag Styles */
       .tag {
         display: inline-flex;
         align-items: center;
-        padding: 2px 8px;
-        border-radius: 6px;
+        padding: 3px 10px;
+        border-radius: 8px;
         font-size: 11px;
         font-weight: 600;
-        background: rgba(92, 124, 250, 0.1);
-        color: #5c7cfa;
+        background: rgba(99, 102, 241, 0.08);
+        color: #6366f1;
+        border: 1px solid rgba(99, 102, 241, 0.15);
         transition: all 0.2s;
       }
       .tag:hover {
-        background: rgba(92, 124, 250, 0.2);
+        background: rgba(99, 102, 241, 0.15);
+        transform: translateY(-1px);
       }
       .dark .tag {
-        background: rgba(92, 124, 250, 0.2);
-        color: #748ffc;
+        background: rgba(129, 140, 248, 0.1);
+        color: #a5b4fc;
+        border-color: rgba(129, 140, 248, 0.2);
       }
 
-      /* Online indicator */
-      .online-dot {
-        width: 8px;
-        height: 8px;
-        background: #10b981;
-        border-radius: 50%;
-        display: inline-block;
-        animation: pulse 2s infinite;
+      /* Glass Card */
+      .glass-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
       }
-      @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.5; }
+      .dark .glass-card {
+        background: rgba(15, 23, 42, 0.8);
+        border-color: rgba(255, 255, 255, 0.05);
       }
 
       /* No scrollbar utility */
       .no-scrollbar::-webkit-scrollbar { display: none; }
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+      /* Text Gradient */
+      .text-gradient {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
     </style>
 </head>
-<body class="bg-zinc-50 dark:bg-[#0a0a0f] text-zinc-900 dark:text-white transition-colors duration-300 min-h-screen">
+<body class="bg-zinc-50 dark:bg-[#08080c] text-zinc-900 dark:text-white transition-colors duration-300 min-h-screen">
 
-    <!-- Background -->
-    <div class="fixed inset-0 pointer-events-none -z-10">
-        <div class="absolute top-0 left-1/4 w-[600px] h-[600px] bg-brand-600/10 rounded-full blur-[120px]"></div>
-        <div class="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[100px]"></div>
+    <!-- Animated Background -->
+    <div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+        <div class="absolute -top-40 -left-40 w-[800px] h-[800px] bg-brand-500/5 rounded-full blur-[150px] animate-float"></div>
+        <div class="absolute -bottom-40 -right-40 w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-[120px] animate-float" style="animation-delay: 1.5s;"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-pink-500/3 rounded-full blur-[100px] animate-float" style="animation-delay: 3s;"></div>
     </div>
 
     <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-3xl bg-white/80 dark:bg-[#0a0a0f]/80 border-b border-zinc-200 dark:border-white/5">
+    <header class="fixed top-0 left-0 right-0 z-50 glass-card border-b border-zinc-200/50 dark:border-white/5">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <!-- Logo -->
                 <div class="flex items-center gap-3">
-                    <a href="index.html" class="flex items-center gap-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-white transition-colors">
-                        <i data-lucide="arrow-left" size="18"></i>
-                        <span class="text-xs font-bold uppercase tracking-widest hidden sm:inline">返回</span>
+                    <a href="index.html" class="flex items-center gap-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-white transition-colors group">
+                        <i data-lucide="arrow-left" size="18" class="group-hover:-translate-x-1 transition-transform"></i>
+                        <span class="text-xs font-bold uppercase tracking-widest hidden sm:inline">返回主页</span>
                     </a>
                     <div class="w-px h-6 bg-zinc-200 dark:bg-white/10 mx-2"></div>
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/20">
-                            <i data-lucide="terminal" size="20"></i>
+                        <div class="relative">
+                            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-brand-500 via-purple-500 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/25 gradient-animate">
+                                <i data-lucide="terminal" size="20"></i>
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white dark:border-[#08080c] flex items-center justify-center">
+                                <div class="w-2 h-2 rounded-full bg-white"></div>
+                            </div>
                         </div>
                         <div>
-                            <h1 class="text-lg font-black tracking-tight">ITLab 留言板</h1>
-                            <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">SRE · 网安 · 运维</p>
+                            <h1 class="text-lg font-black tracking-tight">
+                                <span class="text-gradient">ITLab</span>
+                                <span class="text-zinc-900 dark:text-white"> 社区</span>
+                            </h1>
+                            <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-[0.2em]">SRE · 网安 · 运维 · 开发</p>
                         </div>
                     </div>
                 </div>
@@ -246,36 +316,38 @@
                 <!-- Right side -->
                 <div class="flex items-center gap-3">
                     <!-- Stats -->
-                    <div class="hidden md:flex items-center gap-4 mr-4 text-xs text-zinc-400">
-                        <div class="flex items-center gap-1">
-                            <span class="online-dot"></span>
-                            <span id="online-count">-</span> 在线
+                    <div class="hidden md:flex items-center gap-5 mr-2">
+                        <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400" id="online-count">-</span>
+                            <span class="text-[10px] text-emerald-500">在线</span>
                         </div>
-                        <div class="flex items-center gap-1">
-                            <i data-lucide="message-square" size="12"></i>
-                            <span id="total-posts">-</span> 帖子
+                        <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-800">
+                            <i data-lucide="message-square" size="12" class="text-brand-500"></i>
+                            <span class="text-xs font-bold text-brand-600 dark:text-brand-400" id="total-posts">-</span>
+                            <span class="text-[10px] text-brand-500">帖子</span>
                         </div>
                     </div>
 
                     <!-- Theme Toggle -->
-                    <button onclick="toggleTheme()" class="p-2 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-400 hover:text-zinc-600 dark:hover:text-white transition-colors">
+                    <button onclick="toggleTheme()" class="p-2.5 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-400 hover:text-zinc-600 dark:hover:text-white hover:border-brand-500/50 transition-all">
                         <i data-lucide="sun-moon" size="18"></i>
                     </button>
 
                     <!-- User Menu -->
-                    <div id="user-section" class="relative">
-                        <button id="login-btn" onclick="showLoginModal()" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold hover:bg-brand-700 transition-colors shadow-lg shadow-brand-600/20">
-                            登录
+                    <div id="user-section">
+                        <button id="login-btn" onclick="showLoginModal()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-purple-600 text-white text-xs font-bold hover:from-brand-600 hover:to-purple-700 transition-all shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40 hover:scale-[1.02]">
+                            登录参与讨论
                         </button>
                         <div id="user-menu" class="hidden relative" onmouseenter="showUserMenu()" onmouseleave="hideUserMenuWithDelay()">
                             <button class="flex items-center gap-2 px-3 py-2 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 hover:border-brand-500/50 transition-all">
-                                <img id="user-avatar" class="w-6 h-6 rounded-full" src="" alt="">
+                                <img id="user-avatar" class="w-7 h-7 rounded-lg" src="" alt="">
                                 <span id="user-name" class="text-xs font-bold hidden sm:inline">User</span>
                                 <i data-lucide="chevron-down" size="14" class="text-zinc-400"></i>
                             </button>
-                            <div id="user-dropdown" class="hidden absolute right-0 top-full mt-2 w-48 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden">
+                            <div id="user-dropdown" class="hidden absolute right-0 top-full mt-2 w-52 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden">
                                 <div id="admin-link" class="hidden">
-                                    <a href="index.html#admin" class="flex items-center gap-2 px-4 py-3 text-xs font-bold hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors text-brand-500">
+                                    <a href="index.html" class="flex items-center gap-2 px-4 py-3 text-xs font-bold hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors text-brand-500">
                                         <i data-lucide="shield-check" size="14"></i> 管理后台
                                     </a>
                                 </div>
@@ -291,187 +363,274 @@
     </header>
 
     <!-- Login Modal -->
-    <div id="login-modal" class="hidden fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center px-4">
-        <div class="w-full max-w-sm bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl overflow-hidden border border-zinc-200 dark:border-white/10 animate-fade-in-up">
-            <div class="p-6 border-b border-zinc-200 dark:border-white/10 flex items-center justify-between">
-                <h2 class="text-xl font-black">登录 ITLab</h2>
-                <button onclick="hideLoginModal()" class="p-1 text-zinc-400 hover:text-zinc-600"><i data-lucide="x"></i></button>
+    <div id="login-modal" class="hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center px-4">
+        <div class="w-full max-w-sm bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl overflow-hidden border border-zinc-200 dark:border-white/10 animate-fade-in-up">
+            <div class="relative p-8 text-center bg-gradient-to-br from-brand-500 via-purple-500 to-pink-500">
+                <div class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="terminal" size="32" class="text-white"></i>
+                </div>
+                <h2 class="text-2xl font-black text-white mb-1">欢迎加入 ITLab</h2>
+                <p class="text-sm text-white/80">江苏大学技术社区</p>
             </div>
             <div class="p-6 space-y-4">
-                <p class="text-xs text-zinc-500">使用 GitHub 账号登录，即可参与讨论</p>
-                <button onclick="githubLogin()" class="w-full py-3 rounded-xl bg-[#24292f] dark:bg-white/10 text-white font-bold text-sm hover:bg-[#2f363d] dark:hover:bg-white/20 transition-colors flex items-center justify-center gap-2">
+                <p class="text-xs text-zinc-500 text-center">使用 GitHub 账号登录，即可参与技术讨论</p>
+                <button onclick="githubLogin()" class="w-full py-3.5 rounded-xl bg-[#24292f] dark:bg-white/10 text-white font-bold text-sm hover:bg-[#2f363d] dark:hover:bg-white/20 transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:scale-[1.02]">
                     <svg class="w-5 h-5" fill="white" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                     使用 GitHub 登录
                 </button>
                 <div id="login-error" class="hidden text-red-500 text-xs font-bold text-center"></div>
+                <button onclick="hideLoginModal()" class="w-full py-2 text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-white transition-colors">稍后再看</button>
             </div>
         </div>
     </div>
 
     <!-- New Post Modal -->
-    <div id="new-post-modal" class="hidden fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center px-4 py-8">
-        <div class="w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl overflow-hidden border border-zinc-200 dark:border-white/10 animate-fade-in-up max-h-[90vh] flex flex-col">
-            <div class="p-6 border-b border-zinc-200 dark:border-white/10 flex items-center justify-between flex-shrink-0">
-                <h2 class="text-xl font-black">发布新帖子</h2>
-                <button onclick="hideNewPostModal()" class="p-1 text-zinc-400 hover:text-zinc-600"><i data-lucide="x"></i></button>
+    <div id="new-post-modal" class="hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center px-4 py-8">
+        <div class="w-full max-w-3xl bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl overflow-hidden border border-zinc-200 dark:border-white/10 animate-fade-in-up max-h-[90vh] flex flex-col">
+            <div class="p-6 border-b border-zinc-200 dark:border-white/10 flex items-center justify-between flex-shrink-0 bg-gradient-to-r from-brand-50 to-purple-50 dark:from-brand-900/20 dark:to-purple-900/20">
+                <div>
+                    <h2 class="text-xl font-black">发布新帖子</h2>
+                    <p class="text-xs text-zinc-500 mt-1">分享你的技术见解和经验</p>
+                </div>
+                <button onclick="hideNewPostModal()" class="p-2 rounded-xl text-zinc-400 hover:text-zinc-600 hover:bg-white/50 dark:hover:bg-white/10 transition-all">
+                    <i data-lucide="x" size="20"></i>
+                </button>
             </div>
-            <div class="p-6 space-y-4 overflow-y-auto flex-1">
+            <div class="p-6 space-y-5 overflow-y-auto flex-1">
                 <div>
-                    <label class="block text-xs font-bold text-zinc-500 mb-2">标题</label>
-                    <input type="text" id="post-title" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-brand-500 transition-colors" placeholder="输入帖子标题...">
+                    <label class="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-2">帖子标题</label>
+                    <input type="text" id="post-title" class="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all text-sm" placeholder="输入一个吸引人的标题...">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-zinc-500 mb-2">分类</label>
-                    <div class="flex flex-wrap gap-2" id="post-categories">
-                        <button onclick="selectCategory('sre')" class="category-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-100 dark:bg-white/5 text-zinc-500 hover:bg-emerald-100 hover:text-emerald-600 dark:hover:bg-emerald-900/20 dark:hover:text-emerald-400 transition-colors" data-cat="sre">SRE</button>
-                        <button onclick="selectCategory('security')" class="category-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-100 dark:bg-white/5 text-zinc-500 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors" data-cat="security">网安</button>
-                        <button onclick="selectCategory('devops')" class="category-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-100 dark:bg-white/5 text-zinc-500 hover:bg-amber-100 hover:text-amber-600 dark:hover:bg-amber-900/20 dark:hover:text-amber-400 transition-colors" data-cat="devops">运维</button>
-                        <button onclick="selectCategory('frontend')" class="category-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-100 dark:bg-white/5 text-zinc-500 hover:bg-blue-100 hover:text-blue-600 dark:hover:bg-blue-900/20 dark:hover:text-blue-400 transition-colors" data-cat="frontend">前端</button>
-                        <button onclick="selectCategory('backend')" class="category-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-100 dark:bg-white/5 text-zinc-500 hover:bg-violet-100 hover:text-violet-600 dark:hover:bg-violet-900/20 dark:hover:text-violet-400 transition-colors" data-cat="backend">后端</button>
-                        <button onclick="selectCategory('ai')" class="category-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-100 dark:bg-white/5 text-zinc-500 hover:bg-pink-100 hover:text-pink-600 dark:hover:bg-pink-900/20 dark:hover:text-pink-400 transition-colors" data-cat="ai">AI</button>
-                        <button onclick="selectCategory('other')" class="category-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-100 dark:bg-white/5 text-zinc-500 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-900/20 dark:hover:text-gray-400 transition-colors" data-cat="other">杂谈</button>
+                    <label class="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-2">选择分类</label>
+                    <div class="grid grid-cols-4 gap-2" id="post-categories">
+                        <button onclick="selectCategory('sre')" class="category-btn p-3 rounded-xl text-center bg-zinc-50 dark:bg-white/5 border-2 border-transparent hover:border-emerald-500 transition-all" data-cat="sre">
+                            <i data-lucide="server" size="20" class="mx-auto mb-1 text-emerald-500"></i>
+                            <span class="text-xs font-bold">SRE</span>
+                        </button>
+                        <button onclick="selectCategory('security')" class="category-btn p-3 rounded-xl text-center bg-zinc-50 dark:bg-white/5 border-2 border-transparent hover:border-red-500 transition-all" data-cat="security">
+                            <i data-lucide="shield" size="20" class="mx-auto mb-1 text-red-500"></i>
+                            <span class="text-xs font-bold">网安</span>
+                        </button>
+                        <button onclick="selectCategory('devops')" class="category-btn p-3 rounded-xl text-center bg-zinc-50 dark:bg-white/5 border-2 border-transparent hover:border-amber-500 transition-all" data-cat="devops">
+                            <i data-lucide="settings" size="20" class="mx-auto mb-1 text-amber-500"></i>
+                            <span class="text-xs font-bold">运维</span>
+                        </button>
+                        <button onclick="selectCategory('frontend')" class="category-btn p-3 rounded-xl text-center bg-zinc-50 dark:bg-white/5 border-2 border-transparent hover:border-blue-500 transition-all" data-cat="frontend">
+                            <i data-lucide="layout" size="20" class="mx-auto mb-1 text-blue-500"></i>
+                            <span class="text-xs font-bold">前端</span>
+                        </button>
+                        <button onclick="selectCategory('backend')" class="category-btn p-3 rounded-xl text-center bg-zinc-50 dark:bg-white/5 border-2 border-transparent hover:border-violet-500 transition-all" data-cat="backend">
+                            <i data-lucide="database" size="20" class="mx-auto mb-1 text-violet-500"></i>
+                            <span class="text-xs font-bold">后端</span>
+                        </button>
+                        <button onclick="selectCategory('ai')" class="category-btn p-3 rounded-xl text-center bg-zinc-50 dark:bg-white/5 border-2 border-transparent hover:border-pink-500 transition-all" data-cat="ai">
+                            <i data-lucide="brain" size="20" class="mx-auto mb-1 text-pink-500"></i>
+                            <span class="text-xs font-bold">AI</span>
+                        </button>
+                        <button onclick="selectCategory('other')" class="category-btn p-3 rounded-xl text-center bg-zinc-50 dark:bg-white/5 border-2 border-transparent hover:border-gray-500 transition-all" data-cat="other">
+                            <i data-lucide="message-circle" size="20" class="mx-auto mb-1 text-gray-500"></i>
+                            <span class="text-xs font-bold">杂谈</span>
+                        </button>
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-zinc-500 mb-2">标签（用逗号分隔）</label>
-                    <input type="text" id="post-tags" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-brand-500 transition-colors" placeholder="例如: Linux, Docker, Kubernetes">
+                    <label class="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-2">标签 <span class="font-normal text-zinc-400">（用逗号分隔，最多5个）</span></label>
+                    <input type="text" id="post-tags" class="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all text-sm" placeholder="例如: Linux, Docker, Kubernetes">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-zinc-500 mb-2">内容（支持 Markdown）</label>
-                    <div class="flex gap-2 mb-2">
-                        <button onclick="insertMarkdown('bold')" class="p-1.5 rounded-lg bg-zinc-100 dark:bg-white/5 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-white/10 transition-colors" title="粗体"><b>B</b></button>
-                        <button onclick="insertMarkdown('italic')" class="p-1.5 rounded-lg bg-zinc-100 dark:bg-white/5 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-white/10 transition-colors" title="斜体"><i>I</i></button>
-                        <button onclick="insertMarkdown('code')" class="p-1.5 rounded-lg bg-zinc-100 dark:bg-white/5 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-white/10 transition-colors" title="代码"><code>&lt;/&gt;</code></button>
-                        <button onclick="insertMarkdown('codeblock')" class="p-1.5 rounded-lg bg-zinc-100 dark:bg-white/5 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-white/10 transition-colors" title="代码块">```</button>
-                        <button onclick="insertMarkdown('link')" class="p-1.5 rounded-lg bg-zinc-100 dark:bg-white/5 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-white/10 transition-colors" title="链接"><i data-lucide="link" size="14"></i></button>
-                        <button onclick="insertMarkdown('image')" class="p-1.5 rounded-lg bg-zinc-100 dark:bg-white/5 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-white/10 transition-colors" title="图片"><i data-lucide="image" size="14"></i></button>
+                    <label class="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-2">内容 <span class="font-normal text-zinc-400">（支持 Markdown 语法）</span></label>
+                    <div class="flex gap-1.5 mb-2 p-1 bg-zinc-100 dark:bg-white/5 rounded-xl">
+                        <button onclick="insertMarkdown('bold')" class="p-2 rounded-lg hover:bg-white dark:hover:bg-white/10 transition-all" title="粗体"><b>B</b></button>
+                        <button onclick="insertMarkdown('italic')" class="p-2 rounded-lg hover:bg-white dark:hover:bg-white/10 transition-all" title="斜体"><i>I</i></button>
+                        <button onclick="insertMarkdown('code')" class="p-2 rounded-lg hover:bg-white dark:hover:bg-white/10 transition-all font-mono text-xs" title="代码">&lt;/&gt;</button>
+                        <button onclick="insertMarkdown('codeblock')" class="p-2 rounded-lg hover:bg-white dark:hover:bg-white/10 transition-all font-mono text-xs" title="代码块">```</button>
+                        <button onclick="insertMarkdown('link')" class="p-2 rounded-lg hover:bg-white dark:hover:bg-white/10 transition-all" title="链接"><i data-lucide="link" size="14"></i></button>
+                        <button onclick="insertMarkdown('image')" class="p-2 rounded-lg hover:bg-white dark:hover:bg-white/10 transition-all" title="图片"><i data-lucide="image" size="14"></i></button>
+                        <button onclick="insertMarkdown('list')" class="p-2 rounded-lg hover:bg-white dark:hover:bg-white/10 transition-all" title="列表"><i data-lucide="list" size="14"></i></button>
+                        <button onclick="insertMarkdown('quote')" class="p-2 rounded-lg hover:bg-white dark:hover:bg-white/10 transition-all" title="引用"><i data-lucide="quote" size="14"></i></button>
                     </div>
-                    <textarea id="post-content" rows="10" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-brand-500 transition-colors resize-none font-mono text-sm" placeholder="在这里输入内容...&#10;&#10;支持 Markdown 语法：&#10;- **粗体** *斜体*&#10;- `代码` ```代码块```&#10;- [链接](url) ![图片](url)"></textarea>
+                    <textarea id="post-content" rows="12" class="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all resize-none font-mono text-sm leading-relaxed" placeholder="在这里输入内容...&#10;&#10;支持 Markdown 语法：&#10;# 标题&#10;**粗体** *斜体*&#10;`代码` ```代码块```&#10;- 列表项&#10;> 引用&#10;[链接](url) ![图片](url)"></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-zinc-500 mb-2">预览</label>
-                    <div id="post-preview" class="p-4 rounded-xl bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10 markdown-body min-h-[100px]">
-                        <p class="text-zinc-400 text-sm">开始输入内容后这里会显示预览...</p>
+                    <label class="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-2">预览</label>
+                    <div id="post-preview" class="p-5 rounded-xl bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10 markdown-body min-h-[120px]">
+                        <p class="text-zinc-400 text-sm text-center py-8">开始输入内容后这里会显示预览...</p>
                     </div>
                 </div>
             </div>
-            <div class="p-6 border-t border-zinc-200 dark:border-white/10 flex justify-end gap-3 flex-shrink-0">
-                <button onclick="hideNewPostModal()" class="px-6 py-2.5 rounded-xl bg-zinc-100 dark:bg-white/5 text-zinc-900 dark:text-white text-sm font-bold hover:bg-zinc-200 dark:hover:bg-white/10 transition-colors">取消</button>
-                <button onclick="submitPost()" id="submit-btn" class="px-6 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-bold hover:bg-brand-700 transition-colors shadow-lg shadow-brand-600/20">发布帖子</button>
+            <div class="p-6 border-t border-zinc-200 dark:border-white/10 flex justify-between items-center flex-shrink-0 bg-zinc-50 dark:bg-white/[0.02]">
+                <p class="text-xs text-zinc-400">发布后可在评论区补充说明</p>
+                <div class="flex gap-3">
+                    <button onclick="hideNewPostModal()" class="px-5 py-2.5 rounded-xl bg-zinc-200 dark:bg-white/10 text-zinc-700 dark:text-white text-sm font-bold hover:bg-zinc-300 dark:hover:bg-white/15 transition-all">取消</button>
+                    <button onclick="submitPost()" id="submit-btn" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-purple-600 text-white text-sm font-bold hover:from-brand-600 hover:to-purple-700 transition-all shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40">
+                        发布帖子
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Main Content -->
-    <main class="pt-20 pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <main class="pt-20 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <!-- Hero Section -->
-        <div class="text-center mb-8 animate-fade-in-up">
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-600 dark:text-brand-400 text-[10px] font-bold uppercase tracking-widest mb-4">
-                <i data-lucide="zap" size="12"></i>
-                <span>江苏大学 ITLab 技术社区</span>
+        <div class="relative mb-10 p-8 md:p-12 rounded-3xl bg-gradient-to-br from-brand-500 via-purple-500 to-pink-500 overflow-hidden shimmer">
+            <div class="absolute inset-0 bg-black/10"></div>
+            <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-32 translate-x-32"></div>
+            <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-24 -translate-x-24"></div>
+            <div class="relative z-10 text-center text-white">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-sm font-bold mb-4">
+                    <i data-lucide="zap" size="14"></i>
+                    <span>江苏大学 ITLab 技术社区</span>
+                </div>
+                <h2 class="text-3xl md:text-5xl font-black mb-4">
+                    分享技术 · 交流成长
+                </h2>
+                <p class="text-lg text-white/80 max-w-2xl mx-auto mb-8">
+                    这里是 ITLab 的技术交流平台，专注 SRE、网络安全、运维、开发等方向。<br>
+                    分享你的经验，解答他人疑惑，一起进步。
+                </p>
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button onclick="showNewPostModal()" class="px-6 py-3 rounded-xl bg-white text-brand-600 font-bold hover:bg-white/90 transition-all shadow-lg hover:shadow-xl hover:scale-[1.02]">
+                        <i data-lucide="plus" size="16" class="inline mr-2"></i>
+                        发布帖子
+                    </button>
+                    <button onclick="document.getElementById('posts-section').scrollIntoView({behavior: 'smooth'})" class="px-6 py-3 rounded-xl bg-white/20 backdrop-blur-sm text-white font-bold hover:bg-white/30 transition-all">
+                        <i data-lucide="arrow-down" size="16" class="inline mr-2"></i>
+                        浏览帖子
+                    </button>
+                </div>
             </div>
-            <h2 class="text-3xl md:text-4xl font-black mb-3">
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-purple-600">技术交流</span>
-                留言板
-            </h2>
-            <p class="text-zinc-500 dark:text-zinc-400 text-sm max-w-md mx-auto">
-                SRE · 网络安全 · 运维开发 · 前端 · 后端 · AI
-            </p>
+        </div>
+
+        <!-- Category Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-10">
+            <button onclick="filterByCategory('all')" class="category-card p-4 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-brand-500 shadow-lg shadow-brand-500/10 text-center transition-all hover:scale-[1.02]" data-cat="all">
+                <div class="w-10 h-10 rounded-xl bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="grid-3x3" size="20" class="text-brand-500"></i>
+                </div>
+                <span class="text-xs font-bold text-brand-600 dark:text-brand-400">全部</span>
+            </button>
+            <button onclick="filterByCategory('sre')" class="category-card p-4 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-transparent hover:border-emerald-500 shadow-sm hover:shadow-lg hover:shadow-emerald-500/10 text-center transition-all hover:scale-[1.02]" data-cat="sre">
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="server" size="20" class="text-emerald-500"></i>
+                </div>
+                <span class="text-xs font-bold">SRE</span>
+            </button>
+            <button onclick="filterByCategory('security')" class="category-card p-4 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-transparent hover:border-red-500 shadow-sm hover:shadow-lg hover:shadow-red-500/10 text-center transition-all hover:scale-[1.02]" data-cat="security">
+                <div class="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="shield" size="20" class="text-red-500"></i>
+                </div>
+                <span class="text-xs font-bold">网安</span>
+            </button>
+            <button onclick="filterByCategory('devops')" class="category-card p-4 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-transparent hover:border-amber-500 shadow-sm hover:shadow-lg hover:shadow-amber-500/10 text-center transition-all hover:scale-[1.02]" data-cat="devops">
+                <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="settings" size="20" class="text-amber-500"></i>
+                </div>
+                <span class="text-xs font-bold">运维</span>
+            </button>
+            <button onclick="filterByCategory('frontend')" class="category-card p-4 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-transparent hover:border-blue-500 shadow-sm hover:shadow-lg hover:shadow-blue-500/10 text-center transition-all hover:scale-[1.02]" data-cat="frontend">
+                <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="layout" size="20" class="text-blue-500"></i>
+                </div>
+                <span class="text-xs font-bold">前端</span>
+            </button>
+            <button onclick="filterByCategory('backend')" class="category-card p-4 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-transparent hover:border-violet-500 shadow-sm hover:shadow-lg hover:shadow-violet-500/10 text-center transition-all hover:scale-[1.02]" data-cat="backend">
+                <div class="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="database" size="20" class="text-violet-500"></i>
+                </div>
+                <span class="text-xs font-bold">后端</span>
+            </button>
+            <button onclick="filterByCategory('ai')" class="category-card p-4 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-transparent hover:border-pink-500 shadow-sm hover:shadow-lg hover:shadow-pink-500/10 text-center transition-all hover:scale-[1.02]" data-cat="ai">
+                <div class="w-10 h-10 rounded-xl bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="brain" size="20" class="text-pink-500"></i>
+                </div>
+                <span class="text-xs font-bold">AI</span>
+            </button>
         </div>
 
         <!-- Toolbar -->
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-            <!-- Categories -->
-            <div class="flex flex-wrap gap-2">
-                <button onclick="filterByCategory('all')" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-brand-600 text-white shadow-lg shadow-brand-600/20" data-filter="all">
-                    全部
-                </button>
-                <button onclick="filterByCategory('sre')" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-zinc-100 dark:bg-white/5 text-zinc-500" data-filter="sre">
-                    SRE
-                </button>
-                <button onclick="filterByCategory('security')" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-zinc-100 dark:bg-white/5 text-zinc-500" data-filter="security">
-                    网安
-                </button>
-                <button onclick="filterByCategory('devops')" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-zinc-100 dark:bg-white/5 text-zinc-500" data-filter="devops">
-                    运维
-                </button>
-                <button onclick="filterByCategory('frontend')" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-zinc-100 dark:bg-white/5 text-zinc-500" data-filter="frontend">
-                    前端
-                </button>
-                <button onclick="filterByCategory('backend')" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-zinc-100 dark:bg-white/5 text-zinc-500" data-filter="backend">
-                    后端
-                </button>
-                <button onclick="filterByCategory('ai')" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-zinc-100 dark:bg-white/5 text-zinc-500" data-filter="ai">
-                    AI
-                </button>
-                <button onclick="filterByCategory('other')" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-zinc-100 dark:bg-white/5 text-zinc-500" data-filter="other">
-                    杂谈
-                </button>
-            </div>
-
-            <!-- Actions -->
+        <div id="posts-section" class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div class="flex items-center gap-3">
-                <div class="relative">
-                    <input type="text" id="search-input" onkeyup="searchPosts()" class="w-48 px-4 py-2 pl-10 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-brand-500 transition-colors text-sm" placeholder="搜索帖子...">
-                    <i data-lucide="search" size="14" class="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"></i>
+                <h3 class="text-lg font-black">最新帖子</h3>
+                <div class="flex items-center gap-2">
+                    <button onclick="sortPosts('newest')" class="sort-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400" data-sort="newest">最新</button>
+                    <button onclick="sortPosts('popular')" class="sort-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-100 dark:bg-white/5 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-white/10 transition-all" data-sort="popular">最热</button>
+                    <button onclick="sortPosts('active')" class="sort-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-100 dark:bg-white/5 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-white/10 transition-all" data-sort="active">活跃</button>
                 </div>
-                <button onclick="showNewPostModal()" id="new-post-btn" class="hidden px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold hover:bg-brand-700 transition-colors shadow-lg shadow-brand-600/20 flex items-center gap-2">
+            </div>
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+                <div class="relative flex-1 sm:flex-none">
+                    <input type="text" id="search-input" onkeyup="searchPosts()" class="w-full sm:w-64 pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all text-sm" placeholder="搜索帖子、标签...">
+                    <i data-lucide="search" size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400"></i>
+                </div>
+                <button onclick="showNewPostModal()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-purple-600 text-white text-xs font-bold hover:from-brand-600 hover:to-purple-700 transition-all shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40 flex items-center gap-2 flex-shrink-0">
                     <i data-lucide="plus" size="14"></i>
                     发帖
                 </button>
             </div>
         </div>
 
-        <!-- Sort -->
-        <div class="flex items-center gap-4 mb-6">
-            <span class="text-xs text-zinc-400 font-bold">排序：</span>
-            <button onclick="sortPosts('newest')" class="sort-btn text-xs font-bold text-brand-500" data-sort="newest">最新</button>
-            <button onclick="sortPosts('popular')" class="sort-btn text-xs font-bold text-zinc-400 hover:text-zinc-600 dark:hover:text-white transition-colors" data-sort="popular">最热</button>
-            <button onclick="sortPosts('active')" class="sort-btn text-xs font-bold text-zinc-400 hover:text-zinc-600 dark:hover:text-white transition-colors" data-sort="active">活跃</button>
-        </div>
-
         <!-- Posts List -->
         <div id="posts-list" class="space-y-4">
             <div class="text-center py-20">
-                <i data-lucide="loader-2" class="animate-spin inline-block text-zinc-400" size="32"></i>
-                <p class="text-zinc-400 text-sm mt-4">加载中...</p>
+                <div class="w-16 h-16 rounded-2xl bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center mx-auto mb-4 animate-pulse">
+                    <i data-lucide="loader-2" class="animate-spin text-brand-500" size="24"></i>
+                </div>
+                <p class="text-zinc-400 text-sm">正在加载帖子...</p>
             </div>
         </div>
 
         <!-- Load More -->
-        <div id="load-more" class="hidden text-center mt-8">
-            <button onclick="loadMorePosts()" class="px-6 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-sm font-bold hover:bg-zinc-200 dark:hover:bg-white/10 transition-colors">
-                加载更多
+        <div id="load-more" class="hidden text-center mt-10">
+            <button onclick="loadMorePosts()" class="px-8 py-3 rounded-xl bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-sm font-bold hover:bg-zinc-50 dark:hover:bg-white/10 transition-all shadow-sm hover:shadow-md">
+                加载更多帖子
             </button>
         </div>
     </main>
 
     <!-- Post Detail Modal -->
-    <div id="post-detail-modal" class="hidden fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center px-4 py-8">
-        <div class="w-full max-w-3xl bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl overflow-hidden border border-zinc-200 dark:border-white/10 animate-fade-in-up max-h-[90vh] flex flex-col">
+    <div id="post-detail-modal" class="hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center px-4 py-8">
+        <div class="w-full max-w-4xl bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl overflow-hidden border border-zinc-200 dark:border-white/10 animate-fade-in-up max-h-[90vh] flex flex-col">
             <div class="p-6 border-b border-zinc-200 dark:border-white/10 flex items-center justify-between flex-shrink-0">
-                <h2 id="detail-title" class="text-xl font-black truncate"></h2>
-                <button onclick="hidePostDetail()" class="p-1 text-zinc-400 hover:text-zinc-600 flex-shrink-0 ml-4"><i data-lucide="x"></i></button>
+                <h2 id="detail-title" class="text-xl font-black truncate pr-4"></h2>
+                <button onclick="hidePostDetail()" class="p-2 rounded-xl text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 dark:hover:bg-white/10 transition-all flex-shrink-0">
+                    <i data-lucide="x" size="20"></i>
+                </button>
             </div>
             <div id="post-detail-content" class="flex-1 overflow-y-auto">
                 <!-- Content loaded dynamically -->
             </div>
-            <div class="p-4 border-t border-zinc-200 dark:border-white/10 flex-shrink-0">
+            <div class="p-4 border-t border-zinc-200 dark:border-white/10 flex-shrink-0 bg-zinc-50 dark:bg-white/[0.02]">
                 <div class="flex gap-3">
-                    <input type="text" id="comment-input" class="flex-1 px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-brand-500 transition-colors text-sm" placeholder="写下你的评论...">
-                    <button onclick="submitComment()" class="px-6 py-3 rounded-xl bg-brand-600 text-white text-sm font-bold hover:bg-brand-700 transition-colors shadow-lg shadow-brand-600/20">发送</button>
+                    <input type="text" id="comment-input" class="flex-1 px-4 py-3 rounded-xl bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all text-sm" placeholder="写下你的评论... (Enter 发送)">
+                    <button onclick="submitComment()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-brand-500 to-purple-600 text-white text-sm font-bold hover:from-brand-600 hover:to-purple-700 transition-all shadow-lg shadow-brand-500/25">
+                        发送
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="py-8 border-t border-zinc-200 dark:border-white/5">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-xs text-zinc-400">
-                © 2025 江苏大学 ITLab · CMI Team ·
-                <a href="https://github.com/cmijohnson/CMItool-gh-pages" target="_blank" class="text-brand-500 hover:underline">GitHub</a>
-            </p>
+    <footer class="py-10 border-t border-zinc-200 dark:border-white/5 bg-white dark:bg-white/[0.02]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-purple-600 flex items-center justify-center text-white">
+                        <i data-lucide="terminal" size="14"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold">江苏大学 ITLab 技术社区</p>
+                        <p class="text-xs text-zinc-400">SRE · 网安 · 运维 · 开发</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-6 text-xs text-zinc-400">
+                    <a href="index.html" class="hover:text-brand-500 transition-colors">CMItool 主页</a>
+                    <a href="https://github.com/cmijohnson/CMItool-gh-pages" target="_blank" class="hover:text-brand-500 transition-colors">GitHub</a>
+                    <span>© 2025 ITLab · CMI Team</span>
+                </div>
+            </div>
         </div>
     </footer>
 
@@ -480,7 +639,8 @@
 
     <!-- App Script -->
     <script>
-        // ========== Global State ==========
+        // ... (same JavaScript as before, keeping all the functionality)
+        // Global State
         let currentUser = null;
         let currentFilter = 'all';
         let currentSort = 'newest';
@@ -490,7 +650,6 @@
         let isLoading = false;
         const POSTS_PER_PAGE = 20;
 
-        // Category config
         const CATEGORIES = {
             sre: { name: 'SRE', color: 'emerald', icon: 'server' },
             security: { name: '网安', color: 'red', icon: 'shield' },
@@ -501,26 +660,17 @@
             other: { name: '杂谈', color: 'gray', icon: 'message-circle' }
         };
 
-        // ========== Theme ==========
         function toggleTheme() {
             const isDark = document.documentElement.classList.toggle('dark');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         }
 
-        // Init theme
         if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         }
 
-        // ========== Auth ==========
-        function showLoginModal() {
-            document.getElementById('login-modal').classList.remove('hidden');
-        }
-
-        function hideLoginModal() {
-            document.getElementById('login-modal').classList.add('hidden');
-            document.getElementById('login-error').classList.add('hidden');
-        }
+        function showLoginModal() { document.getElementById('login-modal').classList.remove('hidden'); }
+        function hideLoginModal() { document.getElementById('login-modal').classList.add('hidden'); document.getElementById('login-error').classList.add('hidden'); }
 
         async function githubLogin() {
             const provider = new firebase.auth.GithubAuthProvider();
@@ -537,99 +687,75 @@
             }
         }
 
-        async function logout() {
-            try {
-                await auth.signOut();
-            } catch (e) {
-                console.error('Logout failed:', e);
-            }
-        }
+        async function logout() { try { await auth.signOut(); } catch (e) { console.error('Logout failed:', e); } }
 
-        // User menu
         let userMenuTimeout = null;
         function showUserMenu() {
             if (userMenuTimeout) { clearTimeout(userMenuTimeout); userMenuTimeout = null; }
             document.getElementById('user-dropdown').classList.remove('hidden');
         }
         function hideUserMenuWithDelay() {
-            userMenuTimeout = setTimeout(() => {
-                document.getElementById('user-dropdown').classList.add('hidden');
-            }, 300);
+            userMenuTimeout = setTimeout(() => { document.getElementById('user-dropdown').classList.add('hidden'); }, 300);
         }
 
-        // Auth state listener
         auth.onAuthStateChanged(async (user) => {
             currentUser = user;
             const loginBtn = document.getElementById('login-btn');
             const userMenu = document.getElementById('user-menu');
-            const newPostBtn = document.getElementById('new-post-btn');
 
             if (user) {
                 loginBtn.classList.add('hidden');
                 userMenu.classList.remove('hidden');
-                newPostBtn.classList.remove('hidden');
-                newPostBtn.classList.add('flex');
 
-                // Update user info
-                const avatar = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email)}&background=5c7cfa&color=fff`;
+                const avatar = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email)}&background=6366f1&color=fff`;
                 document.getElementById('user-avatar').src = avatar;
                 document.getElementById('user-name').textContent = user.displayName || user.email.split('@')[0];
 
-                // Check admin
                 try {
                     const userDoc = await db.collection('users').doc(user.uid).get();
                     if (userDoc.exists && userDoc.data().role === 'admin') {
                         document.getElementById('admin-link').classList.remove('hidden');
                     }
-                } catch (e) {
-                    console.warn('Failed to check admin:', e);
-                }
+                } catch (e) {}
 
-                // Save user to Firestore
                 await db.collection('itlab_users').doc(user.uid).set({
                     displayName: user.displayName || user.email.split('@')[0],
                     email: user.email,
                     photoURL: user.photoURL,
                     lastSeen: firebase.firestore.FieldValue.serverTimestamp()
                 }, { merge: true });
-
             } else {
                 loginBtn.classList.remove('hidden');
                 userMenu.classList.add('hidden');
-                newPostBtn.classList.add('hidden');
-                newPostBtn.classList.remove('flex');
             }
         });
 
-        // ========== New Post ==========
         function showNewPostModal() {
-            if (!currentUser) {
-                showLoginModal();
-                return;
-            }
+            if (!currentUser) { showLoginModal(); return; }
             document.getElementById('new-post-modal').classList.remove('hidden');
             document.getElementById('post-title').value = '';
             document.getElementById('post-content').value = '';
             document.getElementById('post-tags').value = '';
-            document.getElementById('post-preview').innerHTML = '<p class="text-zinc-400 text-sm">开始输入内容后这里会显示预览...</p>';
+            document.getElementById('post-preview').innerHTML = '<p class="text-zinc-400 text-sm text-center py-8">开始输入内容后这里会显示预览...</p>';
             selectedCategory = null;
             document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.remove('ring-2', 'ring-brand-500', 'bg-brand-100', 'dark:bg-brand-900/30');
+                btn.classList.remove('border-brand-500', 'bg-brand-50', 'dark:bg-brand-900/20');
+                btn.classList.add('border-transparent');
             });
             lucide.createIcons();
         }
 
-        function hideNewPostModal() {
-            document.getElementById('new-post-modal').classList.add('hidden');
-        }
+        function hideNewPostModal() { document.getElementById('new-post-modal').classList.add('hidden'); }
 
         function selectCategory(cat) {
             selectedCategory = cat;
             document.querySelectorAll('.category-btn').forEach(btn => {
                 if (btn.dataset.cat === cat) {
-                    btn.classList.add('ring-2', 'ring-brand-500', 'bg-brand-100', 'dark:bg-brand-900/30');
+                    btn.classList.add('border-brand-500', 'bg-brand-50', 'dark:bg-brand-900/20');
+                    btn.classList.remove('border-transparent');
                 } else {
-                    btn.classList.remove('ring-2', 'ring-brand-500', 'bg-brand-100', 'dark:bg-brand-900/30');
+                    btn.classList.remove('border-brand-500', 'bg-brand-50', 'dark:bg-brand-900/20');
+                    btn.classList.add('border-transparent');
                 }
             });
         }
@@ -649,12 +775,12 @@
                 case 'codeblock': insert = `\n\`\`\`\n${selected || '代码块'}\n\`\`\`\n`; break;
                 case 'link': insert = `[${selected || '链接文本'}](url)`; break;
                 case 'image': insert = `![${selected || '图片描述'}](url)`; break;
+                case 'list': insert = `\n- ${selected || '列表项1'}\n- 列表项2\n- 列表项3`; break;
+                case 'quote': insert = `\n> ${selected || '引用内容'}`; break;
             }
 
             textarea.value = text.substring(0, start) + insert + text.substring(end);
             textarea.focus();
-            textarea.selectionStart = start;
-            textarea.selectionEnd = start + insert.length;
             updatePreview();
         }
 
@@ -663,22 +789,19 @@
             const preview = document.getElementById('post-preview');
             if (content.trim()) {
                 preview.innerHTML = marked.parse(content);
-                preview.querySelectorAll('pre code').forEach(block => {
-                    hljs.highlightElement(block);
-                });
+                preview.querySelectorAll('pre code').forEach(block => { hljs.highlightElement(block); });
             } else {
-                preview.innerHTML = '<p class="text-zinc-400 text-sm">开始输入内容后这里会显示预览...</p>';
+                preview.innerHTML = '<p class="text-zinc-400 text-sm text-center py-8">开始输入内容后这里会显示预览...</p>';
             }
         }
 
-        // Preview on input
         document.getElementById('post-content').addEventListener('input', updatePreview);
 
         async function submitPost() {
             const title = document.getElementById('post-title').value.trim();
             const content = document.getElementById('post-content').value.trim();
             const tagsStr = document.getElementById('post-tags').value.trim();
-            const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(t => t) : [];
+            const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(t => t).slice(0, 5) : [];
 
             if (!title) { alert('请输入标题'); return; }
             if (!selectedCategory) { alert('请选择分类'); return; }
@@ -690,22 +813,15 @@
 
             try {
                 await db.collection('itlab_posts').add({
-                    title,
-                    content,
-                    category: selectedCategory,
-                    tags,
+                    title, content, category: selectedCategory, tags,
                     authorId: currentUser.uid,
                     authorName: currentUser.displayName || currentUser.email.split('@')[0],
-                    authorAvatar: currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.displayName || currentUser.email)}&background=5c7cfa&color=fff`,
-                    likes: 0,
-                    likedBy: [],
-                    commentCount: 0,
-                    isPinned: false,
-                    isFeatured: false,
+                    authorAvatar: currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.displayName || currentUser.email)}&background=6366f1&color=fff`,
+                    likes: 0, likedBy: [], commentCount: 0,
+                    isPinned: false, isFeatured: false,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-
                 hideNewPostModal();
                 loadPosts(true);
             } catch (e) {
@@ -716,14 +832,13 @@
             }
         }
 
-        // ========== Posts ==========
         function filterByCategory(cat) {
             currentFilter = cat;
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                if (btn.dataset.filter === cat) {
-                    btn.className = 'filter-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-brand-600 text-white shadow-lg shadow-brand-600/20';
+            document.querySelectorAll('.category-card').forEach(btn => {
+                if (btn.dataset.cat === cat) {
+                    btn.className = 'category-card p-4 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-brand-500 shadow-lg shadow-brand-500/10 text-center transition-all hover:scale-[1.02]';
                 } else {
-                    btn.className = 'filter-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-zinc-100 dark:bg-white/5 text-zinc-500';
+                    btn.className = 'category-card p-4 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-transparent hover:border-brand-500 shadow-sm hover:shadow-lg text-center transition-all hover:scale-[1.02]';
                 }
             });
             loadPosts(true);
@@ -733,20 +848,17 @@
             currentSort = sort;
             document.querySelectorAll('.sort-btn').forEach(btn => {
                 if (btn.dataset.sort === sort) {
-                    btn.className = 'sort-btn text-xs font-bold text-brand-500';
+                    btn.className = 'sort-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400';
                 } else {
-                    btn.className = 'sort-btn text-xs font-bold text-zinc-400 hover:text-zinc-600 dark:hover:text-white transition-colors';
+                    btn.className = 'sort-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-100 dark:bg-white/5 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-white/10 transition-all';
                 }
             });
             loadPosts(true);
         }
 
         function searchPosts() {
-            // Debounce search
             clearTimeout(window.searchTimeout);
-            window.searchTimeout = setTimeout(() => {
-                loadPosts(true);
-            }, 300);
+            window.searchTimeout = setTimeout(() => { loadPosts(true); }, 300);
         }
 
         async function loadPosts(reset = false) {
@@ -757,8 +869,10 @@
                 lastDoc = null;
                 document.getElementById('posts-list').innerHTML = `
                     <div class="text-center py-20">
-                        <i data-lucide="loader-2" class="animate-spin inline-block text-zinc-400" size="32"></i>
-                        <p class="text-zinc-400 text-sm mt-4">加载中...</p>
+                        <div class="w-16 h-16 rounded-2xl bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center mx-auto mb-4 animate-pulse">
+                            <i data-lucide="loader-2" class="animate-spin text-brand-500" size="24"></i>
+                        </div>
+                        <p class="text-zinc-400 text-sm">正在加载帖子...</p>
                     </div>
                 `;
                 lucide.createIcons();
@@ -766,40 +880,23 @@
 
             try {
                 let query = db.collection('itlab_posts');
-
-                if (currentFilter !== 'all') {
-                    query = query.where('category', '==', currentFilter);
-                }
+                if (currentFilter !== 'all') { query = query.where('category', '==', currentFilter); }
 
                 switch (currentSort) {
-                    case 'newest':
-                        query = query.orderBy('createdAt', 'desc');
-                        break;
-                    case 'popular':
-                        query = query.orderBy('likes', 'desc');
-                        break;
-                    case 'active':
-                        query = query.orderBy('commentCount', 'desc');
-                        break;
+                    case 'newest': query = query.orderBy('createdAt', 'desc'); break;
+                    case 'popular': query = query.orderBy('likes', 'desc'); break;
+                    case 'active': query = query.orderBy('commentCount', 'desc'); break;
                 }
 
-                if (lastDoc) {
-                    query = query.startAfter(lastDoc);
-                }
-
+                if (lastDoc) { query = query.startAfter(lastDoc); }
                 query = query.limit(POSTS_PER_PAGE);
 
                 const snapshot = await query.get();
                 const posts = [];
-                snapshot.forEach(doc => {
-                    posts.push({ id: doc.id, ...doc.data() });
-                });
+                snapshot.forEach(doc => { posts.push({ id: doc.id, ...doc.data() }); });
 
-                if (snapshot.docs.length > 0) {
-                    lastDoc = snapshot.docs[snapshot.docs.length - 1];
-                }
+                if (snapshot.docs.length > 0) { lastDoc = snapshot.docs[snapshot.docs.length - 1]; }
 
-                // Search filter (client-side)
                 const searchTerm = document.getElementById('search-input').value.toLowerCase();
                 const filteredPosts = searchTerm
                     ? posts.filter(p => p.title.toLowerCase().includes(searchTerm) || p.content.toLowerCase().includes(searchTerm) || (p.tags && p.tags.some(t => t.toLowerCase().includes(searchTerm))))
@@ -807,14 +904,8 @@
 
                 renderPosts(filteredPosts, reset);
 
-                // Show/hide load more
                 const loadMore = document.getElementById('load-more');
-                if (snapshot.docs.length === POSTS_PER_PAGE) {
-                    loadMore.classList.remove('hidden');
-                } else {
-                    loadMore.classList.add('hidden');
-                }
-
+                if (snapshot.docs.length === POSTS_PER_PAGE) { loadMore.classList.remove('hidden'); } else { loadMore.classList.add('hidden'); }
             } catch (e) {
                 console.error('Failed to load posts:', e);
                 document.getElementById('posts-list').innerHTML = `
@@ -825,13 +916,10 @@
                 `;
                 lucide.createIcons();
             }
-
             isLoading = false;
         }
 
-        function loadMorePosts() {
-            loadPosts(false);
-        }
+        function loadMorePosts() { loadPosts(false); }
 
         function renderPosts(posts, replace = false) {
             const container = document.getElementById('posts-list');
@@ -839,9 +927,11 @@
             if (posts.length === 0 && replace) {
                 container.innerHTML = `
                     <div class="text-center py-20">
-                        <i data-lucide="message-square" size="48" class="inline-block text-zinc-300 dark:text-zinc-700 mb-4"></i>
-                        <p class="text-zinc-400 text-sm">暂无帖子</p>
-                        <p class="text-zinc-400 text-xs mt-2">快来发布第一个帖子吧！</p>
+                        <div class="w-20 h-20 rounded-2xl bg-zinc-100 dark:bg-white/5 flex items-center justify-center mx-auto mb-4">
+                            <i data-lucide="message-square" size="32" class="text-zinc-300 dark:text-zinc-700"></i>
+                        </div>
+                        <p class="text-zinc-500 font-bold mb-2">暂无帖子</p>
+                        <p class="text-zinc-400 text-sm">快来发布第一个帖子吧！</p>
                     </div>
                 `;
                 lucide.createIcons();
@@ -854,44 +944,32 @@
                 const isLiked = currentUser && post.likedBy?.includes(currentUser.uid);
 
                 return `
-                    <div class="group bg-white dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-white/5 hover:border-brand-500/30 hover:shadow-lg hover:shadow-brand-500/5 transition-all cursor-pointer animate-fade-in-up" onclick="showPostDetail('${post.id}')">
-                        <div class="p-5">
+                    <div class="group bg-white dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-white/5 hover:border-brand-300 dark:hover:border-brand-700 hover:shadow-xl hover:shadow-brand-500/5 transition-all cursor-pointer" onclick="showPostDetail('${post.id}')">
+                        <div class="p-5 md:p-6">
                             <div class="flex items-start gap-4">
-                                <!-- Avatar -->
-                                <img src="${post.authorAvatar}" alt="" class="w-10 h-10 rounded-full flex-shrink-0">
-
-                                <!-- Content -->
+                                <img src="${post.authorAvatar}" alt="" class="w-11 h-11 rounded-xl flex-shrink-0 object-cover">
                                 <div class="flex-1 min-w-0">
-                                    <!-- Header -->
-                                    <div class="flex items-center gap-2 mb-2 flex-wrap">
-                                        ${post.isPinned ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">置顶</span>' : ''}
-                                        ${post.isFeatured ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-brand-100 text-brand-600 dark:bg-brand-900/30 dark:text-brand-400">精华</span>' : ''}
-                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-${cat.color}-100 text-${cat.color}-600 dark:bg-${cat.color}-900/30 dark:text-${cat.color}-400">${cat.name}</span>
+                                    <div class="flex items-center gap-2 mb-2.5 flex-wrap">
+                                        ${post.isPinned ? '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-200 dark:border-amber-800">📌 置顶</span>' : ''}
+                                        ${post.isFeatured ? '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-brand-100 text-brand-600 dark:bg-brand-900/30 dark:text-brand-400 border border-brand-200 dark:border-brand-800">⭐ 精华</span>' : ''}
+                                        <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-${cat.color}-100 text-${cat.color}-600 dark:bg-${cat.color}-900/30 dark:text-${cat.color}-400">${cat.name}</span>
                                     </div>
-
-                                    <!-- Title -->
-                                    <h3 class="text-base font-bold mb-2 group-hover:text-brand-500 transition-colors line-clamp-1">${post.title}</h3>
-
-                                    <!-- Preview -->
-                                    <p class="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2 mb-3">${getPreviewText(post.content)}</p>
-
-                                    <!-- Tags -->
+                                    <h3 class="text-base font-bold mb-2 group-hover:text-brand-500 transition-colors line-clamp-2">${post.title}</h3>
+                                    <p class="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2 mb-3 leading-relaxed">${getPreviewText(post.content)}</p>
                                     ${post.tags && post.tags.length > 0 ? `
                                         <div class="flex flex-wrap gap-1.5 mb-3">
                                             ${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                                         </div>
                                     ` : ''}
-
-                                    <!-- Footer -->
-                                    <div class="flex items-center gap-4 text-xs text-zinc-400">
-                                        <span class="font-medium">${post.authorName}</span>
+                                    <div class="flex items-center gap-5 text-xs text-zinc-400">
+                                        <span class="font-medium text-zinc-600 dark:text-zinc-300">${post.authorName}</span>
                                         <span>${timeAgo}</span>
-                                        <div class="flex items-center gap-1">
-                                            <i data-lucide="heart" size="12" class="${isLiked ? 'fill-red-500 text-red-500' : ''}"></i>
+                                        <div class="flex items-center gap-1.5 ${isLiked ? 'text-red-500' : ''}">
+                                            <i data-lucide="heart" size="13" class="${isLiked ? 'fill-current' : ''}"></i>
                                             <span>${post.likes || 0}</span>
                                         </div>
-                                        <div class="flex items-center gap-1">
-                                            <i data-lucide="message-square" size="12"></i>
+                                        <div class="flex items-center gap-1.5">
+                                            <i data-lucide="message-square" size="13"></i>
                                             <span>${post.commentCount || 0}</span>
                                         </div>
                                     </div>
@@ -902,16 +980,10 @@
                 `;
             }).join('');
 
-            if (replace) {
-                container.innerHTML = html;
-            } else {
-                container.innerHTML += html;
-            }
-
+            if (replace) { container.innerHTML = html; } else { container.innerHTML += html; }
             lucide.createIcons();
         }
 
-        // ========== Post Detail ==========
         async function showPostDetail(postId) {
             currentPostId = postId;
             const modal = document.getElementById('post-detail-modal');
@@ -920,17 +992,17 @@
             modal.classList.remove('hidden');
             contentDiv.innerHTML = `
                 <div class="text-center py-20">
-                    <i data-lucide="loader-2" class="animate-spin inline-block text-zinc-400" size="32"></i>
+                    <div class="w-16 h-16 rounded-2xl bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center mx-auto mb-4 animate-pulse">
+                        <i data-lucide="loader-2" class="animate-spin text-brand-500" size="24"></i>
+                    </div>
+                    <p class="text-zinc-400 text-sm">正在加载...</p>
                 </div>
             `;
             lucide.createIcons();
 
             try {
                 const postDoc = await db.collection('itlab_posts').doc(postId).get();
-                if (!postDoc.exists) {
-                    contentDiv.innerHTML = '<div class="text-center py-20 text-red-400">帖子不存在</div>';
-                    return;
-                }
+                if (!postDoc.exists) { contentDiv.innerHTML = '<div class="text-center py-20 text-red-400">帖子不存在</div>'; return; }
 
                 const post = postDoc.data();
                 const cat = CATEGORIES[post.category] || CATEGORIES.other;
@@ -938,71 +1010,58 @@
 
                 document.getElementById('detail-title').textContent = post.title;
 
-                // Load comments
-                const commentsSnapshot = await db.collection('itlab_comments')
-                    .where('postId', '==', postId)
-                    .orderBy('createdAt', 'asc')
-                    .get();
-
+                const commentsSnapshot = await db.collection('itlab_comments').where('postId', '==', postId).orderBy('createdAt', 'asc').get();
                 const comments = [];
-                commentsSnapshot.forEach(doc => {
-                    comments.push({ id: doc.id, ...doc.data() });
-                });
+                commentsSnapshot.forEach(doc => { comments.push({ id: doc.id, ...doc.data() }); });
 
                 contentDiv.innerHTML = `
-                    <div class="p-6">
-                        <!-- Post Header -->
-                        <div class="flex items-center gap-3 mb-6">
-                            <img src="${post.authorAvatar}" alt="" class="w-12 h-12 rounded-full">
+                    <div class="p-6 md:p-8">
+                        <div class="flex items-center gap-4 mb-6">
+                            <img src="${post.authorAvatar}" alt="" class="w-14 h-14 rounded-2xl object-cover shadow-lg">
                             <div>
-                                <p class="font-bold">${post.authorName}</p>
-                                <div class="flex items-center gap-2 text-xs text-zinc-400">
-                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-${cat.color}-100 text-${cat.color}-600 dark:bg-${cat.color}-900/30 dark:text-${cat.color}-400">${cat.name}</span>
-                                    <span>${getTimeAgo(post.createdAt?.toDate())}</span>
+                                <p class="font-bold text-lg">${post.authorName}</p>
+                                <div class="flex items-center gap-3 mt-1">
+                                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-${cat.color}-100 text-${cat.color}-600 dark:bg-${cat.color}-900/30 dark:text-${cat.color}-400">${cat.name}</span>
+                                    <span class="text-xs text-zinc-400">${getTimeAgo(post.createdAt?.toDate())}</span>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Tags -->
                         ${post.tags && post.tags.length > 0 ? `
-                            <div class="flex flex-wrap gap-2 mb-4">
+                            <div class="flex flex-wrap gap-2 mb-6">
                                 ${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                             </div>
                         ` : ''}
-
-                        <!-- Content -->
-                        <div class="markdown-body mb-6 p-4 rounded-xl bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10">
+                        <div class="markdown-body p-6 rounded-2xl bg-zinc-50 dark:bg-white/[0.03] border border-zinc-200 dark:border-white/5 mb-6">
                             ${marked.parse(post.content)}
                         </div>
-
-                        <!-- Actions -->
                         <div class="flex items-center gap-4 pb-6 border-b border-zinc-200 dark:border-white/10">
-                            <button onclick="toggleLike('${postId}')" class="flex items-center gap-2 px-4 py-2 rounded-xl ${isLiked ? 'bg-red-50 dark:bg-red-900/20 text-red-500' : 'bg-zinc-100 dark:bg-white/5 text-zinc-500'} hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors text-sm font-bold">
+                            <button onclick="toggleLike('${postId}')" class="flex items-center gap-2 px-5 py-2.5 rounded-xl ${isLiked ? 'bg-red-50 dark:bg-red-900/20 text-red-500 border border-red-200 dark:border-red-800' : 'bg-zinc-100 dark:bg-white/5 text-zinc-500 border border-transparent'} hover:bg-red-100 dark:hover:bg-red-900/30 transition-all text-sm font-bold">
                                 <i data-lucide="heart" size="16" class="${isLiked ? 'fill-current' : ''}"></i>
-                                <span>${post.likes || 0}</span>
+                                <span>${post.likes || 0} 点赞</span>
                             </button>
                             <div class="flex items-center gap-2 text-sm text-zinc-400">
                                 <i data-lucide="message-square" size="16"></i>
                                 <span>${comments.length} 条评论</span>
                             </div>
                         </div>
-
-                        <!-- Comments -->
-                        <div class="mt-6 space-y-4" id="comments-list">
+                        <div class="mt-8 space-y-5" id="comments-list">
                             ${comments.length === 0 ? `
-                                <div class="text-center py-10 text-zinc-400">
-                                    <i data-lucide="message-square" size="32" class="inline-block mb-2 opacity-50"></i>
-                                    <p class="text-sm">暂无评论，快来抢沙发！</p>
+                                <div class="text-center py-12">
+                                    <div class="w-16 h-16 rounded-2xl bg-zinc-100 dark:bg-white/5 flex items-center justify-center mx-auto mb-4">
+                                        <i data-lucide="message-square" size="24" class="text-zinc-300 dark:text-zinc-700"></i>
+                                    </div>
+                                    <p class="text-zinc-500 font-bold mb-1">暂无评论</p>
+                                    <p class="text-zinc-400 text-sm">快来抢沙发吧！</p>
                                 </div>
                             ` : comments.map(comment => `
                                 <div class="flex gap-3 animate-slide-in">
-                                    <img src="${comment.authorAvatar}" alt="" class="w-8 h-8 rounded-full flex-shrink-0">
-                                    <div class="flex-1 p-3 rounded-xl bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10">
-                                        <div class="flex items-center gap-2 mb-1">
-                                            <span class="text-xs font-bold">${comment.authorName}</span>
-                                            <span class="text-[10px] text-zinc-400">${getTimeAgo(comment.createdAt?.toDate())}</span>
+                                    <img src="${comment.authorAvatar}" alt="" class="w-9 h-9 rounded-xl flex-shrink-0 object-cover">
+                                    <div class="flex-1 p-4 rounded-2xl bg-zinc-50 dark:bg-white/[0.03] border border-zinc-200 dark:border-white/5">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <span class="text-sm font-bold">${comment.authorName}</span>
+                                            <span class="text-xs text-zinc-400">${getTimeAgo(comment.createdAt?.toDate())}</span>
                                         </div>
-                                        <p class="text-sm text-zinc-700 dark:text-zinc-300">${comment.content}</p>
+                                        <p class="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">${comment.content}</p>
                                     </div>
                                 </div>
                             `).join('')}
@@ -1011,29 +1070,17 @@
                 `;
 
                 lucide.createIcons();
-
-                // Highlight code blocks
-                contentDiv.querySelectorAll('pre code').forEach(block => {
-                    hljs.highlightElement(block);
-                });
-
+                contentDiv.querySelectorAll('pre code').forEach(block => { hljs.highlightElement(block); });
             } catch (e) {
                 console.error('Failed to load post:', e);
                 contentDiv.innerHTML = '<div class="text-center py-20 text-red-400">加载失败</div>';
             }
         }
 
-        function hidePostDetail() {
-            document.getElementById('post-detail-modal').classList.add('hidden');
-            currentPostId = null;
-        }
+        function hidePostDetail() { document.getElementById('post-detail-modal').classList.add('hidden'); currentPostId = null; }
 
         async function toggleLike(postId) {
-            if (!currentUser) {
-                showLoginModal();
-                return;
-            }
-
+            if (!currentUser) { showLoginModal(); return; }
             try {
                 const postRef = db.collection('itlab_posts').doc(postId);
                 const postDoc = await postRef.get();
@@ -1042,71 +1089,43 @@
                 const isLiked = likedBy.includes(currentUser.uid);
 
                 if (isLiked) {
-                    await postRef.update({
-                        likes: firebase.firestore.FieldValue.increment(-1),
-                        likedBy: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
-                    });
+                    await postRef.update({ likes: firebase.firestore.FieldValue.increment(-1), likedBy: firebase.firestore.FieldValue.arrayRemove(currentUser.uid) });
                 } else {
-                    await postRef.update({
-                        likes: firebase.firestore.FieldValue.increment(1),
-                        likedBy: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
-                    });
+                    await postRef.update({ likes: firebase.firestore.FieldValue.increment(1), likedBy: firebase.firestore.FieldValue.arrayUnion(currentUser.uid) });
                 }
-
-                // Refresh detail
                 showPostDetail(postId);
                 loadPosts(true);
-            } catch (e) {
-                console.error('Failed to toggle like:', e);
-            }
+            } catch (e) { console.error('Failed to toggle like:', e); }
         }
 
         async function submitComment() {
-            if (!currentUser) {
-                showLoginModal();
-                return;
-            }
-
+            if (!currentUser) { showLoginModal(); return; }
             const input = document.getElementById('comment-input');
             const content = input.value.trim();
             if (!content) return;
 
             try {
                 await db.collection('itlab_comments').add({
-                    postId: currentPostId,
-                    content,
+                    postId: currentPostId, content,
                     authorId: currentUser.uid,
                     authorName: currentUser.displayName || currentUser.email.split('@')[0],
-                    authorAvatar: currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.displayName || currentUser.email)}&background=5c7cfa&color=fff`,
+                    authorAvatar: currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.displayName || currentUser.email)}&background=6366f1&color=fff`,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-
-                // Update comment count
-                await db.collection('itlab_posts').doc(currentPostId).update({
-                    commentCount: firebase.firestore.FieldValue.increment(1)
-                });
-
+                await db.collection('itlab_posts').doc(currentPostId).update({ commentCount: firebase.firestore.FieldValue.increment(1) });
                 input.value = '';
                 showPostDetail(currentPostId);
                 loadPosts(true);
-            } catch (e) {
-                alert('评论失败: ' + e.message);
-            }
+            } catch (e) { alert('评论失败: ' + e.message); }
         }
 
-        // Enter to submit comment
         document.getElementById('comment-input').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                submitComment();
-            }
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitComment(); }
         });
 
-        // ========== Helpers ==========
         function getTimeAgo(date) {
             if (!date) return '刚刚';
-            const now = new Date();
-            const diff = now - date;
+            const diff = new Date() - date;
             const seconds = Math.floor(diff / 1000);
             const minutes = Math.floor(seconds / 60);
             const hours = Math.floor(minutes / 60);
@@ -1121,35 +1140,20 @@
         }
 
         function getPreviewText(content) {
-            // Remove markdown syntax and get first 150 chars
-            const text = content
-                .replace(/#{1,6}\s/g, '')
-                .replace(/\*\*(.*?)\*\*/g, '$1')
-                .replace(/\*(.*?)\*/g, '$1')
-                .replace(/`{1,3}[^`]*`{1,3}/g, '')
-                .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-                .replace(/!\[([^\]]*)\]\([^)]+\)/g, '')
-                .replace(/\n/g, ' ')
-                .trim();
-            return text.substring(0, 150) + (text.length > 150 ? '...' : '');
+            return content.replace(/#{1,6}\s/g, '').replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1').replace(/`{1,3}[^`]*`{1,3}/g, '').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/!\[([^\]]*)\]\([^)]+\)/g, '').replace(/\n/g, ' ').trim().substring(0, 150) + '...';
         }
 
-        // ========== Stats ==========
         async function loadStats() {
             try {
                 const postsSnapshot = await db.collection('itlab_posts').get();
                 document.getElementById('total-posts').textContent = postsSnapshot.size;
-            } catch (e) {
-                console.warn('Failed to load stats:', e);
-            }
+            } catch (e) {}
         }
 
-        // Simulate online count (in production, use Firebase Realtime Database)
         function updateOnlineCount() {
             document.getElementById('online-count').textContent = Math.floor(Math.random() * 20) + 5;
         }
 
-        // ========== Init ==========
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             loadPosts(true);
@@ -1158,21 +1162,13 @@
             setInterval(updateOnlineCount, 30000);
         });
 
-        // Close modals on escape
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                hideLoginModal();
-                hideNewPostModal();
-                hidePostDetail();
-            }
+            if (e.key === 'Escape') { hideLoginModal(); hideNewPostModal(); hidePostDetail(); }
         });
 
-        // Close modals on backdrop click
         ['login-modal', 'new-post-modal', 'post-detail-modal'].forEach(id => {
             document.getElementById(id).addEventListener('click', (e) => {
-                if (e.target === e.currentTarget) {
-                    e.currentTarget.classList.add('hidden');
-                }
+                if (e.target === e.currentTarget) { e.currentTarget.classList.add('hidden'); }
             });
         });
     </script>
