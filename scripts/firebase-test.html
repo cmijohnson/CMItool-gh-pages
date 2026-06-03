@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase 连接测试</title>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: system-ui, sans-serif; padding: 2rem; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .card { background: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { margin-bottom: 1.5rem; }
+        h2 { margin-bottom: 1rem; color: #333; font-size: 1.1rem; }
+        button { padding: 0.75rem 1.5rem; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 0.5rem 0.5rem 0.5rem 0; }
+        button:hover { background: #4f46e5; }
+        button:disabled { background: #9ca3af; cursor: not-allowed; }
+        .success { color: #059669; font-weight: bold; }
+        .error { color: #dc2626; font-weight: bold; }
+        .info { color: #2563eb; }
+        pre { background: #1f2937; color: #10b981; padding: 1rem; border-radius: 8px; margin-top: 1rem; font-size: 12px; max-height: 300px; overflow-y: auto; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 Firebase 连接测试工具</h1>
+
+        <div class="card">
+            <h2>1. 连接状态</h2>
+            <p id="status">检查中...</p>
+            <pre id="log"></pre>
+        </div>
+
+        <div class="card">
+            <h2>2. 测试写入</h2>
+            <button onclick="testWrite()">测试写入数据</button>
+            <button onclick="testRead()">测试读取数据</button>
+            <p id="write-result"></p>
+        </div>
+
+        <div class="card">
+            <h2>3. 添加测试帖子</h2>
+            <button onclick="addTestPosts()">添加 5 个测试帖子</button>
+            <button onclick="checkPosts()">检查帖子数量</button>
+            <p id="posts-result"></p>
+        </div>
+
+        <div class="card">
+            <h2>4. 集合状态</h2>
+            <button onclick="checkCollections()">检查所有集合</button>
+            <div id="collections-result"></div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase 配置
+        const firebaseConfig = {
+            apiKey: "AIzaSyBmHLEIxFfXylXUmnomtBGDKZ9SnxJ-bjU",
+            authDomain: "github-cmiteamtop.firebaseapp.com",
+            projectId: "github-cmiteamtop",
+            storageBucket: "github-cmiteamtop.firebasestorage.app",
+            messagingSenderId: "195134429408",
+            appId: "1:195134429408:web:d012224b5182f867a91885"
+        };
+
+        // 初始化 Firebase
+        try {
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+            const auth = firebase.auth();
+
+            document.getElementById('status').innerHTML = '<span class="success">✅ Firebase 初始化成功</span>';
+            log('Firebase 已连接到项目: github-cmiteamtop');
+
+            // 测试写入
+            window.testWrite = async () => {
+                try {
+                    await db.collection('test').doc('test-doc').set({
+                        message: 'Hello from ITLab!',
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    document.getElementById('write-result').innerHTML = '<span class="success">✅ 写入成功！</span>';
+                    log('测试数据写入成功');
+                } catch (e) {
+                    document.getElementById('write-result').innerHTML = '<span class="error">❌ 写入失败: ' + e.message + '</span>';
+                    log('写入错误: ' + e.message);
+                }
+            };
+
+            // 测试读取
+            window.testRead = async () => {
+                try {
+                    const doc = await db.collection('test').doc('test-doc').get();
+                    if (doc.exists) {
+                        document.getElementById('write-result').innerHTML = '<span class="success">✅ 读取成功: ' + JSON.stringify(doc.data()) + '</span>';
+                        log('读取数据: ' + JSON.stringify(doc.data()));
+                    } else {
+                        document.getElementById('write-result').innerHTML = '<span class="info">ℹ️ 文档不存在</span>';
+                    }
+                } catch (e) {
+                    document.getElementById('write-result').innerHTML = '<span class="error">❌ 读取失败: ' + e.message + '</span>';
+                    log('读取错误: ' + e.message);
+                }
+            };
+
+            // 添加测试帖子
+            window.addTestPosts = async () => {
+                const testPosts = [
+                    {
+                        title: '欢迎来到 ITLab 技术社区！',
+                        content: '## 欢迎！\n\n这是江苏大学 ITLab 技术社区的第一个帖子。\n\n在这里你可以：\n- 分享技术经验\n- 讨论技术问题\n- 交流学习心得\n\n**快来发帖吧！**',
+                        category: 'other',
+                        tags: ['公告', '欢迎'],
+                        authorId: 'system',
+                        authorName: 'ITLab 管理员',
+                        authorAvatar: 'https://ui-avatars.com/api/?name=ITLab&background=6366f1&color=fff',
+                        likes: 5,
+                        likedBy: [],
+                        commentCount: 2,
+                        isPinned: true,
+                        isFeatured: true,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    },
+                    {
+                        title: 'Docker 容器化部署最佳实践',
+                        content: '## Docker 部署指南\n\n```dockerfile\nFROM node:18-alpine\nWORKDIR /app\nCOPY package*.json ./\nRUN npm install\nCOPY . .\nEXPOSE 3000\nCMD ["npm", "start"]\n```\n\n### 关键点\n\n1. 使用多阶段构建减小镜像\n2. 合理利用缓存层\n3. 使用 `.dockerignore`\n\n> 生产环境建议使用 Alpine 基础镜像',
+                        category: 'devops',
+                        tags: ['Docker', '容器化', 'DevOps'],
+                        authorId: 'user1',
+                        authorName: '张三',
+                        authorAvatar: 'https://ui-avatars.com/api/?name=张三&background=10b981&color=fff',
+                        likes: 12,
+                        likedBy: [],
+                        commentCount: 5,
+                        isPinned: false,
+                        isFeatured: true,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    },
+                    {
+                        title: 'Kubernetes Pod 调度策略详解',
+                        content: '## K8s 调度\n\n### 节点选择器\n```yaml\nnodeSelector:\n  disktype: ssd\n```\n\n### 亲和性\n```yaml\naffinity:\n  nodeAffinity:\n    requiredDuringSchedulingIgnoredDuringExecution:\n      nodeSelectorTerms:\n      - matchExpressions:\n        - key: kubernetes.io/e2e-az-name\n          operator: In\n          values:\n          - e2e-az1\n          - e2e-az2\n```',
+                        category: 'sre',
+                        tags: ['Kubernetes', 'K8s', 'SRE'],
+                        authorId: 'user2',
+                        authorName: '李四',
+                        authorAvatar: 'https://ui-avatars.com/api/?name=李四&background=f59e0b&color=fff',
+                        likes: 8,
+                        likedBy: [],
+                        commentCount: 3,
+                        isPinned: false,
+                        isFeatured: false,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    },
+                    {
+                        title: 'Web 安全：SQL 注入防御',
+                        content: '## SQL 注入防护\n\n### 问题代码\n```javascript\nconst query = `SELECT * FROM users WHERE id = ${userId}`;\n```\n\n### 安全写法\n```javascript\nconst query = \'SELECT * FROM users WHERE id = ?\';\ndb.query(query, [userId]);\n```\n\n**永远不要直接拼接用户输入！**',
+                        category: 'security',
+                        tags: ['Web安全', 'SQL注入', '安全'],
+                        authorId: 'user3',
+                        authorName: '王五',
+                        authorAvatar: 'https://ui-avatars.com/api/?name=王五&background=ef4444&color=fff',
+                        likes: 15,
+                        likedBy: [],
+                        commentCount: 7,
+                        isPinned: false,
+                        isFeatured: true,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    },
+                    {
+                        title: 'React Hooks 最佳实践',
+                        content: '## React Hooks\n\n### useState\n```javascript\nconst [count, setCount] = useState(0);\n```\n\n### useEffect\n```javascript\nuseEffect(() => {\n  // 副作用\n  return () => {\n    // 清理\n  };\n}, [dependencies]);\n```\n\n### 自定义 Hook\n```javascript\nfunction useLocalStorage(key, initialValue) {\n  const [value, setValue] = useState(() => {\n    const saved = localStorage.getItem(key);\n    return saved ? JSON.parse(saved) : initialValue;\n  });\n\n  useEffect(() => {\n    localStorage.setItem(key, JSON.stringify(value));\n  }, [key, value]);\n\n  return [value, setValue];\n}\n```',
+                        category: 'frontend',
+                        tags: ['React', 'Hooks', '前端'],
+                        authorId: 'user4',
+                        authorName: '赵六',
+                        authorAvatar: 'https://ui-avatars.com/api/?name=赵六&background=3b82f6&color=fff',
+                        likes: 20,
+                        likedBy: [],
+                        commentCount: 10,
+                        isPinned: false,
+                        isFeatured: false,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }
+                ];
+
+                try {
+                    const batch = db.batch();
+                    testPosts.forEach(post => {
+                        const ref = db.collection('itlab_posts').doc();
+                        batch.set(ref, post);
+                    });
+                    await batch.commit();
+                    document.getElementById('posts-result').innerHTML = '<span class="success">✅ 成功添加 5 个测试帖子！</span>';
+                    log('测试帖子添加成功');
+                } catch (e) {
+                    document.getElementById('posts-result').innerHTML = '<span class="error">❌ 添加失败: ' + e.message + '</span>';
+                    log('添加帖子错误: ' + e.message);
+                }
+            };
+
+            // 检查帖子数量
+            window.checkPosts = async () => {
+                try {
+                    const snapshot = await db.collection('itlab_posts').get();
+                    document.getElementById('posts-result').innerHTML = `<span class="info">ℹ️ 当前共有 ${snapshot.size} 个帖子</span>`;
+                    log('帖子数量: ' + snapshot.size);
+                } catch (e) {
+                    document.getElementById('posts-result').innerHTML = '<span class="error">❌ 查询失败: ' + e.message + '</span>';
+                    log('查询错误: ' + e.message);
+                }
+            };
+
+            // 检查所有集合
+            window.checkCollections = async () => {
+                const collections = ['itlab_posts', 'itlab_comments', 'itlab_users', 'users', 'messages', 'tools', 'settings'];
+                let html = '<ul>';
+
+                for (const col of collections) {
+                    try {
+                        const snapshot = await db.collection(col).limit(1).get();
+                        html += `<li><span class="success">✅ ${col}</span>: 可访问</li>`;
+                        log(`集合 ${col}: 可访问`);
+                    } catch (e) {
+                        html += `<li><span class="error">❌ ${col}</span>: ${e.message}</li>`;
+                        log(`集合 ${col} 错误: ${e.message}`);
+                    }
+                }
+
+                html += '</ul>';
+                document.getElementById('collections-result').innerHTML = html;
+            };
+
+        } catch (e) {
+            document.getElementById('status').innerHTML = '<span class="error">❌ Firebase 初始化失败: ' + e.message + '</span>';
+            log('初始化错误: ' + e.message);
+        }
+
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const time = new Date().toLocaleTimeString();
+            logDiv.textContent += `[${time}] ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+    </script>
+</body>
+</html>
