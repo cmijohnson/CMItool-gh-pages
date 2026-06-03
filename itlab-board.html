@@ -965,8 +965,8 @@
         }
 
         // ========== 天气功能 ==========
-        // Cloud Function URL - 部署后需要更新这个地址
-        const WEATHER_FUNCTION_URL = 'https://getWeather-xxxxxxxxxx-uc.a.run.app'; // TODO: 部署后更新
+        // 使用免费的 wttr.in API，无需 API key
+        const WTTR_API = 'https://wttr.in';
 
         let weatherDropdownOpen = false;
         let weatherCache = null;
@@ -975,7 +975,6 @@
 
         // 初始化天气功能
         async function initWeather() {
-            // 显示天气组件
             document.getElementById('weather-widget').classList.remove('hidden');
 
             // 从本地缓存加载
@@ -993,7 +992,6 @@
                 } catch (e) {}
             }
 
-            // 请求新数据
             await fetchWeather();
         }
 
@@ -1011,169 +1009,135 @@
             }
 
             try {
-                // 尝试调用 Cloud Function
-                let data = null;
+                // 使用 wttr.in JSON API
+                const response = await fetch(`${WTTR_API}/${encodeURIComponent(city)}?format=j1`, {
+                    headers: {
+                        'Accept': 'application/json',
+                    },
+                });
 
-                // 方式1：通过 HTTP 调用
-                try {
-                    const response = await fetch(`${WEATHER_FUNCTION_URL}?city=${encodeURIComponent(city)}`);
-                    const result = await response.json();
-                    if (result.success) {
-                        data = result.data;
-                    }
-                } catch (e) {
-                    console.warn('Cloud Function 调用失败，尝试 Firestore 缓存:', e);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
                 }
 
-                // 方式2：从 Firestore 读取缓存
-                if (!data) {
-                    try {
-                        const cacheDoc = await db.collection('weather_cache').doc(city).get();
-                        if (cacheDoc.exists) {
-                            data = cacheDoc.data().weatherData;
-                        }
-                    } catch (e) {
-                        console.warn('Firestore 缓存读取失败:', e);
-                    }
-                }
+                const data = await response.json();
 
-                // 方式3：使用默认数据
-                if (!data) {
-                    data = getDefaultWeatherData(city);
-                }
+                // 转换数据格式
+                const weatherData = {
+                    city: city,
+                    temp: data.current_condition[0].temp_C,
+                    feelsLike: data.current_condition[0].FeelsLikeC,
+                    text: data.current_condition[0].lang_zh?.[0]?.value || data.current_condition[0].weatherDesc[0].value,
+                    humidity: data.current_condition[0].humidity,
+                    windDir: data.current_condition[0].windDir16Point,
+                    windSpeed: data.current_condition[0].windspeedKmph,
+                    vis: data.current_condition[0].visibility,
+                    pressure: data.current_condition[0].pressure,
+                    precip: data.current_condition[0].precipMM,
+                    weatherCode: data.current_condition[0].weatherCode,
+                };
 
                 // 更新缓存
-                weatherCache = data;
+                weatherCache = weatherData;
                 weatherCacheTime = Date.now();
 
-                // 保存到本地存储
                 localStorage.setItem('itlab_weather', JSON.stringify({
-                    data: data,
+                    data: weatherData,
                     time: Date.now(),
                     city: city,
                 }));
 
-                updateWeatherUI(data, city);
+                updateWeatherUI(weatherData, city);
             } catch (e) {
                 console.error('获取天气数据失败:', e);
-                // 使用默认数据
-                updateWeatherUI(getDefaultWeatherData(city), city);
+                // 如果失败，尝试使用默认数据
+                if (!weatherCache) {
+                    updateWeatherUI(getDefaultWeatherData(city), city);
+                }
             }
         }
 
         function getDefaultWeatherData(city) {
             return {
-                cityData: {
-                    name: city,
-                    province: '江苏省',
-                },
-                weatherData: {
-                    temp: '--',
-                    feelsLike: '--',
-                    text: '暂无数据',
-                    windDir: '--',
-                    windScale: '--',
-                    humidity: '--',
-                    vis: '--',
-                    pressure: '--',
-                    precip: '--',
-                    icon: '999',
-                },
+                city: city,
+                temp: '--',
+                feelsLike: '--',
+                text: '暂无数据',
+                humidity: '--',
+                windDir: '--',
+                windSpeed: '--',
+                vis: '--',
+                pressure: '--',
+                precip: '--',
+                weatherCode: '999',
             };
         }
 
         function updateWeatherUI(data, city) {
-            const { cityData, weatherData } = data;
-
             // Header 小组件
-            document.getElementById('weather-temp').textContent = `${weatherData.temp}°`;
-            document.getElementById('weather-city').textContent = cityData?.name || city;
+            document.getElementById('weather-temp').textContent = `${data.temp}°`;
+            document.getElementById('weather-city').textContent = city;
 
             // 下拉面板
-            document.getElementById('dropdown-city').textContent = cityData?.name || city;
-            document.getElementById('dropdown-province').textContent = cityData?.province || '';
-            document.getElementById('dropdown-temp').textContent = `${weatherData.temp}°`;
-            document.getElementById('dropdown-text').textContent = weatherData.text;
-            document.getElementById('dropdown-wind').textContent = `${weatherData.windDir} ${weatherData.windScale}级`;
-            document.getElementById('dropdown-humidity').textContent = `${weatherData.humidity}%`;
-            document.getElementById('dropdown-feels-like').textContent = `${weatherData.feelsLike}°`;
-            document.getElementById('dropdown-vis').textContent = `${weatherData.vis}km`;
-            document.getElementById('dropdown-pressure').textContent = `${weatherData.pressure}hPa`;
-            document.getElementById('dropdown-precip').textContent = `${weatherData.precip}mm`;
+            document.getElementById('dropdown-city').textContent = city;
+            document.getElementById('dropdown-province').textContent = getProvinceByCity(city);
+            document.getElementById('dropdown-temp').textContent = `${data.temp}°`;
+            document.getElementById('dropdown-text').textContent = data.text;
+            document.getElementById('dropdown-wind').textContent = `${data.windDir} ${data.windSpeed}km/h`;
+            document.getElementById('dropdown-humidity').textContent = `${data.humidity}%`;
+            document.getElementById('dropdown-feels-like').textContent = `${data.feelsLike}°`;
+            document.getElementById('dropdown-vis').textContent = `${data.vis}km`;
+            document.getElementById('dropdown-pressure').textContent = `${data.pressure}hPa`;
+            document.getElementById('dropdown-precip').textContent = `${data.precip}mm`;
 
             // 更新时间
             const now = new Date();
             document.getElementById('weather-update-time').textContent = `数据更新于 ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
 
             // 更新图标
-            updateWeatherIcon(weatherData.icon);
-
+            updateWeatherIcon(data.weatherCode);
             lucide.createIcons();
         }
 
-        function updateWeatherIcon(iconCode) {
+        function getProvinceByCity(city) {
+            const cityProvinceMap = {
+                '镇江': '江苏省', '南京': '江苏省', '苏州': '江苏省', '无锡': '江苏省',
+                '常州': '江苏省', '扬州': '江苏省', '徐州': '江苏省', '连云港': '江苏省',
+                '上海': '上海市', '北京': '北京市', '天津': '天津市', '重庆': '重庆市',
+                '杭州': '浙江省', '宁波': '浙江省', '温州': '浙江省',
+                '合肥': '安徽省', '芜湖': '安徽省',
+                '广州': '广东省', '深圳': '广东省', '东莞': '广东省',
+                '武汉': '湖北省', '长沙': '湖南省', '南昌': '江西省',
+                '成都': '四川省', '重庆': '重庆市', '西安': '陕西省',
+                '郑州': '河南省', '济南': '山东省', '青岛': '山东省',
+                '福州': '福建省', '厦门': '福建省',
+                '昆明': '云南省', '贵阳': '贵州省', '南宁': '广西',
+                '哈尔滨': '黑龙江省', '长春': '吉林省', '沈阳': '辽宁省',
+                '太原': '山西省', '石家庄': '河北省', '呼和浩特': '内蒙古',
+                '兰州': '甘肃省', '银川': '宁夏', '西宁': '青海省',
+                '乌鲁木齐': '新疆', '拉萨': '西藏', '海口': '海南省',
+            };
+            return cityProvinceMap[city] || '';
+        }
+
+        function updateWeatherIcon(weatherCode) {
             const iconElement = document.querySelector('#weather-widget > button > i');
             if (!iconElement) return;
 
-            // 根据和风天气图标代码选择图标
-            const iconMap = {
-                '100': 'sun',           // 晴
-                '101': 'cloud-sun',     // 多云
-                '102': 'cloud-sun',     // 少云
-                '103': 'cloud',         // 晴间多云
-                '104': 'cloud',         // 阴
-                '200': 'wind',          // 有风
-                '201': 'wind',          // 平静
-                '202': 'wind',          // 微风
-                '203': 'wind',          // 和风
-                '204': 'wind',          // 清风
-                '205': 'wind',          // 强风
-                '206': 'wind',          // 疾风
-                '207': 'wind',          // 大风
-                '208': 'wind',          // 烈风
-                '209': 'wind',          // 风暴
-                '210': 'wind',          // 狂爆风
-                '211': 'wind',          // 飓风
-                '212': 'wind',          // 龙卷风
-                '213': 'wind',          // 热带风暴
-                '300': 'cloud-drizzle', // 阵雨
-                '301': 'cloud-drizzle', // 强阵雨
-                '302': 'cloud-lightning', // 雷阵雨
-                '303': 'cloud-lightning', // 强雷阵雨
-                '304': 'cloud-lightning', // 雷阵雨伴有冰雹
-                '305': 'cloud-rain',    // 小雨
-                '306': 'cloud-rain',    // 中雨
-                '307': 'cloud-rain',    // 大雨
-                '308': 'cloud-rain',    // 极端降雨
-                '309': 'cloud-drizzle', // 毛毛雨
-                '310': 'cloud-rain',    // 暴雨
-                '311': 'cloud-rain',    // 大暴雨
-                '312': 'cloud-rain',    // 特大暴雨
-                '313': 'cloud-rain',    // 冻雨
-                '400': 'snowflake',     // 小雪
-                '401': 'snowflake',     // 中雪
-                '402': 'snowflake',     // 大雪
-                '403': 'snowflake',     // 暴雪
-                '404': 'cloud-snow',    // 雨夹雪
-                '405': 'cloud-snow',    // 雨雪天气
-                '406': 'cloud-snow',    // 阵雨夹雪
-                '407': 'cloud-snow',    // 阵雪
-                '408': 'snowflake',     // 小到中雪
-                '409': 'snowflake',     // 中到大雪
-                '410': 'snowflake',     // 大到暴雪
-                '500': 'cloud-fog',     // 薄雾
-                '501': 'cloud-fog',     // 雾
-                '502': 'cloud-fog',     // 霾
-                '503': 'cloud-fog',     // 扬沙
-                '504': 'cloud-fog',     // 浮尘
-                '507': 'cloud-fog',     // 沙尘暴
-                '508': 'cloud-fog',     // 强沙尘暴
-                '900': 'thermometer',   // 热
-                '901': 'thermometer',   // 冷
-                '999': 'cloud-question', // 未知
-            };
+            // wttr.in 天气代码映射
+            const code = parseInt(weatherCode);
+            let iconName = 'cloud-sun';
 
-            const iconName = iconMap[iconCode] || 'cloud-sun';
+            if (code === 113) iconName = 'sun';                    // 晴
+            else if (code === 116) iconName = 'cloud-sun';          // 多云
+            else if (code === 119 || code === 122) iconName = 'cloud'; // 阴
+            else if (code >= 176 && code <= 263) iconName = 'cloud-drizzle'; // 小雨
+            else if (code >= 266 && code <= 314) iconName = 'cloud-rain';    // 雨
+            else if (code >= 317 && code <= 395) iconName = 'cloud-snow';    // 雪
+            else if (code >= 386 && code <= 392) iconName = 'cloud-lightning'; // 雷雨
+            else if (code >= 248 && code <= 260) iconName = 'cloud-fog';     // 雾
+            else if (code === 143 || code === 248) iconName = 'cloud-fog';   // 霾
+
             iconElement.setAttribute('data-lucide', iconName);
         }
 
