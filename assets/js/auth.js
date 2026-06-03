@@ -1,5 +1,39 @@
 // Firebase Authentication 模块
 
+// 用户下拉菜单控制
+let dropdownTimeout = null;
+
+function showUserDropdown() {
+    if (dropdownTimeout) {
+        clearTimeout(dropdownTimeout);
+        dropdownTimeout = null;
+    }
+    document.getElementById('user-dropdown').classList.remove('hidden');
+}
+
+function hideUserDropdownWithDelay() {
+    dropdownTimeout = setTimeout(() => {
+        document.getElementById('user-dropdown').classList.add('hidden');
+    }, 300); // 300ms 延迟，给用户时间移动到菜单
+}
+
+function cancelHideDropdown() {
+    if (dropdownTimeout) {
+        clearTimeout(dropdownTimeout);
+        dropdownTimeout = null;
+    }
+}
+
+function hideUserDropdown() {
+    document.getElementById('user-dropdown').classList.add('hidden');
+}
+
+// 导出下拉菜单函数
+window.showUserDropdown = showUserDropdown;
+window.hideUserDropdownWithDelay = hideUserDropdownWithDelay;
+window.cancelHideDropdown = cancelHideDropdown;
+window.hideUserDropdown = hideUserDropdown;
+
 // 显示登录模态框
 function showLoginModal() {
     document.getElementById('login-modal').classList.remove('hidden');
