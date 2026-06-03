@@ -19,16 +19,16 @@
             },
             colors: {
               brand: {
-                50: '#eef2ff',
-                100: '#e0e7ff',
-                200: '#c7d2fe',
-                300: '#a5b4fc',
-                400: '#818cf8',
-                500: '#6366f1',
-                600: '#4f46e5',
-                700: '#4338ca',
-                800: '#3730a3',
-                900: '#312e81',
+                50: '#ecfdf5',
+                100: '#d1fae5',
+                200: '#a7f3d0',
+                300: '#6ee7b7',
+                400: '#34d399',
+                500: '#10b981',
+                600: '#059669',
+                700: '#047857',
+                800: '#065f46',
+                900: '#064e3b',
               }
             }
           }
@@ -136,16 +136,16 @@
       }
       .markdown-body li { margin-bottom: 0.5em; }
       .markdown-body code {
-        background: rgba(99, 102, 241, 0.1);
-        color: #6366f1;
+        background: rgba(16, 185, 129, 0.1);
+        color: #059669;
         padding: 0.15em 0.4em;
         border-radius: 6px;
         font-size: 0.88em;
         font-family: 'JetBrains Mono', monospace;
       }
       .dark .markdown-body code {
-        background: rgba(129, 140, 248, 0.15);
-        color: #a5b4fc;
+        background: rgba(52, 211, 153, 0.15);
+        color: #6ee7b7;
       }
       .markdown-body pre {
         background: #0f172a;
@@ -163,23 +163,23 @@
         font-size: 0.85em;
       }
       .markdown-body blockquote {
-        border-left: 4px solid #6366f1;
+        border-left: 4px solid #10b981;
         padding: 0.75em 1em;
         margin: 0 0 1em 0;
-        background: rgba(99, 102, 241, 0.05);
+        background: rgba(16, 185, 129, 0.05);
         border-radius: 0 12px 12px 0;
       }
       .dark .markdown-body blockquote {
-        background: rgba(99, 102, 241, 0.1);
+        background: rgba(16, 185, 129, 0.1);
       }
       .markdown-body a {
-        color: #6366f1;
+        color: #059669;
         text-decoration: none;
-        border-bottom: 1px solid rgba(99, 102, 241, 0.3);
+        border-bottom: 1px solid rgba(16, 185, 129, 0.3);
         transition: all 0.2s;
       }
       .markdown-body a:hover {
-        border-bottom-color: #6366f1;
+        border-bottom-color: #10b981;
       }
       .markdown-body img {
         max-width: 100%;
@@ -235,19 +235,19 @@
         border-radius: 8px;
         font-size: 11px;
         font-weight: 600;
-        background: rgba(99, 102, 241, 0.08);
-        color: #6366f1;
-        border: 1px solid rgba(99, 102, 241, 0.15);
+        background: rgba(16, 185, 129, 0.08);
+        color: #059669;
+        border: 1px solid rgba(16, 185, 129, 0.15);
         transition: all 0.2s;
       }
       .tag:hover {
-        background: rgba(99, 102, 241, 0.15);
+        background: rgba(16, 185, 129, 0.15);
         transform: translateY(-1px);
       }
       .dark .tag {
-        background: rgba(129, 140, 248, 0.1);
-        color: #a5b4fc;
-        border-color: rgba(129, 140, 248, 0.2);
+        background: rgba(52, 211, 153, 0.1);
+        color: #6ee7b7;
+        border-color: rgba(52, 211, 153, 0.2);
       }
 
       /* Glass Card */
@@ -267,7 +267,7 @@
 
       /* Text Gradient */
       .text-gradient {
-        background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+        background: linear-gradient(135deg, #3b82f6, #10b981, #059669);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -278,7 +278,7 @@
 
     <!-- Animated Background -->
     <div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-        <div class="absolute -top-40 -left-40 w-[800px] h-[800px] bg-brand-500/5 rounded-full blur-[150px] animate-float"></div>
+        <div class="absolute -top-40 -left-40 w-[800px] h-[800px] bg-blue-500/5 rounded-full blur-[150px] animate-float"></div>
         <div class="absolute -bottom-40 -right-40 w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-[120px] animate-float" style="animation-delay: 1.5s;"></div>
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-pink-500/3 rounded-full blur-[100px] animate-float" style="animation-delay: 3s;"></div>
     </div>
@@ -296,7 +296,7 @@
                     <div class="w-px h-6 bg-zinc-200 dark:bg-white/10 mx-2"></div>
                     <div class="flex items-center gap-3">
                         <div class="relative">
-                            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-brand-500 via-purple-500 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/25 gradient-animate">
+                            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-500 via-teal-500 to-green-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/25 gradient-animate">
                                 <i data-lucide="terminal" size="20"></i>
                             </div>
                             <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white dark:border-[#08080c] flex items-center justify-center">
@@ -336,22 +336,28 @@
 
                     <!-- User Menu -->
                     <div id="user-section">
-                        <button id="login-btn" onclick="showLoginModal()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-purple-600 text-white text-xs font-bold hover:from-brand-600 hover:to-purple-700 transition-all shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40 hover:scale-[1.02]">
+                        <button id="login-btn" onclick="showLoginModal()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-purple-600 text-white text-xs font-bold hover:from-brand-600 hover:to-purple-700 transition-all shadow-lg shadow-blue-500/25 hover:shadow-brand-500/40 hover:scale-[1.02]">
                             登录参与讨论
                         </button>
                         <div id="user-menu" class="hidden relative" onmouseenter="showUserMenu()" onmouseleave="hideUserMenuWithDelay()">
-                            <button class="flex items-center gap-2 px-3 py-2 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 hover:border-brand-500/50 transition-all">
+                            <button class="flex items-center gap-2 px-3 py-2 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 hover:border-blue-500/50 transition-all">
                                 <img id="user-avatar" class="w-7 h-7 rounded-lg" src="" alt="">
                                 <span id="user-name" class="text-xs font-bold hidden sm:inline">User</span>
                                 <i data-lucide="chevron-down" size="14" class="text-zinc-400"></i>
                             </button>
-                            <div id="user-dropdown" class="hidden absolute right-0 top-full mt-2 w-52 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+                            <div id="user-dropdown" class="hidden absolute right-0 top-full mt-2 w-56 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+                                <button onclick="showEditUsernameModal()" class="w-full flex items-center gap-2 px-4 py-3 text-xs font-bold hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors">
+                                    <i data-lucide="edit-3" size="14"></i> 修改用户名
+                                </button>
                                 <div id="admin-link" class="hidden">
-                                    <a href="index.html" class="flex items-center gap-2 px-4 py-3 text-xs font-bold hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors text-brand-500">
-                                        <i data-lucide="shield-check" size="14"></i> 管理后台
+                                    <button onclick="showAdminSettingsModal()" class="w-full flex items-center gap-2 px-4 py-3 text-xs font-bold hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors text-blue-500">
+                                        <i data-lucide="settings" size="14"></i> 社区设置
+                                    </button>
+                                    <a href="index.html" class="flex items-center gap-2 px-4 py-3 text-xs font-bold hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors text-blue-500 border-t border-zinc-100 dark:border-white/5">
+                                        <i data-lucide="shield-check" size="14"></i> 主站管理后台
                                     </a>
                                 </div>
-                                <button onclick="logout()" class="w-full flex items-center gap-2 px-4 py-3 text-xs font-bold hover:bg-red-50 dark:hover:bg-red-900/10 text-red-500 transition-colors">
+                                <button onclick="logout()" class="w-full flex items-center gap-2 px-4 py-3 text-xs font-bold hover:bg-red-50 dark:hover:bg-red-900/10 text-red-500 transition-colors border-t border-zinc-100 dark:border-white/5">
                                     <i data-lucide="log-out" size="14"></i> 退出登录
                                 </button>
                             </div>
@@ -365,7 +371,7 @@
     <!-- Login Modal -->
     <div id="login-modal" class="hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center px-4">
         <div class="w-full max-w-sm bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl overflow-hidden border border-zinc-200 dark:border-white/10 animate-fade-in-up">
-            <div class="relative p-8 text-center bg-gradient-to-br from-brand-500 via-purple-500 to-pink-500">
+            <div class="relative p-8 text-center bg-gradient-to-br from-blue-500 via-teal-500 to-green-500">
                 <div class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto mb-4">
                     <i data-lucide="terminal" size="32" class="text-white"></i>
                 </div>
@@ -380,6 +386,115 @@
                 </button>
                 <div id="login-error" class="hidden text-red-500 text-xs font-bold text-center"></div>
                 <button onclick="hideLoginModal()" class="w-full py-2 text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-white transition-colors">稍后再看</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Username Modal -->
+    <div id="edit-username-modal" class="hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center px-4">
+        <div class="w-full max-w-sm bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl overflow-hidden border border-zinc-200 dark:border-white/10 animate-fade-in-up">
+            <div class="p-6 border-b border-zinc-200 dark:border-white/10 flex items-center justify-between">
+                <h2 class="text-xl font-black">修改用户名</h2>
+                <button onclick="hideEditUsernameModal()" class="p-2 rounded-xl text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 dark:hover:bg-white/10 transition-all">
+                    <i data-lucide="x" size="20"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-2">当前用户名</label>
+                    <p id="current-username" class="text-sm text-zinc-500">-</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-2">新用户名</label>
+                    <input type="text" id="new-username" class="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-sm" placeholder="输入新用户名">
+                </div>
+                <div id="username-error" class="hidden text-red-500 text-xs font-bold"></div>
+                <button onclick="updateUsername()" class="w-full py-3 rounded-xl bg-gradient-to-r from-blue-500 to-teal-600 text-white font-bold text-sm hover:from-blue-600 hover:to-teal-700 transition-all shadow-lg shadow-blue-500/25">
+                    保存修改
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Settings Modal -->
+    <div id="admin-settings-modal" class="hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center px-4 py-8">
+        <div class="w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl overflow-hidden border border-zinc-200 dark:border-white/10 animate-fade-in-up max-h-[90vh] flex flex-col">
+            <div class="p-6 border-b border-zinc-200 dark:border-white/10 flex items-center justify-between flex-shrink-0">
+                <div>
+                    <h2 class="text-xl font-black">社区设置</h2>
+                    <p class="text-xs text-zinc-500 mt-1">管理 ITLab 社区的各项设置</p>
+                </div>
+                <button onclick="hideAdminSettingsModal()" class="p-2 rounded-xl text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 dark:hover:bg-white/10 transition-all">
+                    <i data-lucide="x" size="20"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-6 overflow-y-auto flex-1">
+                <!-- 邀请码设置 -->
+                <div class="p-5 rounded-2xl bg-zinc-50 dark:bg-white/[0.03] border border-zinc-200 dark:border-white/5">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-bold text-sm">邀请码机制</h3>
+                            <p class="text-xs text-zinc-400 mt-1">开启后，新用户注册需要输入邀请码</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="setting-require-invite" class="sr-only peer">
+                            <div class="w-11 h-6 bg-zinc-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-zinc-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-zinc-600 peer-checked:bg-blue-500"></div>
+                        </label>
+                    </div>
+                    <div id="invite-code-management" class="hidden">
+                        <div class="flex gap-2">
+                            <input type="number" id="invite-count" value="10" min="1" max="50" class="flex-1 px-3 py-2 rounded-lg bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500 text-sm">
+                            <button onclick="generateInviteCodes()" class="px-4 py-2 rounded-lg bg-blue-500 text-white text-sm font-bold hover:bg-blue-600 transition-colors">
+                                生成邀请码
+                            </button>
+                        </div>
+                        <div id="generated-codes" class="mt-3 space-y-2"></div>
+                    </div>
+                </div>
+
+                <!-- 发帖权限设置 -->
+                <div class="p-5 rounded-2xl bg-zinc-50 dark:bg-white/[0.03] border border-zinc-200 dark:border-white/5">
+                    <h3 class="font-bold text-sm mb-4">发帖权限</h3>
+                    <div class="space-y-3">
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="radio" name="post-permission" value="all" class="w-4 h-4 text-blue-500 focus:ring-blue-500">
+                            <div>
+                                <p class="text-sm font-bold">所有登录用户</p>
+                                <p class="text-xs text-zinc-400">任何登录的用户都可以发帖</p>
+                            </div>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="radio" name="post-permission" value="invite-only" class="w-4 h-4 text-blue-500 focus:ring-blue-500">
+                            <div>
+                                <p class="text-sm font-bold">仅邀请码用户</p>
+                                <p class="text-xs text-zinc-400">只有使用邀请码注册的用户可以发帖</p>
+                            </div>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="radio" name="post-permission" value="admin" class="w-4 h-4 text-blue-500 focus:ring-blue-500">
+                            <div>
+                                <p class="text-sm font-bold">仅管理员</p>
+                                <p class="text-xs text-zinc-400">只有管理员可以发帖</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 用户管理 -->
+                <div class="p-5 rounded-2xl bg-zinc-50 dark:bg-white/[0.03] border border-zinc-200 dark:border-white/5">
+                    <h3 class="font-bold text-sm mb-4">用户管理</h3>
+                    <div id="users-list" class="space-y-3 max-h-60 overflow-y-auto">
+                        <div class="text-center text-zinc-400 py-4">
+                            <i data-lucide="loader-2" class="animate-spin inline-block mr-2"></i> 加载中...
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6 border-t border-zinc-200 dark:border-white/10 flex justify-end gap-3 flex-shrink-0">
+                <button onclick="hideAdminSettingsModal()" class="px-5 py-2.5 rounded-xl bg-zinc-200 dark:bg-white/10 text-zinc-700 dark:text-white text-sm font-bold hover:bg-zinc-300 dark:hover:bg-white/15 transition-all">取消</button>
+                <button onclick="saveAdminSettings()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-teal-600 text-white text-sm font-bold hover:from-blue-600 hover:to-teal-700 transition-all shadow-lg shadow-blue-500/25">
+                    保存设置
+                </button>
             </div>
         </div>
     </div>
@@ -463,7 +578,7 @@
                 <p class="text-xs text-zinc-400">发布后可在评论区补充说明</p>
                 <div class="flex gap-3">
                     <button onclick="hideNewPostModal()" class="px-5 py-2.5 rounded-xl bg-zinc-200 dark:bg-white/10 text-zinc-700 dark:text-white text-sm font-bold hover:bg-zinc-300 dark:hover:bg-white/15 transition-all">取消</button>
-                    <button onclick="submitPost()" id="submit-btn" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-purple-600 text-white text-sm font-bold hover:from-brand-600 hover:to-purple-700 transition-all shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40">
+                    <button onclick="submitPost()" id="submit-btn" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-purple-600 text-white text-sm font-bold hover:from-brand-600 hover:to-purple-700 transition-all shadow-lg shadow-blue-500/25 hover:shadow-brand-500/40">
                         发布帖子
                     </button>
                 </div>
@@ -474,7 +589,7 @@
     <!-- Main Content -->
     <main class="pt-20 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <!-- Hero Section -->
-        <div class="relative mb-10 p-8 md:p-12 rounded-3xl bg-gradient-to-br from-brand-500 via-purple-500 to-pink-500 overflow-hidden shimmer">
+        <div class="relative mb-10 p-8 md:p-12 rounded-3xl bg-gradient-to-br from-blue-500 via-teal-500 to-green-500 overflow-hidden shimmer">
             <div class="absolute inset-0 bg-black/10"></div>
             <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-32 translate-x-32"></div>
             <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-24 -translate-x-24"></div>
@@ -564,7 +679,7 @@
                     <input type="text" id="search-input" onkeyup="searchPosts()" class="w-full sm:w-64 pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all text-sm" placeholder="搜索帖子、标签...">
                     <i data-lucide="search" size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400"></i>
                 </div>
-                <button onclick="showNewPostModal()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-purple-600 text-white text-xs font-bold hover:from-brand-600 hover:to-purple-700 transition-all shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40 flex items-center gap-2 flex-shrink-0">
+                <button onclick="showNewPostModal()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-purple-600 text-white text-xs font-bold hover:from-brand-600 hover:to-purple-700 transition-all shadow-lg shadow-blue-500/25 hover:shadow-brand-500/40 flex items-center gap-2 flex-shrink-0">
                     <i data-lucide="plus" size="14"></i>
                     发帖
                 </button>
@@ -604,7 +719,7 @@
             <div class="p-4 border-t border-zinc-200 dark:border-white/10 flex-shrink-0 bg-zinc-50 dark:bg-white/[0.02]">
                 <div class="flex gap-3">
                     <input type="text" id="comment-input" class="flex-1 px-4 py-3 rounded-xl bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all text-sm" placeholder="写下你的评论... (Enter 发送)">
-                    <button onclick="submitComment()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-brand-500 to-purple-600 text-white text-sm font-bold hover:from-brand-600 hover:to-purple-700 transition-all shadow-lg shadow-brand-500/25">
+                    <button onclick="submitComment()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-brand-500 to-purple-600 text-white text-sm font-bold hover:from-brand-600 hover:to-purple-700 transition-all shadow-lg shadow-blue-500/25">
                         发送
                     </button>
                 </div>
@@ -707,7 +822,7 @@
                 loginBtn.classList.add('hidden');
                 userMenu.classList.remove('hidden');
 
-                const avatar = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email)}&background=6366f1&color=fff`;
+                const avatar = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email)}&background=10b981&color=fff`;
                 document.getElementById('user-avatar').src = avatar;
                 document.getElementById('user-name').textContent = user.displayName || user.email.split('@')[0];
 
@@ -724,11 +839,226 @@
                     photoURL: user.photoURL,
                     lastSeen: firebase.firestore.FieldValue.serverTimestamp()
                 }, { merge: true });
+
+                // 检查是否是 ITLab 社区管理员
+                try {
+                    const itlabUserDoc = await db.collection('itlab_users').doc(user.uid).get();
+                    if (itlabUserDoc.exists && itlabUserDoc.data().isAdmin) {
+                        document.getElementById('admin-link').classList.remove('hidden');
+                    }
+                } catch (e) {}
             } else {
                 loginBtn.classList.remove('hidden');
                 userMenu.classList.add('hidden');
             }
         });
+
+        // ========== 用户名修改 ==========
+        function showEditUsernameModal() {
+            if (!currentUser) { showLoginModal(); return; }
+            document.getElementById('edit-username-modal').classList.remove('hidden');
+            document.getElementById('current-username').textContent = currentUser.displayName || currentUser.email.split('@')[0];
+            document.getElementById('new-username').value = '';
+            document.getElementById('username-error').classList.add('hidden');
+            hideUserMenu();
+        }
+
+        function hideEditUsernameModal() {
+            document.getElementById('edit-username-modal').classList.add('hidden');
+        }
+
+        async function updateUsername() {
+            const newUsername = document.getElementById('new-username').value.trim();
+            const errorDiv = document.getElementById('username-error');
+
+            if (!newUsername) {
+                errorDiv.textContent = '请输入新用户名';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            if (newUsername.length < 2 || newUsername.length > 20) {
+                errorDiv.textContent = '用户名长度需要在 2-20 个字符之间';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                // 更新 Firebase Auth 用户资料
+                await currentUser.updateProfile({ displayName: newUsername });
+
+                // 更新 Firestore 用户文档
+                await db.collection('itlab_users').doc(currentUser.uid).update({
+                    displayName: newUsername,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // 更新 UI
+                document.getElementById('user-name').textContent = newUsername;
+
+                hideEditUsernameModal();
+                alert('用户名修改成功！');
+            } catch (e) {
+                errorDiv.textContent = '修改失败: ' + e.message;
+                errorDiv.classList.remove('hidden');
+            }
+        }
+
+        // ========== 管理员设置 ==========
+        let isAdmin = false;
+
+        function showAdminSettingsModal() {
+            if (!currentUser) { showLoginModal(); return; }
+            document.getElementById('admin-settings-modal').classList.remove('hidden');
+            hideUserMenu();
+            loadAdminSettings();
+        }
+
+        function hideAdminSettingsModal() {
+            document.getElementById('admin-settings-modal').classList.add('hidden');
+        }
+
+        async function loadAdminSettings() {
+            try {
+                // 加载设置
+                const settingsDoc = await db.collection('itlab_settings').doc('general').get();
+                if (settingsDoc.exists) {
+                    const settings = settingsDoc.data();
+                    document.getElementById('setting-require-invite').checked = settings.requireInviteCode || false;
+                    document.querySelector(`input[name="post-permission"][value="${settings.postPermission || 'all'}"]`).checked = true;
+
+                    if (settings.requireInviteCode) {
+                        document.getElementById('invite-code-management').classList.remove('hidden');
+                    }
+                }
+
+                // 加载用户列表
+                const usersSnapshot = await db.collection('itlab_users').orderBy('lastSeen', 'desc').limit(50).get();
+                const usersList = document.getElementById('users-list');
+
+                if (usersSnapshot.empty) {
+                    usersList.innerHTML = '<div class="text-center text-zinc-400 py-4 text-sm">暂无用户</div>';
+                    return;
+                }
+
+                let html = '';
+                usersSnapshot.forEach(doc => {
+                    const user = doc.data();
+                    const isUserAdmin = user.isAdmin || false;
+                    html += `
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-white dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5">
+                            <div class="flex items-center gap-3">
+                                <img src="${user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || 'U')}&background=10b981&color=fff`}" alt="" class="w-8 h-8 rounded-lg">
+                                <div>
+                                    <p class="text-sm font-bold">${user.displayName || '-'}</p>
+                                    <p class="text-xs text-zinc-400">${user.email || '-'}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                ${isUserAdmin ? '<span class="px-2 py-1 rounded text-[10px] font-bold bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">管理员</span>' : ''}
+                                <button onclick="toggleUserAdmin('${doc.id}', ${isUserAdmin})" class="px-3 py-1.5 rounded-lg text-[10px] font-bold ${isUserAdmin ? 'bg-zinc-100 dark:bg-white/10 text-zinc-500' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'} hover:scale-[1.02] transition-all">
+                                    ${isUserAdmin ? '取消管理员' : '设为管理员'}
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                usersList.innerHTML = html;
+                lucide.createIcons();
+            } catch (e) {
+                console.error('Failed to load admin settings:', e);
+                alert('加载设置失败: ' + e.message);
+            }
+        }
+
+        // 邀请码开关事件
+        document.getElementById('setting-require-invite').addEventListener('change', (e) => {
+            const inviteManagement = document.getElementById('invite-code-management');
+            if (e.target.checked) {
+                inviteManagement.classList.remove('hidden');
+            } else {
+                inviteManagement.classList.add('hidden');
+            }
+        });
+
+        async function generateInviteCodes() {
+            const count = parseInt(document.getElementById('invite-count').value) || 10;
+            const codesContainer = document.getElementById('generated-codes');
+
+            try {
+                const codes = [];
+                const batch = db.batch();
+
+                for (let i = 0; i < count; i++) {
+                    const code = generateRandomCode(8);
+                    const ref = db.collection('itlab_invitations').doc(code);
+                    batch.set(ref, {
+                        code,
+                        isUsed: false,
+                        createdBy: currentUser.uid,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    codes.push(code);
+                }
+
+                await batch.commit();
+
+                codesContainer.innerHTML = `
+                    <div class="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+                        <p class="text-xs font-bold text-green-600 dark:text-green-400 mb-2">成功生成 ${count} 个邀请码：</p>
+                        <div class="flex flex-wrap gap-2">
+                            ${codes.map(code => `<code class="px-2 py-1 rounded bg-white dark:bg-white/10 text-xs font-mono">${code}</code>`).join('')}
+                        </div>
+                    </div>
+                `;
+            } catch (e) {
+                codesContainer.innerHTML = `<div class="text-red-500 text-xs">生成失败: ${e.message}</div>`;
+            }
+        }
+
+        function generateRandomCode(length) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        async function toggleUserAdmin(userId, currentIsAdmin) {
+            try {
+                await db.collection('itlab_users').doc(userId).update({
+                    isAdmin: !currentIsAdmin,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                loadAdminSettings();
+            } catch (e) {
+                alert('更新失败: ' + e.message);
+            }
+        }
+
+        async function saveAdminSettings() {
+            const requireInvite = document.getElementById('setting-require-invite').checked;
+            const postPermission = document.querySelector('input[name="post-permission"]:checked').value;
+
+            try {
+                await db.collection('itlab_settings').doc('general').set({
+                    requireInviteCode: requireInvite,
+                    postPermission,
+                    updatedBy: currentUser.uid,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+
+                hideAdminSettingsModal();
+                alert('设置保存成功！');
+            } catch (e) {
+                alert('保存失败: ' + e.message);
+            }
+        }
+
+        function hideUserMenu() {
+            document.getElementById('user-dropdown').classList.add('hidden');
+        }
 
         function showNewPostModal() {
             if (!currentUser) { showLoginModal(); return; }
@@ -807,6 +1137,29 @@
             if (!selectedCategory) { alert('请选择分类'); return; }
             if (!content) { alert('请输入内容'); return; }
 
+            // 检查发帖权限
+            try {
+                const settingsDoc = await db.collection('itlab_settings').doc('general').get();
+                if (settingsDoc.exists) {
+                    const settings = settingsDoc.data();
+                    const postPermission = settings.postPermission || 'all';
+
+                    if (postPermission === 'admin') {
+                        // 检查是否是管理员
+                        const userDoc = await db.collection('itlab_users').doc(currentUser.uid).get();
+                        if (!userDoc.exists || !userDoc.data().isAdmin) {
+                            alert('只有管理员可以发帖');
+                            return;
+                        }
+                    } else if (postPermission === 'invite-only') {
+                        // 检查是否使用邀请码注册（这里简化处理，实际可以检查用户注册方式）
+                        // 暂时允许所有用户发帖
+                    }
+                }
+            } catch (e) {
+                console.warn('Failed to check post permission:', e);
+            }
+
             const submitBtn = document.getElementById('submit-btn');
             submitBtn.disabled = true;
             submitBtn.textContent = '发布中...';
@@ -816,7 +1169,7 @@
                     title, content, category: selectedCategory, tags,
                     authorId: currentUser.uid,
                     authorName: currentUser.displayName || currentUser.email.split('@')[0],
-                    authorAvatar: currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.displayName || currentUser.email)}&background=6366f1&color=fff`,
+                    authorAvatar: currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.displayName || currentUser.email)}&background=10b981&color=fff`,
                     likes: 0, likedBy: [], commentCount: 0,
                     isPinned: false, isFeatured: false,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -1133,7 +1486,7 @@
                     postId: currentPostId, content,
                     authorId: currentUser.uid,
                     authorName: currentUser.displayName || currentUser.email.split('@')[0],
-                    authorAvatar: currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.displayName || currentUser.email)}&background=6366f1&color=fff`,
+                    authorAvatar: currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.displayName || currentUser.email)}&background=10b981&color=fff`,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 await db.collection('itlab_posts').doc(currentPostId).update({ commentCount: firebase.firestore.FieldValue.increment(1) });
