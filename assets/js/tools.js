@@ -776,7 +776,6 @@ window.ToolHandlers = {
                 try {
                     const snapshot = await firebaseDB.collection('messages')
                         .orderBy('createdAt', 'desc')
-                        .limit(50)
                         .get();
 
                     const messages = [];
@@ -784,10 +783,13 @@ window.ToolHandlers = {
                         messages.push({ id: doc.id, ...doc.data() });
                     });
 
-                    if (messages.length === 0) {
+                    // 限制显示最近 50 条
+                    const displayMessages = messages.slice(0, 50);
+
+                    if (displayMessages.length === 0) {
                         list.innerHTML = `<div class="text-center text-zinc-400 py-10 text-xs font-black uppercase tracking-widest">暂无留言，快来抢沙发吧！</div>`;
                     } else {
-                        list.innerHTML = messages.map(m => `
+                        list.innerHTML = displayMessages.map(m => `
                             <div class="flex flex-col gap-1 p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-white/5 shadow-sm">
                                 <div class="flex items-center justify-between">
                                     <span class="text-[10px] font-black uppercase tracking-widest ${m.isAdmin ? 'text-blue-500' : 'text-zinc-500'}">${m.username || 'Anonymous'} ${m.isAdmin ? '<i data-lucide="badge-check" size="10" class="inline"></i>' : ''}</span>
