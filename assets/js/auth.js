@@ -125,9 +125,9 @@ async function firebaseRegister() {
     }
 }
 
-// Google 登录
-async function firebaseGoogleLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider();
+// GitHub 登录
+async function firebaseGithubLogin() {
+    const provider = new firebase.auth.GithubAuthProvider();
 
     try {
         const result = await auth.signInWithPopup(provider);
@@ -142,17 +142,18 @@ async function firebaseGoogleLogin() {
                 email: user.email,
                 displayName: user.displayName,
                 photoURL: user.photoURL,
+                githubUsername: user.reloadUserInfo?.screenName || '',
                 role: 'user',
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
         }
 
         hideLoginModal();
-        console.log('Google 登录成功:', user.email);
+        console.log('GitHub 登录成功:', user.email || user.displayName);
     } catch (error) {
-        console.error('Google 登录失败:', error);
+        console.error('GitHub 登录失败:', error);
         if (error.code !== 'auth/popup-closed-by-user') {
-            showLoginError('Google 登录失败: ' + error.message);
+            showLoginError('GitHub 登录失败: ' + error.message);
         }
     }
 }
@@ -178,5 +179,5 @@ window.showLoginModal = showLoginModal;
 window.hideLoginModal = hideLoginModal;
 window.firebaseLogin = firebaseLogin;
 window.firebaseRegister = firebaseRegister;
-window.firebaseGoogleLogin = firebaseGoogleLogin;
+window.firebaseGithubLogin = firebaseGithubLogin;
 window.firebaseLogout = firebaseLogout;
