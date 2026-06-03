@@ -316,16 +316,76 @@
                 <!-- Right side -->
                 <div class="flex items-center gap-3">
                     <!-- Stats -->
-                    <div class="hidden md:flex items-center gap-5 mr-2">
+                    <div class="hidden lg:flex items-center gap-4 mr-2">
                         <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800">
                             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                             <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400" id="online-count">-</span>
                             <span class="text-[10px] text-emerald-500">在线</span>
                         </div>
-                        <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-800">
-                            <i data-lucide="message-square" size="12" class="text-brand-500"></i>
-                            <span class="text-xs font-bold text-brand-600 dark:text-brand-400" id="total-posts">-</span>
-                            <span class="text-[10px] text-brand-500">帖子</span>
+                        <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+                            <i data-lucide="message-square" size="12" class="text-blue-500"></i>
+                            <span class="text-xs font-bold text-blue-600 dark:text-blue-400" id="total-posts">-</span>
+                            <span class="text-[10px] text-blue-500">帖子</span>
+                        </div>
+                        <!-- Weather Widget -->
+                        <div id="weather-widget" class="hidden relative">
+                            <button onclick="toggleWeatherDropdown()" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-sky-50 dark:bg-sky-900/20 border border-sky-200 dark:border-sky-800 hover:border-sky-400 transition-all">
+                                <i data-lucide="cloud-sun" size="14" class="text-sky-500"></i>
+                                <span class="text-xs font-bold text-sky-600 dark:text-sky-400" id="weather-temp">--°</span>
+                                <span class="text-[10px] text-sky-500 hidden xl:inline" id="weather-city">镇江</span>
+                            </button>
+                            <!-- Weather Dropdown -->
+                            <div id="weather-dropdown" class="hidden absolute right-0 top-full mt-2 w-72 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+                                <div class="p-4 bg-gradient-to-br from-sky-500 to-blue-600 text-white">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <div>
+                                            <p class="text-lg font-bold" id="dropdown-city">镇江市</p>
+                                            <p class="text-xs opacity-80" id="dropdown-province">江苏省</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-3xl font-bold" id="dropdown-temp">--°</p>
+                                            <p class="text-xs opacity-80" id="dropdown-text">加载中...</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-4 text-xs opacity-80">
+                                        <span id="dropdown-wind">-- --</span>
+                                        <span>湿度 <span id="dropdown-humidity">--%</span></span>
+                                    </div>
+                                </div>
+                                <div class="p-4 space-y-3">
+                                    <div class="grid grid-cols-2 gap-3 text-xs">
+                                        <div class="flex items-center gap-2">
+                                            <i data-lucide="thermometer" size="14" class="text-orange-500"></i>
+                                            <span class="text-zinc-500">体感</span>
+                                            <span class="font-bold" id="dropdown-feels-like">--°</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <i data-lucide="eye" size="14" class="text-blue-500"></i>
+                                            <span class="text-zinc-500">能见度</span>
+                                            <span class="font-bold" id="dropdown-vis">--km</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <i data-lucide="gauge" size="14" class="text-purple-500"></i>
+                                            <span class="text-zinc-500">气压</span>
+                                            <span class="font-bold" id="dropdown-pressure">--hPa</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <i data-lucide="droplets" size="14" class="text-cyan-500"></i>
+                                            <span class="text-zinc-500">降水</span>
+                                            <span class="font-bold" id="dropdown-precip">--mm</span>
+                                        </div>
+                                    </div>
+                                    <div class="pt-2 border-t border-zinc-200 dark:border-white/10">
+                                        <div class="flex items-center gap-2">
+                                            <input type="text" id="weather-city-input" class="flex-1 px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-sky-500 text-xs" placeholder="输入城市名称" value="镇江">
+                                            <button onclick="fetchWeather()" class="px-3 py-1.5 rounded-lg bg-sky-500 text-white text-xs font-bold hover:bg-sky-600 transition-colors">
+                                                查询
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <p class="text-[10px] text-zinc-400 text-center" id="weather-update-time">数据更新于 --</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -903,6 +963,252 @@
                 errorDiv.classList.remove('hidden');
             }
         }
+
+        // ========== 天气功能 ==========
+        // Cloud Function URL - 部署后需要更新这个地址
+        const WEATHER_FUNCTION_URL = 'https://getWeather-xxxxxxxxxx-uc.a.run.app'; // TODO: 部署后更新
+
+        let weatherDropdownOpen = false;
+        let weatherCache = null;
+        let weatherCacheTime = null;
+        const WEATHER_CACHE_DURATION = 60 * 60 * 1000; // 1小时缓存
+
+        // 初始化天气功能
+        async function initWeather() {
+            // 显示天气组件
+            document.getElementById('weather-widget').classList.remove('hidden');
+
+            // 从本地缓存加载
+            const cached = localStorage.getItem('itlab_weather');
+            if (cached) {
+                try {
+                    const { data, time, city } = JSON.parse(cached);
+                    const age = Date.now() - time;
+                    if (age < WEATHER_CACHE_DURATION) {
+                        weatherCache = data;
+                        weatherCacheTime = time;
+                        updateWeatherUI(data, city);
+                        return;
+                    }
+                } catch (e) {}
+            }
+
+            // 请求新数据
+            await fetchWeather();
+        }
+
+        async function fetchWeather() {
+            const cityInput = document.getElementById('weather-city-input');
+            const city = cityInput ? cityInput.value.trim() || '镇江' : '镇江';
+
+            // 检查本地缓存
+            if (weatherCache && weatherCacheTime) {
+                const age = Date.now() - weatherCacheTime;
+                if (age < WEATHER_CACHE_DURATION) {
+                    updateWeatherUI(weatherCache, city);
+                    return;
+                }
+            }
+
+            try {
+                // 尝试调用 Cloud Function
+                let data = null;
+
+                // 方式1：通过 HTTP 调用
+                try {
+                    const response = await fetch(`${WEATHER_FUNCTION_URL}?city=${encodeURIComponent(city)}`);
+                    const result = await response.json();
+                    if (result.success) {
+                        data = result.data;
+                    }
+                } catch (e) {
+                    console.warn('Cloud Function 调用失败，尝试 Firestore 缓存:', e);
+                }
+
+                // 方式2：从 Firestore 读取缓存
+                if (!data) {
+                    try {
+                        const cacheDoc = await db.collection('weather_cache').doc(city).get();
+                        if (cacheDoc.exists) {
+                            data = cacheDoc.data().weatherData;
+                        }
+                    } catch (e) {
+                        console.warn('Firestore 缓存读取失败:', e);
+                    }
+                }
+
+                // 方式3：使用默认数据
+                if (!data) {
+                    data = getDefaultWeatherData(city);
+                }
+
+                // 更新缓存
+                weatherCache = data;
+                weatherCacheTime = Date.now();
+
+                // 保存到本地存储
+                localStorage.setItem('itlab_weather', JSON.stringify({
+                    data: data,
+                    time: Date.now(),
+                    city: city,
+                }));
+
+                updateWeatherUI(data, city);
+            } catch (e) {
+                console.error('获取天气数据失败:', e);
+                // 使用默认数据
+                updateWeatherUI(getDefaultWeatherData(city), city);
+            }
+        }
+
+        function getDefaultWeatherData(city) {
+            return {
+                cityData: {
+                    name: city,
+                    province: '江苏省',
+                },
+                weatherData: {
+                    temp: '--',
+                    feelsLike: '--',
+                    text: '暂无数据',
+                    windDir: '--',
+                    windScale: '--',
+                    humidity: '--',
+                    vis: '--',
+                    pressure: '--',
+                    precip: '--',
+                    icon: '999',
+                },
+            };
+        }
+
+        function updateWeatherUI(data, city) {
+            const { cityData, weatherData } = data;
+
+            // Header 小组件
+            document.getElementById('weather-temp').textContent = `${weatherData.temp}°`;
+            document.getElementById('weather-city').textContent = cityData?.name || city;
+
+            // 下拉面板
+            document.getElementById('dropdown-city').textContent = cityData?.name || city;
+            document.getElementById('dropdown-province').textContent = cityData?.province || '';
+            document.getElementById('dropdown-temp').textContent = `${weatherData.temp}°`;
+            document.getElementById('dropdown-text').textContent = weatherData.text;
+            document.getElementById('dropdown-wind').textContent = `${weatherData.windDir} ${weatherData.windScale}级`;
+            document.getElementById('dropdown-humidity').textContent = `${weatherData.humidity}%`;
+            document.getElementById('dropdown-feels-like').textContent = `${weatherData.feelsLike}°`;
+            document.getElementById('dropdown-vis').textContent = `${weatherData.vis}km`;
+            document.getElementById('dropdown-pressure').textContent = `${weatherData.pressure}hPa`;
+            document.getElementById('dropdown-precip').textContent = `${weatherData.precip}mm`;
+
+            // 更新时间
+            const now = new Date();
+            document.getElementById('weather-update-time').textContent = `数据更新于 ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+            // 更新图标
+            updateWeatherIcon(weatherData.icon);
+
+            lucide.createIcons();
+        }
+
+        function updateWeatherIcon(iconCode) {
+            const iconElement = document.querySelector('#weather-widget > button > i');
+            if (!iconElement) return;
+
+            // 根据和风天气图标代码选择图标
+            const iconMap = {
+                '100': 'sun',           // 晴
+                '101': 'cloud-sun',     // 多云
+                '102': 'cloud-sun',     // 少云
+                '103': 'cloud',         // 晴间多云
+                '104': 'cloud',         // 阴
+                '200': 'wind',          // 有风
+                '201': 'wind',          // 平静
+                '202': 'wind',          // 微风
+                '203': 'wind',          // 和风
+                '204': 'wind',          // 清风
+                '205': 'wind',          // 强风
+                '206': 'wind',          // 疾风
+                '207': 'wind',          // 大风
+                '208': 'wind',          // 烈风
+                '209': 'wind',          // 风暴
+                '210': 'wind',          // 狂爆风
+                '211': 'wind',          // 飓风
+                '212': 'wind',          // 龙卷风
+                '213': 'wind',          // 热带风暴
+                '300': 'cloud-drizzle', // 阵雨
+                '301': 'cloud-drizzle', // 强阵雨
+                '302': 'cloud-lightning', // 雷阵雨
+                '303': 'cloud-lightning', // 强雷阵雨
+                '304': 'cloud-lightning', // 雷阵雨伴有冰雹
+                '305': 'cloud-rain',    // 小雨
+                '306': 'cloud-rain',    // 中雨
+                '307': 'cloud-rain',    // 大雨
+                '308': 'cloud-rain',    // 极端降雨
+                '309': 'cloud-drizzle', // 毛毛雨
+                '310': 'cloud-rain',    // 暴雨
+                '311': 'cloud-rain',    // 大暴雨
+                '312': 'cloud-rain',    // 特大暴雨
+                '313': 'cloud-rain',    // 冻雨
+                '400': 'snowflake',     // 小雪
+                '401': 'snowflake',     // 中雪
+                '402': 'snowflake',     // 大雪
+                '403': 'snowflake',     // 暴雪
+                '404': 'cloud-snow',    // 雨夹雪
+                '405': 'cloud-snow',    // 雨雪天气
+                '406': 'cloud-snow',    // 阵雨夹雪
+                '407': 'cloud-snow',    // 阵雪
+                '408': 'snowflake',     // 小到中雪
+                '409': 'snowflake',     // 中到大雪
+                '410': 'snowflake',     // 大到暴雪
+                '500': 'cloud-fog',     // 薄雾
+                '501': 'cloud-fog',     // 雾
+                '502': 'cloud-fog',     // 霾
+                '503': 'cloud-fog',     // 扬沙
+                '504': 'cloud-fog',     // 浮尘
+                '507': 'cloud-fog',     // 沙尘暴
+                '508': 'cloud-fog',     // 强沙尘暴
+                '900': 'thermometer',   // 热
+                '901': 'thermometer',   // 冷
+                '999': 'cloud-question', // 未知
+            };
+
+            const iconName = iconMap[iconCode] || 'cloud-sun';
+            iconElement.setAttribute('data-lucide', iconName);
+        }
+
+        function toggleWeatherDropdown() {
+            weatherDropdownOpen = !weatherDropdownOpen;
+            const dropdown = document.getElementById('weather-dropdown');
+            if (weatherDropdownOpen) {
+                dropdown.classList.remove('hidden');
+                dropdown.classList.add('animate-fade-in-up');
+            } else {
+                dropdown.classList.add('hidden');
+            }
+        }
+
+        // 点击外部关闭天气下拉菜单
+        document.addEventListener('click', (e) => {
+            const widget = document.getElementById('weather-widget');
+            if (widget && !widget.contains(e.target)) {
+                weatherDropdownOpen = false;
+                document.getElementById('weather-dropdown').classList.add('hidden');
+            }
+        });
+
+        // Enter 键查询天气
+        document.addEventListener('DOMContentLoaded', () => {
+            const cityInput = document.getElementById('weather-city-input');
+            if (cityInput) {
+                cityInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        fetchWeather();
+                    }
+                });
+            }
+        });
 
         // ========== 管理员设置 ==========
         let isAdmin = false;
@@ -1537,6 +1843,7 @@
             loadStats();
             updateOnlineCount();
             setInterval(updateOnlineCount, 30000);
+            initWeather(); // 初始化天气
         });
 
         document.addEventListener('keydown', (e) => {
