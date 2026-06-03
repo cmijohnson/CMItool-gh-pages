@@ -105,6 +105,9 @@
                         <i data-lucide="chevron-down" size="12" class="text-zinc-400"></i>
                     </button>
                     <div id="user-dropdown" class="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-black border border-zinc-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden hidden animate-fade-in-up origin-top-right" onmouseenter="cancelHideDropdown()" onmouseleave="hideUserDropdown()">
+                        <div id="admin-menu-item" class="hidden">
+                            <a href="javascript:void(0)" onclick="openTool('admin-panel')" class="block px-4 py-3 text-xs font-bold hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors border-b border-zinc-100 dark:border-white/5 text-blue-500">管理后台</a>
+                        </div>
                         <a href="javascript:void(0)" onclick="openTool('message-board')" class="block px-4 py-3 text-xs font-bold hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors border-b border-zinc-100 dark:border-white/5">我的留言</a>
                         <a href="javascript:void(0)" onclick="firebaseLogout()" class="block px-4 py-3 text-xs font-bold hover:bg-red-50 dark:hover:bg-red-900/10 text-red-500 transition-colors">退出登录</a>
                     </div>

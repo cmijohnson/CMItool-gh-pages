@@ -46,11 +46,12 @@ function hideLoginModal() {
 }
 
 // 更新 UI 显示用户状态
-function updateAuthUI(user) {
+async function updateAuthUI(user) {
     const userMenu = document.getElementById('user-menu');
     const loginBtn = document.getElementById('login-btn');
     const userAvatar = document.getElementById('user-avatar');
     const userName = document.getElementById('user-name');
+    const adminMenuItem = document.getElementById('admin-menu-item');
 
     if (user) {
         // 用户已登录
@@ -64,11 +65,31 @@ function updateAuthUI(user) {
 
         // 保存用户状态到全局
         window.currentUser = user;
+
+        // 检查用户角色
+        try {
+            const userDoc = await firebaseDB.collection('users').doc(user.uid).get();
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                window.currentUserRole = userData.role || 'user';
+
+                // 如果是管理员，显示管理后台菜单
+                if (userData.role === 'admin') {
+                    adminMenuItem.classList.remove('hidden');
+                } else {
+                    adminMenuItem.classList.add('hidden');
+                }
+            }
+        } catch (e) {
+            console.error('获取用户角色失败:', e);
+        }
     } else {
         // 用户未登录
         userMenu.classList.add('hidden');
         loginBtn.classList.remove('hidden');
+        adminMenuItem.classList.add('hidden');
         window.currentUser = null;
+        window.currentUserRole = null;
     }
 }
 

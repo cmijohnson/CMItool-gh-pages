@@ -936,6 +936,265 @@ window.ToolHandlers = {
         }
     },
 
+    'admin-panel': {
+        render: async (container) => {
+            // 检查权限
+            if (!window.currentUser || window.currentUserRole !== 'admin') {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full text-zinc-500">
+                        <i data-lucide="shield-off" size="48" class="mb-4 text-red-300 dark:text-red-700"></i>
+                        <h3 class="text-xl font-black uppercase tracking-widest mb-2">Access Denied</h3>
+                        <p class="text-xs">您没有管理员权限</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="p-4 rounded-2xl bg-blue-600 text-white shadow-xl shadow-blue-500/20">
+                            <i data-lucide="shield-check" size="32"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-3xl font-black text-zinc-900 dark:text-white">管理后台</h2>
+                            <p class="text-sm text-zinc-500">Admin Dashboard</p>
+                        </div>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8" id="admin-stats">
+                        <div class="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 shadow-sm">
+                            <div class="flex items-center gap-3 mb-2">
+                                <i data-lucide="users" size="20" class="text-blue-500"></i>
+                                <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest">用户总数</span>
+                            </div>
+                            <div id="stat-users" class="text-3xl font-black text-zinc-900 dark:text-white">-</div>
+                        </div>
+                        <div class="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 shadow-sm">
+                            <div class="flex items-center gap-3 mb-2">
+                                <i data-lucide="message-square" size="20" class="text-green-500"></i>
+                                <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest">留言总数</span>
+                            </div>
+                            <div id="stat-messages" class="text-3xl font-black text-zinc-900 dark:text-white">-</div>
+                        </div>
+                        <div class="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 shadow-sm">
+                            <div class="flex items-center gap-3 mb-2">
+                                <i data-lucide="wrench" size="20" class="text-purple-500"></i>
+                                <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest">工具总数</span>
+                            </div>
+                            <div id="stat-tools" class="text-3xl font-black text-zinc-900 dark:text-white">-</div>
+                        </div>
+                    </div>
+
+                    <!-- Users List -->
+                    <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10 shadow-sm overflow-hidden mb-8">
+                        <div class="p-6 border-b border-zinc-200 dark:border-white/10">
+                            <h3 class="text-lg font-black text-zinc-900 dark:text-white flex items-center gap-2">
+                                <i data-lucide="users" size="20"></i> 用户管理
+                            </h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="bg-zinc-50 dark:bg-zinc-800/50">
+                                        <th class="px-6 py-3 text-left text-xs font-bold text-zinc-500 uppercase tracking-widest">用户</th>
+                                        <th class="px-6 py-3 text-left text-xs font-bold text-zinc-500 uppercase tracking-widest">邮箱</th>
+                                        <th class="px-6 py-3 text-left text-xs font-bold text-zinc-500 uppercase tracking-widest">角色</th>
+                                        <th class="px-6 py-3 text-left text-xs font-bold text-zinc-500 uppercase tracking-widest">注册时间</th>
+                                        <th class="px-6 py-3 text-left text-xs font-bold text-zinc-500 uppercase tracking-widest">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-users-list">
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-10 text-center text-zinc-400">
+                                            <i data-lucide="loader-2" class="animate-spin inline-block mr-2"></i> 加载中...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Messages Management -->
+                    <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10 shadow-sm overflow-hidden">
+                        <div class="p-6 border-b border-zinc-200 dark:border-white/10 flex items-center justify-between">
+                            <h3 class="text-lg font-black text-zinc-900 dark:text-white flex items-center gap-2">
+                                <i data-lucide="message-square" size="20"></i> 留言管理
+                            </h3>
+                            <button onclick="adminDeleteAllMessages()" class="px-4 py-2 rounded-xl bg-red-500 text-white text-xs font-bold hover:bg-red-600 transition-colors">
+                                清空所有留言
+                            </button>
+                        </div>
+                        <div id="admin-messages-list" class="p-6 space-y-4 max-h-96 overflow-y-auto">
+                            <div class="text-center text-zinc-400 py-10">
+                                <i data-lucide="loader-2" class="animate-spin inline-block mr-2"></i> 加载中...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            lucide.createIcons();
+
+            // 加载统计数据
+            async function loadStats() {
+                try {
+                    // 用户数
+                    const usersSnapshot = await firebaseDB.collection('users').get();
+                    document.getElementById('stat-users').textContent = usersSnapshot.size;
+
+                    // 留言数
+                    const messagesSnapshot = await firebaseDB.collection('messages').get();
+                    document.getElementById('stat-messages').textContent = messagesSnapshot.size;
+
+                    // 工具数
+                    const toolsSnapshot = await firebaseDB.collection('tools').get();
+                    document.getElementById('stat-tools').textContent = toolsSnapshot.size || (window.CMI_TOOLS ? window.CMI_TOOLS.length : 0);
+                } catch (e) {
+                    console.error('加载统计失败:', e);
+                }
+            }
+
+            // 加载用户列表
+            async function loadUsers() {
+                try {
+                    const snapshot = await firebaseDB.collection('users').orderBy('createdAt', 'desc').get();
+                    const usersList = document.getElementById('admin-users-list');
+
+                    if (snapshot.empty) {
+                        usersList.innerHTML = '<tr><td colspan="5" class="px-6 py-10 text-center text-zinc-400">暂无用户</td></tr>';
+                        return;
+                    }
+
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        const user = doc.data();
+                        const date = user.createdAt ? new Date(user.createdAt.toDate()).toLocaleDateString() : '-';
+                        const isAdmin = user.role === 'admin';
+                        html += `
+                            <tr class="border-b border-zinc-100 dark:border-white/5 hover:bg-zinc-50 dark:hover:bg-white/5">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold">
+                                            ${(user.displayName || user.email || 'U').charAt(0).toUpperCase()}
+                                        </div>
+                                        <span class="text-sm font-bold">${user.displayName || '-'}</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-zinc-500">${user.email || '-'}</td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest ${isAdmin ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-zinc-100 text-zinc-500 dark:bg-white/10 dark:text-zinc-400'}">
+                                        ${isAdmin ? 'Admin' : 'User'}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-zinc-400">${date}</td>
+                                <td class="px-6 py-4">
+                                    <button onclick="adminToggleRole('${doc.id}', '${user.role}')" class="text-xs font-bold text-blue-500 hover:text-blue-600 transition-colors">
+                                        ${isAdmin ? '取消管理员' : '设为管理员'}
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    usersList.innerHTML = html;
+                } catch (e) {
+                    console.error('加载用户列表失败:', e);
+                    document.getElementById('admin-users-list').innerHTML = '<tr><td colspan="5" class="px-6 py-10 text-center text-red-400">加载失败</td></tr>';
+                }
+            }
+
+            // 加载留言列表
+            async function loadMessages() {
+                try {
+                    const snapshot = await firebaseDB.collection('messages').orderBy('createdAt', 'desc').limit(50).get();
+                    const messagesList = document.getElementById('admin-messages-list');
+
+                    if (snapshot.empty) {
+                        messagesList.innerHTML = '<div class="text-center text-zinc-400 py-10">暂无留言</div>';
+                        return;
+                    }
+
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        const msg = doc.data();
+                        const date = msg.createdAt ? new Date(msg.createdAt.toDate()).toLocaleString() : '-';
+                        html += `
+                            <div class="flex items-start justify-between p-4 rounded-xl bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="text-xs font-bold text-blue-500">${msg.username || 'Anonymous'}</span>
+                                        ${msg.isAdmin ? '<span class="px-1 py-0.5 rounded text-[8px] font-bold bg-blue-100 text-blue-600">Admin</span>' : ''}
+                                        <span class="text-[10px] text-zinc-400">${date}</span>
+                                    </div>
+                                    <p class="text-sm text-zinc-700 dark:text-zinc-300">${msg.content}</p>
+                                </div>
+                                <button onclick="adminDeleteMessage('${doc.id}')" class="ml-4 p-2 rounded-lg text-red-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                                    <i data-lucide="trash-2" size="16"></i>
+                                </button>
+                            </div>
+                        `;
+                    });
+                    messagesList.innerHTML = html;
+                    lucide.createIcons();
+                } catch (e) {
+                    console.error('加载留言列表失败:', e);
+                    document.getElementById('admin-messages-list').innerHTML = '<div class="text-center text-red-400 py-10">加载失败</div>';
+                }
+            }
+
+            // 初始化加载
+            await loadStats();
+            await loadUsers();
+            await loadMessages();
+
+            // 导出管理员函数
+            window.adminToggleRole = async (userId, currentRole) => {
+                const newRole = currentRole === 'admin' ? 'user' : 'admin';
+                if (!confirm(`确定要将该用户${newRole === 'admin' ? '设为管理员' : '取消管理员'}吗？`)) return;
+
+                try {
+                    await firebaseDB.collection('users').doc(userId).update({ role: newRole });
+                    alert('角色更新成功！');
+                    await loadUsers();
+                    await loadStats();
+                } catch (e) {
+                    alert('更新失败: ' + e.message);
+                }
+            };
+
+            window.adminDeleteMessage = async (messageId) => {
+                if (!confirm('确定要删除这条留言吗？')) return;
+
+                try {
+                    await firebaseDB.collection('messages').doc(messageId).delete();
+                    alert('删除成功！');
+                    await loadMessages();
+                    await loadStats();
+                } catch (e) {
+                    alert('删除失败: ' + e.message);
+                }
+            };
+
+            window.adminDeleteAllMessages = async () => {
+                if (!confirm('确定要清空所有留言吗？此操作不可恢复！')) return;
+
+                try {
+                    const snapshot = await firebaseDB.collection('messages').get();
+                    const batch = firebaseDB.batch();
+                    snapshot.forEach(doc => batch.delete(doc.ref));
+                    await batch.commit();
+                    alert('所有留言已清空！');
+                    await loadMessages();
+                    await loadStats();
+                } catch (e) {
+                    alert('清空失败: ' + e.message);
+                }
+            };
+        }
+    },
+
     'privacy-policy': {
         render: (container) => {
             container.innerHTML = `
