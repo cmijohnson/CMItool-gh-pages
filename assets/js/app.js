@@ -255,7 +255,7 @@ function renderGridView(container, t) {
 
     // Always Update Grid
     const filtered = window.CMI_TOOLS.filter(tool => {
-        if (tool.id === 'privacy-policy' || tool.id === 'team-introduction') return false;
+        if (tool.id === 'privacy-policy' || tool.id === 'team-introduction' || tool.id === 'admin-panel') return false;
         const nameMatch = tool.name[state.language]?.toLowerCase().includes(state.search.toLowerCase());
         const descMatch = tool.description[state.language]?.toLowerCase().includes(state.search.toLowerCase());
         const catMatch = state.category === 'All' || tool.category === state.category;

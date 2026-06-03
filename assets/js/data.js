@@ -343,6 +343,9 @@ const TOOLS = [
     { id: 'message-board', name: { en: 'Message Board', zh: '智链留言板' }, description: { en: 'Share your thoughts.', zh: '留下您的宝贵建议或反馈，与团队直接面对面。' }, icon: 'message-square', category: 'Info', size: 'small', component: 'message-board' },
     { id: 'update-log', name: { en: 'Update Log', zh: '网站更新日志' }, description: { en: 'Track our growth.', zh: '追踪细米兰阁及 CMI 团队项目的最新更新历程。' }, icon: 'history', category: 'Info', size: 'small', component: 'update-log' },
 
+    // Admin
+    { id: 'admin-panel', name: { en: 'Admin Panel', zh: '管理后台' }, description: { en: 'Manage users and content.', zh: '管理用户、留言和系统设置。' }, icon: 'shield-check', category: 'Info', size: 'small', component: 'admin-panel' },
+
     // Special
     { id: 'privacy-policy', name: { en: 'Privacy', zh: '隐私政策' }, description: { en: 'Security first.', zh: '详细了解我们如何保护您的数字隐私。' }, icon: 'shield-check', category: 'Info', size: 'small', component: 'privacy-policy' },
     { id: 'team-introduction', name: { en: 'Team Intro', zh: '团队介绍' }, description: { en: 'About us.', zh: 'CMI 团队的成立背景与指导单位。' }, icon: 'users', category: 'Info', size: 'small', component: 'team-introduction' }
