@@ -58,11 +58,38 @@ async function init() {
 
             // 检查站点状态
             if (window.CMI_SETTINGS && window.CMI_SETTINGS.site_status === 'offline') {
-                document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-size:2rem;color:#666;">网站维护中...</div>';
+                document.body.innerHTML = `
+                    <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);font-family:system-ui,sans-serif;">
+                        <div style="text-align:center;color:white;padding:3rem;">
+                            <div style="font-size:4rem;margin-bottom:1rem;">🔧</div>
+                            <h1 style="font-size:2.5rem;font-weight:900;margin-bottom:0.5rem;">网站维护中</h1>
+                            <p style="font-size:1.2rem;opacity:0.8;">Site Under Maintenance</p>
+                            <p style="font-size:1rem;opacity:0.6;margin-top:2rem;">我们正在努力改进，请稍后再访问</p>
+                        </div>
+                    </div>
+                `;
                 return;
             }
+
+            // 检查是否需要邀请码
+            checkInviteCodeRequirement();
         } catch (e) {
             console.warn("Firebase 数据加载失败，使用静态数据:", e);
+        }
+    }
+
+    // 检查邀请码要求
+    async function checkInviteCodeRequirement() {
+        try {
+            const settingsDoc = await firebaseDB.collection('settings').doc('site').get();
+            if (settingsDoc.exists && settingsDoc.data().require_invite_code === 'true') {
+                const inviteField = document.getElementById('invite-code-field');
+                if (inviteField) {
+                    inviteField.classList.remove('hidden');
+                }
+            }
+        } catch (e) {
+            console.warn('检查邀请码设置失败:', e);
         }
     }
 

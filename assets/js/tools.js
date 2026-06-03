@@ -951,8 +951,12 @@ window.ToolHandlers = {
                 return;
             }
 
+            // 当前标签页
+            let currentTab = 'dashboard';
+
             container.innerHTML = `
-                <div class="max-w-4xl mx-auto">
+                <div class="max-w-6xl mx-auto">
+                    <!-- Header -->
                     <div class="flex items-center gap-4 mb-8">
                         <div class="p-4 rounded-2xl bg-blue-600 text-white shadow-xl shadow-blue-500/20">
                             <i data-lucide="shield-check" size="32"></i>
@@ -963,8 +967,84 @@ window.ToolHandlers = {
                         </div>
                     </div>
 
-                    <!-- Stats Cards -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8" id="admin-stats">
+                    <!-- Tabs -->
+                    <div class="flex gap-2 mb-8 overflow-x-auto no-scrollbar pb-2">
+                        <button onclick="switchAdminTab('dashboard')" class="admin-tab px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-blue-600 text-white" data-tab="dashboard">
+                            <i data-lucide="layout-dashboard" size="14" class="inline mr-1"></i> 仪表盘
+                        </button>
+                        <button onclick="switchAdminTab('users')" class="admin-tab px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-zinc-100 dark:bg-white/5 text-zinc-500" data-tab="users">
+                            <i data-lucide="users" size="14" class="inline mr-1"></i> 用户管理
+                        </button>
+                        <button onclick="switchAdminTab('tools')" class="admin-tab px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-zinc-100 dark:bg-white/5 text-zinc-500" data-tab="tools">
+                            <i data-lucide="wrench" size="14" class="inline mr-1"></i> 工具管理
+                        </button>
+                        <button onclick="switchAdminTab('messages')" class="admin-tab px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-zinc-100 dark:bg-white/5 text-zinc-500" data-tab="messages">
+                            <i data-lucide="message-square" size="14" class="inline mr-1"></i> 留言管理
+                        </button>
+                        <button onclick="switchAdminTab('changelogs')" class="admin-tab px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-zinc-100 dark:bg-white/5 text-zinc-500" data-tab="changelogs">
+                            <i data-lucide="history" size="14" class="inline mr-1"></i> 更新日志
+                        </button>
+                        <button onclick="switchAdminTab('settings')" class="admin-tab px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-zinc-100 dark:bg-white/5 text-zinc-500" data-tab="settings">
+                            <i data-lucide="settings" size="14" class="inline mr-1"></i> 系统设置
+                        </button>
+                        <button onclick="switchAdminTab('invitations')" class="admin-tab px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-zinc-100 dark:bg-white/5 text-zinc-500" data-tab="invitations">
+                            <i data-lucide="ticket" size="14" class="inline mr-1"></i> 邀请码
+                        </button>
+                    </div>
+
+                    <!-- Tab Content -->
+                    <div id="admin-tab-content">
+                        <!-- 内容由 JS 动态加载 -->
+                    </div>
+                </div>
+            `;
+
+            lucide.createIcons();
+
+            // 切换标签页
+            window.switchAdminTab = async (tab) => {
+                currentTab = tab;
+
+                // 更新标签样式
+                document.querySelectorAll('.admin-tab').forEach(btn => {
+                    if (btn.dataset.tab === tab) {
+                        btn.className = 'admin-tab px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-blue-600 text-white';
+                    } else {
+                        btn.className = 'admin-tab px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all bg-zinc-100 dark:bg-white/5 text-zinc-500';
+                    }
+                });
+
+                // 加载内容
+                const content = document.getElementById('admin-tab-content');
+                switch (tab) {
+                    case 'dashboard':
+                        await renderDashboard(content);
+                        break;
+                    case 'users':
+                        await renderUsers(content);
+                        break;
+                    case 'tools':
+                        await renderTools(content);
+                        break;
+                    case 'messages':
+                        await renderMessages(content);
+                        break;
+                    case 'changelogs':
+                        await renderChangelogs(content);
+                        break;
+                    case 'settings':
+                        await renderSettings(content);
+                        break;
+                    case 'invitations':
+                        await renderInvitations(content);
+                        break;
+                }
+            };
+
+            // 仪表盘
+            async function renderDashboard(container) {
+                container.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                         <div class="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 shadow-sm">
                             <div class="flex items-center gap-3 mb-2">
                                 <i data-lucide="users" size="20" class="text-blue-500"></i>
@@ -986,10 +1066,111 @@ window.ToolHandlers = {
                             </div>
                             <div id="stat-tools" class="text-3xl font-black text-zinc-900 dark:text-white">-</div>
                         </div>
+                        <div class="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 shadow-sm">
+                            <div class="flex items-center gap-3 mb-2">
+                                <i data-lucide="ticket" size="20" class="text-orange-500"></i>
+                                <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest">邀请码</span>
+                            </div>
+                            <div id="stat-invitations" class="text-3xl font-black text-zinc-900 dark:text-white">-</div>
+                        </div>
                     </div>
 
-                    <!-- Users List -->
-                    <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10 shadow-sm overflow-hidden mb-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- 最近用户 -->
+                        <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10 shadow-sm overflow-hidden">
+                            <div class="p-6 border-b border-zinc-200 dark:border-white/10">
+                                <h3 class="text-lg font-black text-zinc-900 dark:text-white flex items-center gap-2">
+                                    <i data-lucide="users" size="20"></i> 最近注册用户
+                                </h3>
+                            </div>
+                            <div id="recent-users" class="p-6 space-y-4">
+                                <div class="text-center text-zinc-400 py-4"><i data-lucide="loader-2" class="animate-spin inline-block mr-2"></i> 加载中...</div>
+                            </div>
+                        </div>
+
+                        <!-- 最近留言 -->
+                        <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10 shadow-sm overflow-hidden">
+                            <div class="p-6 border-b border-zinc-200 dark:border-white/10">
+                                <h3 class="text-lg font-black text-zinc-900 dark:text-white flex items-center gap-2">
+                                    <i data-lucide="message-square" size="20"></i> 最近留言
+                                </h3>
+                            </div>
+                            <div id="recent-messages" class="p-6 space-y-4">
+                                <div class="text-center text-zinc-400 py-4"><i data-lucide="loader-2" class="animate-spin inline-block mr-2"></i> 加载中...</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                lucide.createIcons();
+
+                try {
+                    // 加载统计
+                    const [usersSnap, messagesSnap, toolsSnap, invitationsSnap] = await Promise.all([
+                        firebaseDB.collection('users').get(),
+                        firebaseDB.collection('messages').get(),
+                        firebaseDB.collection('tools').get(),
+                        firebaseDB.collection('invitations').get()
+                    ]);
+
+                    document.getElementById('stat-users').textContent = usersSnap.size;
+                    document.getElementById('stat-messages').textContent = messagesSnap.size;
+                    document.getElementById('stat-tools').textContent = toolsSnap.size;
+                    document.getElementById('stat-invitations').textContent = invitationsSnap.size;
+
+                    // 最近用户
+                    const recentUsersSnap = await firebaseDB.collection('users').orderBy('createdAt', 'desc').limit(5).get();
+                    const recentUsersDiv = document.getElementById('recent-users');
+                    if (recentUsersSnap.empty) {
+                        recentUsersDiv.innerHTML = '<div class="text-center text-zinc-400 text-sm">暂无用户</div>';
+                    } else {
+                        recentUsersDiv.innerHTML = '';
+                        recentUsersSnap.forEach(doc => {
+                            const user = doc.data();
+                            recentUsersDiv.innerHTML += `
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                                        ${(user.displayName || user.email || 'U').charAt(0).toUpperCase()}
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-bold truncate">${user.displayName || user.email || '-'}</p>
+                                        <p class="text-xs text-zinc-400">${user.role === 'admin' ? '管理员' : '普通用户'}</p>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    }
+
+                    // 最近留言
+                    const recentMsgsSnap = await firebaseDB.collection('messages').orderBy('createdAt', 'desc').limit(5).get();
+                    const recentMsgsDiv = document.getElementById('recent-messages');
+                    if (recentMsgsSnap.empty) {
+                        recentMsgsDiv.innerHTML = '<div class="text-center text-zinc-400 text-sm">暂无留言</div>';
+                    } else {
+                        recentMsgsDiv.innerHTML = '';
+                        recentMsgsSnap.forEach(doc => {
+                            const msg = doc.data();
+                            recentMsgsDiv.innerHTML += `
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-zinc-100 dark:bg-white/10 flex items-center justify-center text-zinc-500 text-xs font-bold flex-shrink-0">
+                                        ${(msg.username || 'A').charAt(0).toUpperCase()}
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs font-bold text-blue-500">${msg.username || 'Anonymous'}</p>
+                                        <p class="text-sm text-zinc-700 dark:text-zinc-300 truncate">${msg.content}</p>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    }
+                } catch (e) {
+                    console.error('加载仪表盘失败:', e);
+                }
+            }
+
+            // 用户管理
+            async function renderUsers(container) {
+                container.innerHTML = `
+                    <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10 shadow-sm overflow-hidden">
                         <div class="p-6 border-b border-zinc-200 dark:border-white/10">
                             <h3 class="text-lg font-black text-zinc-900 dark:text-white flex items-center gap-2">
                                 <i data-lucide="users" size="20"></i> 用户管理
@@ -1007,64 +1188,20 @@ window.ToolHandlers = {
                                     </tr>
                                 </thead>
                                 <tbody id="admin-users-list">
-                                    <tr>
-                                        <td colspan="5" class="px-6 py-10 text-center text-zinc-400">
-                                            <i data-lucide="loader-2" class="animate-spin inline-block mr-2"></i> 加载中...
-                                        </td>
-                                    </tr>
+                                    <tr><td colspan="5" class="px-6 py-10 text-center text-zinc-400"><i data-lucide="loader-2" class="animate-spin inline-block mr-2"></i> 加载中...</td></tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
+                `;
+                lucide.createIcons();
 
-                    <!-- Messages Management -->
-                    <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10 shadow-sm overflow-hidden">
-                        <div class="p-6 border-b border-zinc-200 dark:border-white/10 flex items-center justify-between">
-                            <h3 class="text-lg font-black text-zinc-900 dark:text-white flex items-center gap-2">
-                                <i data-lucide="message-square" size="20"></i> 留言管理
-                            </h3>
-                            <button onclick="adminDeleteAllMessages()" class="px-4 py-2 rounded-xl bg-red-500 text-white text-xs font-bold hover:bg-red-600 transition-colors">
-                                清空所有留言
-                            </button>
-                        </div>
-                        <div id="admin-messages-list" class="p-6 space-y-4 max-h-96 overflow-y-auto">
-                            <div class="text-center text-zinc-400 py-10">
-                                <i data-lucide="loader-2" class="animate-spin inline-block mr-2"></i> 加载中...
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            lucide.createIcons();
-
-            // 加载统计数据
-            async function loadStats() {
-                try {
-                    // 用户数
-                    const usersSnapshot = await firebaseDB.collection('users').get();
-                    document.getElementById('stat-users').textContent = usersSnapshot.size;
-
-                    // 留言数
-                    const messagesSnapshot = await firebaseDB.collection('messages').get();
-                    document.getElementById('stat-messages').textContent = messagesSnapshot.size;
-
-                    // 工具数
-                    const toolsSnapshot = await firebaseDB.collection('tools').get();
-                    document.getElementById('stat-tools').textContent = toolsSnapshot.size || (window.CMI_TOOLS ? window.CMI_TOOLS.length : 0);
-                } catch (e) {
-                    console.error('加载统计失败:', e);
-                }
-            }
-
-            // 加载用户列表
-            async function loadUsers() {
                 try {
                     const snapshot = await firebaseDB.collection('users').orderBy('createdAt', 'desc').get();
-                    const usersList = document.getElementById('admin-users-list');
+                    const tbody = document.getElementById('admin-users-list');
 
                     if (snapshot.empty) {
-                        usersList.innerHTML = '<tr><td colspan="5" class="px-6 py-10 text-center text-zinc-400">暂无用户</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-10 text-center text-zinc-400">暂无用户</td></tr>';
                         return;
                     }
 
@@ -1098,21 +1235,182 @@ window.ToolHandlers = {
                             </tr>
                         `;
                     });
-                    usersList.innerHTML = html;
+                    tbody.innerHTML = html;
                 } catch (e) {
-                    console.error('加载用户列表失败:', e);
+                    console.error('加载用户失败:', e);
                     document.getElementById('admin-users-list').innerHTML = '<tr><td colspan="5" class="px-6 py-10 text-center text-red-400">加载失败</td></tr>';
                 }
             }
 
-            // 加载留言列表
-            async function loadMessages() {
+            // 工具管理
+            async function renderTools(container) {
+                container.innerHTML = `
+                    <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10 shadow-sm overflow-hidden">
+                        <div class="p-6 border-b border-zinc-200 dark:border-white/10 flex items-center justify-between">
+                            <h3 class="text-lg font-black text-zinc-900 dark:text-white flex items-center gap-2">
+                                <i data-lucide="wrench" size="20"></i> 工具管理
+                            </h3>
+                            <button onclick="adminAddTool()" class="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition-colors">
+                                + 添加工具
+                            </button>
+                        </div>
+                        <div id="admin-tools-list" class="p-6 space-y-4">
+                            <div class="text-center text-zinc-400 py-10"><i data-lucide="loader-2" class="animate-spin inline-block mr-2"></i> 加载中...</div>
+                        </div>
+                    </div>
+
+                    <!-- 添加/编辑工具模态框 -->
+                    <div id="tool-modal" class="hidden fixed inset-0 z-[400] bg-black/50 backdrop-blur-sm flex items-center justify-center px-4">
+                        <div class="w-full max-w-lg bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl overflow-hidden border border-zinc-200 dark:border-white/10">
+                            <div class="p-6 border-b border-zinc-200 dark:border-white/10 flex items-center justify-between">
+                                <h3 id="tool-modal-title" class="text-xl font-black">添加工具</h3>
+                                <button onclick="closeToolModal()" class="p-1 text-zinc-400 hover:text-zinc-600"><i data-lucide="x"></i></button>
+                            </div>
+                            <div class="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+                                <input type="hidden" id="tool-edit-id">
+                                <div>
+                                    <label class="block text-xs font-bold text-zinc-500 mb-2">工具 ID（英文，唯一）</label>
+                                    <input type="text" id="tool-id" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500" placeholder="my-tool">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-zinc-500 mb-2">中文名称</label>
+                                        <input type="text" id="tool-name-zh" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500" placeholder="我的工具">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-zinc-500 mb-2">英文名称</label>
+                                        <input type="text" id="tool-name-en" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500" placeholder="My Tool">
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-zinc-500 mb-2">中文描述</label>
+                                        <input type="text" id="tool-desc-zh" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500" placeholder="工具描述">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-zinc-500 mb-2">英文描述</label>
+                                        <input type="text" id="tool-desc-en" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500" placeholder="Tool description">
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-zinc-500 mb-2">图标</label>
+                                        <input type="text" id="tool-icon" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500" placeholder="star">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-zinc-500 mb-2">分类</label>
+                                        <select id="tool-category" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500">
+                                            <option value="Recommend">推荐</option>
+                                            <option value="International">国际</option>
+                                            <option value="SmartUJS">智慧江大</option>
+                                            <option value="Tool">工具</option>
+                                            <option value="Info">信息</option>
+                                            <option value="External">社交</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-zinc-500 mb-2">尺寸</label>
+                                        <select id="tool-size" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500">
+                                            <option value="small">小</option>
+                                            <option value="medium">中</option>
+                                            <option value="large">大</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-zinc-500 mb-2">链接 URL（外部链接）</label>
+                                    <input type="text" id="tool-url" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500" placeholder="https://example.com">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-zinc-500 mb-2">组件名称（内置工具）</label>
+                                    <input type="text" id="tool-component" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500" placeholder="json-formatter">
+                                </div>
+                            </div>
+                            <div class="p-6 border-t border-zinc-200 dark:border-white/10 flex justify-end gap-4">
+                                <button onclick="closeToolModal()" class="px-6 py-2 rounded-xl bg-zinc-100 dark:bg-white/5 text-zinc-900 dark:text-white text-sm font-bold hover:bg-zinc-200 dark:hover:bg-white/10 transition-colors">取消</button>
+                                <button onclick="saveTool()" class="px-6 py-2 rounded-xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 transition-colors">保存</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                lucide.createIcons();
+
+                await loadToolsList();
+
+                window.loadToolsList = loadToolsList;
+            }
+
+            async function loadToolsList() {
                 try {
-                    const snapshot = await firebaseDB.collection('messages').orderBy('createdAt', 'desc').limit(50).get();
-                    const messagesList = document.getElementById('admin-messages-list');
+                    const snapshot = await firebaseDB.collection('tools').orderBy('category').get();
+                    const listDiv = document.getElementById('admin-tools-list');
 
                     if (snapshot.empty) {
-                        messagesList.innerHTML = '<div class="text-center text-zinc-400 py-10">暂无留言</div>';
+                        listDiv.innerHTML = '<div class="text-center text-zinc-400 py-10">暂无工具，点击上方按钮添加</div>';
+                        return;
+                    }
+
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        const tool = doc.data();
+                        html += `
+                            <div class="flex items-center justify-between p-4 rounded-xl bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10">
+                                <div class="flex items-center gap-4">
+                                    <div class="p-3 rounded-xl ${tool.isActive ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-zinc-100 text-zinc-400 dark:bg-white/10'}">
+                                        <i data-lucide="${tool.icon || 'box'}" size="20"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-sm">${tool.name_zh || tool.name?.zh || '-'}</p>
+                                        <p class="text-xs text-zinc-400">${tool.category || '-'} · ${tool.size || '-'}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="adminToggleToolActive('${doc.id}', ${tool.isActive})" class="px-3 py-1 rounded-lg text-[10px] font-bold ${tool.isActive ? 'bg-green-100 text-green-600' : 'bg-zinc-100 text-zinc-400'}">
+                                        ${tool.isActive ? '已启用' : '已禁用'}
+                                    </button>
+                                    <button onclick="adminEditTool('${doc.id}')" class="p-2 rounded-lg text-zinc-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+                                        <i data-lucide="edit" size="16"></i>
+                                    </button>
+                                    <button onclick="adminDeleteTool('${doc.id}')" class="p-2 rounded-lg text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                                        <i data-lucide="trash-2" size="16"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    listDiv.innerHTML = html;
+                    lucide.createIcons();
+                } catch (e) {
+                    console.error('加载工具列表失败:', e);
+                    document.getElementById('admin-tools-list').innerHTML = '<div class="text-center text-red-400 py-10">加载失败</div>';
+                }
+            }
+
+            // 留言管理
+            async function renderMessages(container) {
+                container.innerHTML = `
+                    <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10 shadow-sm overflow-hidden">
+                        <div class="p-6 border-b border-zinc-200 dark:border-white/10 flex items-center justify-between">
+                            <h3 class="text-lg font-black text-zinc-900 dark:text-white flex items-center gap-2">
+                                <i data-lucide="message-square" size="20"></i> 留言管理
+                            </h3>
+                            <button onclick="adminDeleteAllMessages()" class="px-4 py-2 rounded-xl bg-red-500 text-white text-xs font-bold hover:bg-red-600 transition-colors">
+                                清空所有留言
+                            </button>
+                        </div>
+                        <div id="admin-messages-list" class="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+                            <div class="text-center text-zinc-400 py-10"><i data-lucide="loader-2" class="animate-spin inline-block mr-2"></i> 加载中...</div>
+                        </div>
+                    </div>
+                `;
+                lucide.createIcons();
+
+                try {
+                    const snapshot = await firebaseDB.collection('messages').orderBy('createdAt', 'desc').limit(100).get();
+                    const listDiv = document.getElementById('admin-messages-list');
+
+                    if (snapshot.empty) {
+                        listDiv.innerHTML = '<div class="text-center text-zinc-400 py-10">暂无留言</div>';
                         return;
                     }
 
@@ -1136,42 +1434,279 @@ window.ToolHandlers = {
                             </div>
                         `;
                     });
-                    messagesList.innerHTML = html;
+                    listDiv.innerHTML = html;
                     lucide.createIcons();
                 } catch (e) {
-                    console.error('加载留言列表失败:', e);
+                    console.error('加载留言失败:', e);
                     document.getElementById('admin-messages-list').innerHTML = '<div class="text-center text-red-400 py-10">加载失败</div>';
                 }
             }
 
-            // 初始化加载
-            await loadStats();
-            await loadUsers();
-            await loadMessages();
+            // 更新日志管理
+            async function renderChangelogs(container) {
+                container.innerHTML = `
+                    <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10 shadow-sm overflow-hidden">
+                        <div class="p-6 border-b border-zinc-200 dark:border-white/10 flex items-center justify-between">
+                            <h3 class="text-lg font-black text-zinc-900 dark:text-white flex items-center gap-2">
+                                <i data-lucide="history" size="20"></i> 更新日志
+                            </h3>
+                            <button onclick="adminAddChangelog()" class="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition-colors">
+                                + 添加日志
+                            </button>
+                        </div>
+                        <div id="admin-changelogs-list" class="p-6 space-y-4">
+                            <div class="text-center text-zinc-400 py-10"><i data-lucide="loader-2" class="animate-spin inline-block mr-2"></i> 加载中...</div>
+                        </div>
+                    </div>
 
-            // 导出管理员函数
+                    <!-- 添加/编辑日志模态框 -->
+                    <div id="changelog-modal" class="hidden fixed inset-0 z-[400] bg-black/50 backdrop-blur-sm flex items-center justify-center px-4">
+                        <div class="w-full max-w-lg bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl overflow-hidden border border-zinc-200 dark:border-white/10">
+                            <div class="p-6 border-b border-zinc-200 dark:border-white/10 flex items-center justify-between">
+                                <h3 id="changelog-modal-title" class="text-xl font-black">添加更新日志</h3>
+                                <button onclick="closeChangelogModal()" class="p-1 text-zinc-400 hover:text-zinc-600"><i data-lucide="x"></i></button>
+                            </div>
+                            <div class="p-6 space-y-4">
+                                <input type="hidden" id="changelog-edit-id">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-zinc-500 mb-2">版本号</label>
+                                        <input type="text" id="changelog-version" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500" placeholder="1.0.0">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-zinc-500 mb-2">日期</label>
+                                        <input type="date" id="changelog-date" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500">
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-zinc-500 mb-2">中文标题</label>
+                                        <input type="text" id="changelog-title-zh" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500" placeholder="更新标题">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-zinc-500 mb-2">英文标题</label>
+                                        <input type="text" id="changelog-title-en" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500" placeholder="Update title">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-zinc-500 mb-2">类型</label>
+                                    <select id="changelog-type" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500">
+                                        <option value="Major">重大更新</option>
+                                        <option value="Update">普通更新</option>
+                                        <option value="Minor">小更新</option>
+                                        <option value="History">历史版本</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-zinc-500 mb-2">更新内容（每行一条）</label>
+                                    <textarea id="changelog-items" rows="5" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500 resize-none" placeholder="新增功能 A&#10;修复问题 B&#10;优化性能 C"></textarea>
+                                </div>
+                            </div>
+                            <div class="p-6 border-t border-zinc-200 dark:border-white/10 flex justify-end gap-4">
+                                <button onclick="closeChangelogModal()" class="px-6 py-2 rounded-xl bg-zinc-100 dark:bg-white/5 text-zinc-900 dark:text-white text-sm font-bold hover:bg-zinc-200 dark:hover:bg-white/10 transition-colors">取消</button>
+                                <button onclick="saveChangelog()" class="px-6 py-2 rounded-xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 transition-colors">保存</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                lucide.createIcons();
+
+                await loadChangelogsList();
+            }
+
+            async function loadChangelogsList() {
+                try {
+                    const snapshot = await firebaseDB.collection('changelogs').orderBy('date', 'desc').get();
+                    const listDiv = document.getElementById('admin-changelogs-list');
+
+                    if (snapshot.empty) {
+                        listDiv.innerHTML = '<div class="text-center text-zinc-400 py-10">暂无更新日志</div>';
+                        return;
+                    }
+
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        const log = doc.data();
+                        const date = log.date || '-';
+                        const typeColors = { Major: 'bg-red-100 text-red-600', Update: 'bg-blue-100 text-blue-600', Minor: 'bg-green-100 text-green-600', History: 'bg-zinc-100 text-zinc-500' };
+                        html += `
+                            <div class="p-4 rounded-xl bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="px-2 py-1 rounded-lg text-[10px] font-bold uppercase ${typeColors[log.type] || typeColors.Update}">${log.type || 'Update'}</span>
+                                        <span class="font-bold">v${log.version || '-'}</span>
+                                        <span class="text-xs text-zinc-400">${date}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <button onclick="adminEditChangelog('${doc.id}')" class="p-2 rounded-lg text-zinc-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+                                            <i data-lucide="edit" size="16"></i>
+                                        </button>
+                                        <button onclick="adminDeleteChangelog('${doc.id}')" class="p-2 rounded-lg text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                                            <i data-lucide="trash-2" size="16"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-sm font-bold mb-1">${log.title_zh || log.title?.zh || '-'}</p>
+                                <div class="text-xs text-zinc-500 space-y-1">
+                                    ${(log.items || log.items_json || []).map(item => `<p>• ${item}</p>`).join('')}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    listDiv.innerHTML = html;
+                    lucide.createIcons();
+                } catch (e) {
+                    console.error('加载更新日志失败:', e);
+                    document.getElementById('admin-changelogs-list').innerHTML = '<div class="text-center text-red-400 py-10">加载失败</div>';
+                }
+            }
+
+            // 系统设置
+            async function renderSettings(container) {
+                container.innerHTML = `
+                    <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10 shadow-sm overflow-hidden">
+                        <div class="p-6 border-b border-zinc-200 dark:border-white/10">
+                            <h3 class="text-lg font-black text-zinc-900 dark:text-white flex items-center gap-2">
+                                <i data-lucide="settings" size="20"></i> 系统设置
+                            </h3>
+                        </div>
+                        <div class="p-6 space-y-6">
+                            <div>
+                                <label class="block text-xs font-bold text-zinc-500 mb-2">站点状态</label>
+                                <select id="setting-site-status" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500">
+                                    <option value="online">在线</option>
+                                    <option value="offline">维护模式</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-zinc-500 mb-2">留言板状态</label>
+                                <select id="setting-board-status" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500">
+                                    <option value="enabled">开放</option>
+                                    <option value="disabled">关闭</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-zinc-500 mb-2">注册邀请码</label>
+                                <select id="setting-require-invite-code" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500">
+                                    <option value="false">不需要</option>
+                                    <option value="true">需要邀请码</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-zinc-500 mb-2">团队简介（中文）</label>
+                                <textarea id="setting-team-intro-zh" rows="3" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500 resize-none"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-zinc-500 mb-2">团队简介（英文）</label>
+                                <textarea id="setting-team-intro-en" rows="3" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500 resize-none"></textarea>
+                            </div>
+                            <button onclick="saveSettings()" class="px-6 py-3 rounded-xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 transition-colors">
+                                保存设置
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                // 加载当前设置
+                try {
+                    const settingsDoc = await firebaseDB.collection('settings').doc('site').get();
+                    if (settingsDoc.exists) {
+                        const settings = settingsDoc.data();
+                        document.getElementById('setting-site-status').value = settings.site_status || 'online';
+                        document.getElementById('setting-board-status').value = settings.board_status || 'enabled';
+                        document.getElementById('setting-require-invite-code').value = settings.require_invite_code || 'false';
+                        document.getElementById('setting-team-intro-zh').value = settings.team_intro_zh || '';
+                        document.getElementById('setting-team-intro-en').value = settings.team_intro_en || '';
+                    }
+                } catch (e) {
+                    console.error('加载设置失败:', e);
+                }
+            }
+
+            // 邀请码管理
+            async function renderInvitations(container) {
+                container.innerHTML = `
+                    <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10 shadow-sm overflow-hidden">
+                        <div class="p-6 border-b border-zinc-200 dark:border-white/10 flex items-center justify-between">
+                            <h3 class="text-lg font-black text-zinc-900 dark:text-white flex items-center gap-2">
+                                <i data-lucide="ticket" size="20"></i> 邀请码管理
+                            </h3>
+                            <button onclick="adminGenerateInvitations()" class="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition-colors">
+                                生成邀请码
+                            </button>
+                        </div>
+                        <div id="admin-invitations-list" class="p-6 space-y-4">
+                            <div class="text-center text-zinc-400 py-10"><i data-lucide="loader-2" class="animate-spin inline-block mr-2"></i> 加载中...</div>
+                        </div>
+                    </div>
+                `;
+                lucide.createIcons();
+
+                await loadInvitationsList();
+            }
+
+            async function loadInvitationsList() {
+                try {
+                    const snapshot = await firebaseDB.collection('invitations').orderBy('createdAt', 'desc').get();
+                    const listDiv = document.getElementById('admin-invitations-list');
+
+                    if (snapshot.empty) {
+                        listDiv.innerHTML = '<div class="text-center text-zinc-400 py-10">暂无邀请码，点击上方按钮生成</div>';
+                        return;
+                    }
+
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        const inv = doc.data();
+                        const date = inv.createdAt ? new Date(inv.createdAt.toDate()).toLocaleString() : '-';
+                        const isUsed = inv.isUsed;
+                        html += `
+                            <div class="flex items-center justify-between p-4 rounded-xl bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10">
+                                <div class="flex items-center gap-4">
+                                    <div class="p-3 rounded-xl ${isUsed ? 'bg-zinc-100 text-zinc-400' : 'bg-green-100 text-green-600'}">
+                                        <i data-lucide="ticket" size="20"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-mono font-bold text-sm">${doc.id}</p>
+                                        <p class="text-xs text-zinc-400">${isUsed ? `已被 ${inv.usedBy || '未知用户'} 使用` : '未使用'} · ${date}</p>
+                                    </div>
+                                </div>
+                                <button onclick="adminDeleteInvitation('${doc.id}')" class="p-2 rounded-lg text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                                    <i data-lucide="trash-2" size="16"></i>
+                                </button>
+                            </div>
+                        `;
+                    });
+                    listDiv.innerHTML = html;
+                    lucide.createIcons();
+                } catch (e) {
+                    console.error('加载邀请码失败:', e);
+                    document.getElementById('admin-invitations-list').innerHTML = '<div class="text-center text-red-400 py-10">加载失败</div>';
+                }
+            }
+
+            // ========== 全局函数 ==========
+
+            // 用户管理
             window.adminToggleRole = async (userId, currentRole) => {
                 const newRole = currentRole === 'admin' ? 'user' : 'admin';
                 if (!confirm(`确定要将该用户${newRole === 'admin' ? '设为管理员' : '取消管理员'}吗？`)) return;
-
                 try {
                     await firebaseDB.collection('users').doc(userId).update({ role: newRole });
                     alert('角色更新成功！');
-                    await loadUsers();
-                    await loadStats();
+                    await renderUsers(document.getElementById('admin-tab-content'));
                 } catch (e) {
                     alert('更新失败: ' + e.message);
                 }
             };
 
+            // 留言管理
             window.adminDeleteMessage = async (messageId) => {
                 if (!confirm('确定要删除这条留言吗？')) return;
-
                 try {
                     await firebaseDB.collection('messages').doc(messageId).delete();
                     alert('删除成功！');
-                    await loadMessages();
-                    await loadStats();
+                    await renderMessages(document.getElementById('admin-tab-content'));
                 } catch (e) {
                     alert('删除失败: ' + e.message);
                 }
@@ -1179,19 +1714,329 @@ window.ToolHandlers = {
 
             window.adminDeleteAllMessages = async () => {
                 if (!confirm('确定要清空所有留言吗？此操作不可恢复！')) return;
-
                 try {
                     const snapshot = await firebaseDB.collection('messages').get();
                     const batch = firebaseDB.batch();
                     snapshot.forEach(doc => batch.delete(doc.ref));
                     await batch.commit();
                     alert('所有留言已清空！');
-                    await loadMessages();
-                    await loadStats();
+                    await renderMessages(document.getElementById('admin-tab-content'));
                 } catch (e) {
                     alert('清空失败: ' + e.message);
                 }
             };
+
+            // 工具管理
+            window.adminAddTool = () => {
+                document.getElementById('tool-modal-title').textContent = '添加工具';
+                document.getElementById('tool-edit-id').value = '';
+                document.getElementById('tool-id').value = '';
+                document.getElementById('tool-id').disabled = false;
+                document.getElementById('tool-name-zh').value = '';
+                document.getElementById('tool-name-en').value = '';
+                document.getElementById('tool-desc-zh').value = '';
+                document.getElementById('tool-desc-en').value = '';
+                document.getElementById('tool-icon').value = '';
+                document.getElementById('tool-category').value = 'Tool';
+                document.getElementById('tool-size').value = 'small';
+                document.getElementById('tool-url').value = '';
+                document.getElementById('tool-component').value = '';
+                document.getElementById('tool-modal').classList.remove('hidden');
+                lucide.createIcons();
+            };
+
+            window.adminEditTool = async (toolId) => {
+                try {
+                    const doc = await firebaseDB.collection('tools').doc(toolId).get();
+                    if (!doc.exists) { alert('工具不存在'); return; }
+                    const tool = doc.data();
+
+                    document.getElementById('tool-modal-title').textContent = '编辑工具';
+                    document.getElementById('tool-edit-id').value = toolId;
+                    document.getElementById('tool-id').value = toolId;
+                    document.getElementById('tool-id').disabled = true;
+                    document.getElementById('tool-name-zh').value = tool.name_zh || tool.name?.zh || '';
+                    document.getElementById('tool-name-en').value = tool.name_en || tool.name?.en || '';
+                    document.getElementById('tool-desc-zh').value = tool.desc_zh || tool.description?.zh || '';
+                    document.getElementById('tool-desc-en').value = tool.desc_en || tool.description?.en || '';
+                    document.getElementById('tool-icon').value = tool.icon || '';
+                    document.getElementById('tool-category').value = tool.category || 'Tool';
+                    document.getElementById('tool-size').value = tool.size || 'small';
+                    document.getElementById('tool-url').value = tool.url || '';
+                    document.getElementById('tool-component').value = tool.component || '';
+                    document.getElementById('tool-modal').classList.remove('hidden');
+                    lucide.createIcons();
+                } catch (e) {
+                    alert('加载工具失败: ' + e.message);
+                }
+            };
+
+            window.closeToolModal = () => {
+                document.getElementById('tool-modal').classList.add('hidden');
+            };
+
+            window.saveTool = async () => {
+                const editId = document.getElementById('tool-edit-id').value;
+                const toolId = document.getElementById('tool-id').value.trim();
+                const nameZh = document.getElementById('tool-name-zh').value.trim();
+                const nameEn = document.getElementById('tool-name-en').value.trim();
+                const descZh = document.getElementById('tool-desc-zh').value.trim();
+                const descEn = document.getElementById('tool-desc-en').value.trim();
+                const icon = document.getElementById('tool-icon').value.trim();
+                const category = document.getElementById('tool-category').value;
+                const size = document.getElementById('tool-size').value;
+                const url = document.getElementById('tool-url').value.trim();
+                const component = document.getElementById('tool-component').value.trim();
+
+                if (!toolId || !nameZh) {
+                    alert('请填写工具 ID 和中文名称');
+                    return;
+                }
+
+                const toolData = {
+                    name_zh: nameZh,
+                    name_en: nameEn,
+                    name: { zh: nameZh, en: nameEn },
+                    desc_zh: descZh,
+                    desc_en: descEn,
+                    description: { zh: descZh, en: descEn },
+                    icon: icon || 'box',
+                    category,
+                    size,
+                    url: url || null,
+                    component: component || null,
+                    isActive: true,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                try {
+                    if (editId) {
+                        await firebaseDB.collection('tools').doc(editId).update(toolData);
+                        alert('工具更新成功！');
+                    } else {
+                        // 检查 ID 是否已存在
+                        const existing = await firebaseDB.collection('tools').doc(toolId).get();
+                        if (existing.exists) {
+                            alert('工具 ID 已存在，请使用其他 ID');
+                            return;
+                        }
+                        toolData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                        await firebaseDB.collection('tools').doc(toolId).set(toolData);
+                        alert('工具添加成功！');
+                    }
+                    closeToolModal();
+                    await loadToolsList();
+                } catch (e) {
+                    alert('保存失败: ' + e.message);
+                }
+            };
+
+            window.adminToggleToolActive = async (toolId, currentActive) => {
+                try {
+                    await firebaseDB.collection('tools').doc(toolId).update({ isActive: !currentActive });
+                    await loadToolsList();
+                } catch (e) {
+                    alert('更新失败: ' + e.message);
+                }
+            };
+
+            window.adminDeleteTool = async (toolId) => {
+                if (!confirm('确定要删除这个工具吗？')) return;
+                try {
+                    await firebaseDB.collection('tools').doc(toolId).delete();
+                    alert('删除成功！');
+                    await loadToolsList();
+                } catch (e) {
+                    alert('删除失败: ' + e.message);
+                }
+            };
+
+            // 更新日志管理
+            window.adminAddChangelog = () => {
+                document.getElementById('changelog-modal-title').textContent = '添加更新日志';
+                document.getElementById('changelog-edit-id').value = '';
+                document.getElementById('changelog-version').value = '';
+                document.getElementById('changelog-date').value = new Date().toISOString().split('T')[0];
+                document.getElementById('changelog-title-zh').value = '';
+                document.getElementById('changelog-title-en').value = '';
+                document.getElementById('changelog-type').value = 'Update';
+                document.getElementById('changelog-items').value = '';
+                document.getElementById('changelog-modal').classList.remove('hidden');
+                lucide.createIcons();
+            };
+
+            window.adminEditChangelog = async (logId) => {
+                try {
+                    const doc = await firebaseDB.collection('changelogs').doc(logId).get();
+                    if (!doc.exists) { alert('日志不存在'); return; }
+                    const log = doc.data();
+
+                    document.getElementById('changelog-modal-title').textContent = '编辑更新日志';
+                    document.getElementById('changelog-edit-id').value = logId;
+                    document.getElementById('changelog-version').value = log.version || '';
+                    document.getElementById('changelog-date').value = log.date || '';
+                    document.getElementById('changelog-title-zh').value = log.title_zh || log.title?.zh || '';
+                    document.getElementById('changelog-title-en').value = log.title_en || log.title?.en || '';
+                    document.getElementById('changelog-type').value = log.type || 'Update';
+                    document.getElementById('changelog-items').value = (log.items || log.items_json || []).join('\n');
+                    document.getElementById('changelog-modal').classList.remove('hidden');
+                    lucide.createIcons();
+                } catch (e) {
+                    alert('加载日志失败: ' + e.message);
+                }
+            };
+
+            window.closeChangelogModal = () => {
+                document.getElementById('changelog-modal').classList.add('hidden');
+            };
+
+            window.saveChangelog = async () => {
+                const editId = document.getElementById('changelog-edit-id').value;
+                const version = document.getElementById('changelog-version').value.trim();
+                const date = document.getElementById('changelog-date').value;
+                const titleZh = document.getElementById('changelog-title-zh').value.trim();
+                const titleEn = document.getElementById('changelog-title-en').value.trim();
+                const type = document.getElementById('changelog-type').value;
+                const itemsText = document.getElementById('changelog-items').value.trim();
+                const items = itemsText ? itemsText.split('\n').filter(i => i.trim()) : [];
+
+                if (!version || !date || !titleZh) {
+                    alert('请填写版本号、日期和中文标题');
+                    return;
+                }
+
+                const logData = {
+                    version,
+                    date,
+                    title_zh: titleZh,
+                    title_en: titleEn,
+                    title: { zh: titleZh, en: titleEn },
+                    type,
+                    items,
+                    items_json: items,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                try {
+                    if (editId) {
+                        await firebaseDB.collection('changelogs').doc(editId).update(logData);
+                        alert('日志更新成功！');
+                    } else {
+                        logData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                        await firebaseDB.collection('changelogs').add(logData);
+                        alert('日志添加成功！');
+                    }
+                    closeChangelogModal();
+                    await loadChangelogsList();
+                } catch (e) {
+                    alert('保存失败: ' + e.message);
+                }
+            };
+
+            window.adminDeleteChangelog = async (logId) => {
+                if (!confirm('确定要删除这条更新日志吗？')) return;
+                try {
+                    await firebaseDB.collection('changelogs').doc(logId).delete();
+                    alert('删除成功！');
+                    await loadChangelogsList();
+                } catch (e) {
+                    alert('删除失败: ' + e.message);
+                }
+            };
+
+            // 系统设置
+            window.saveSettings = async () => {
+                const siteStatus = document.getElementById('setting-site-status').value;
+                const boardStatus = document.getElementById('setting-board-status').value;
+                const requireInviteCode = document.getElementById('setting-require-invite-code').value;
+                const teamIntroZh = document.getElementById('setting-team-intro-zh').value;
+                const teamIntroEn = document.getElementById('setting-team-intro-en').value;
+
+                try {
+                    await firebaseDB.collection('settings').doc('site').set({
+                        site_status: siteStatus,
+                        board_status: boardStatus,
+                        require_invite_code: requireInviteCode,
+                        team_intro_zh: teamIntroZh,
+                        team_intro_en: teamIntroEn,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+
+                    // 更新全局设置
+                    window.CMI_SETTINGS = {
+                        ...window.CMI_SETTINGS,
+                        site_status: siteStatus,
+                        board_status: boardStatus,
+                        require_invite_code: requireInviteCode,
+                        team_intro_zh: teamIntroZh,
+                        team_intro_en: teamIntroEn
+                    };
+
+                    alert('设置保存成功！');
+
+                    // 如果切换到维护模式，刷新页面
+                    if (siteStatus === 'offline') {
+                        if (confirm('已切换到维护模式，是否刷新页面查看效果？')) {
+                            window.location.reload();
+                        }
+                    }
+                } catch (e) {
+                    alert('保存失败: ' + e.message);
+                }
+            };
+
+            // 邀请码管理
+            window.adminGenerateInvitations = async () => {
+                const count = prompt('请输入要生成的邀请码数量（1-50）：', '10');
+                if (!count) return;
+
+                const num = parseInt(count);
+                if (isNaN(num) || num < 1 || num > 50) {
+                    alert('请输入 1-50 之间的数字');
+                    return;
+                }
+
+                try {
+                    const batch = firebaseDB.batch();
+                    for (let i = 0; i < num; i++) {
+                        const code = generateInviteCode();
+                        const ref = firebaseDB.collection('invitations').doc(code);
+                        batch.set(ref, {
+                            isUsed: false,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            createdBy: window.currentUser.uid
+                        });
+                    }
+                    await batch.commit();
+                    alert(`成功生成 ${num} 个邀请码！`);
+                    await loadInvitationsList();
+                } catch (e) {
+                    alert('生成失败: ' + e.message);
+                }
+            };
+
+            window.adminDeleteInvitation = async (code) => {
+                if (!confirm('确定要删除这个邀请码吗？')) return;
+                try {
+                    await firebaseDB.collection('invitations').doc(code).delete();
+                    alert('删除成功！');
+                    await loadInvitationsList();
+                } catch (e) {
+                    alert('删除失败: ' + e.message);
+                }
+            };
+
+            function generateInviteCode() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let code = '';
+                for (let i = 0; i < 8; i++) {
+                    code += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return code;
+            }
+
+            // 初始加载仪表盘
+            await renderDashboard(document.getElementById('admin-tab-content'));
         }
     },
 

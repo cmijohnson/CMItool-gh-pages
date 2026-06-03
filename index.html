@@ -143,6 +143,10 @@
                         <label class="block text-xs font-bold text-zinc-500 mb-2">密码</label>
                         <input type="password" id="login-password" placeholder="••••••••" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500 transition-colors">
                     </div>
+                    <div id="invite-code-field" class="hidden">
+                        <label class="block text-xs font-bold text-zinc-500 mb-2">邀请码（可选）</label>
+                        <input type="text" id="login-invite-code" placeholder="输入邀请码" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500 transition-colors uppercase">
+                    </div>
                     <div id="login-error" class="hidden text-red-500 text-xs font-bold"></div>
                     <button onclick="firebaseLogin()" class="w-full py-3 rounded-xl bg-gradient-to-r from-blue-500 via-indigo-600 to-purple-700 text-white font-black uppercase tracking-widest text-xs hover:scale-[1.02] transition-transform">
                         登录

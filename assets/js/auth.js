@@ -139,6 +139,7 @@ async function firebaseLogin() {
 async function firebaseRegister() {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
+    const inviteCode = document.getElementById('login-invite-code')?.value;
 
     if (!email || !password) {
         showLoginError('请输入邮箱和密码');
@@ -150,15 +151,60 @@ async function firebaseRegister() {
         return;
     }
 
+    // 检查邀请码（如果有输入或需要邀请码）
+    let needsInviteCode = false;
+    try {
+        const settingsDoc = await db.collection('settings').doc('site').get();
+        if (settingsDoc.exists && settingsDoc.data().require_invite_code === 'true') {
+            needsInviteCode = true;
+        }
+    } catch (e) {
+        console.warn('检查邀请码设置失败:', e);
+    }
+
+    if (needsInviteCode) {
+        if (!inviteCode) {
+            showLoginError('请输入邀请码');
+            return;
+        }
+
+        // 验证邀请码
+        try {
+            const inviteDoc = await db.collection('invitations').doc(inviteCode.toUpperCase()).get();
+            if (!inviteDoc.exists) {
+                showLoginError('邀请码不存在');
+                return;
+            }
+            if (inviteDoc.data().isUsed) {
+                showLoginError('邀请码已被使用');
+                return;
+            }
+        } catch (e) {
+            showLoginError('验证邀请码失败: ' + e.message);
+            return;
+        }
+    }
+
     try {
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
 
         // 创建用户文档到 Firestore
-        await db.collection('users').doc(userCredential.user.uid).set({
+        const userData = {
             email: email,
             role: 'user',
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        };
+
+        await db.collection('users').doc(userCredential.user.uid).set(userData);
+
+        // 如果使用了邀请码，标记为已使用
+        if (needsInviteCode && inviteCode) {
+            await db.collection('invitations').doc(inviteCode.toUpperCase()).update({
+                isUsed: true,
+                usedBy: userCredential.user.uid,
+                usedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
 
         hideLoginModal();
         console.log('注册成功:', userCredential.user.email);
