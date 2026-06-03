@@ -341,6 +341,7 @@ const TOOLS = [
     { id: 'epic-games-tool', name: { en: 'Epic Freebies', zh: 'Epic 喜加一' }, description: { en: 'Track free games.', zh: '追踪 Epic 商城的每周限免游戏动态。' }, icon: 'gamepad-2', category: 'Info', size: 'small', component: 'epic-games-tool' },
 
     { id: 'message-board', name: { en: 'Message Board', zh: '智链留言板' }, description: { en: 'Share your thoughts.', zh: '留下您的宝贵建议或反馈，与团队直接面对面。' }, icon: 'message-square', category: 'Info', size: 'small', component: 'message-board' },
+    { id: 'itlab-board', name: { en: 'ITLab Board', zh: 'ITLab留言板' }, description: { en: 'Jiangsu University ITLab community.', zh: '江苏大学ITLab技术社区，专注SRE、网安、运维等方向交流。' }, icon: 'terminal', category: 'Info', size: 'medium', url: 'itlab-board.html' },
     { id: 'update-log', name: { en: 'Update Log', zh: '网站更新日志' }, description: { en: 'Track our growth.', zh: '追踪细米兰阁及 CMI 团队项目的最新更新历程。' }, icon: 'history', category: 'Info', size: 'small', component: 'update-log' },
 
     // Admin
