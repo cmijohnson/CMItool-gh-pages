@@ -879,8 +879,8 @@
             }
 
             try {
+                // 只使用单字段排序，避免复合索引问题
                 let query = db.collection('itlab_posts');
-                if (currentFilter !== 'all') { query = query.where('category', '==', currentFilter); }
 
                 switch (currentSort) {
                     case 'newest': query = query.orderBy('createdAt', 'desc'); break;
@@ -889,23 +889,40 @@
                 }
 
                 if (lastDoc) { query = query.startAfter(lastDoc); }
-                query = query.limit(POSTS_PER_PAGE);
+                query = query.limit(100); // 获取更多数据用于客户端过滤
 
                 const snapshot = await query.get();
-                const posts = [];
+                let posts = [];
                 snapshot.forEach(doc => { posts.push({ id: doc.id, ...doc.data() }); });
+
+                // 客户端过滤分类
+                if (currentFilter !== 'all') {
+                    posts = posts.filter(p => p.category === currentFilter);
+                }
+
+                // 客户端搜索
+                const searchTerm = document.getElementById('search-input').value.toLowerCase();
+                if (searchTerm) {
+                    posts = posts.filter(p =>
+                        p.title.toLowerCase().includes(searchTerm) ||
+                        p.content.toLowerCase().includes(searchTerm) ||
+                        (p.tags && p.tags.some(t => t.toLowerCase().includes(searchTerm)))
+                    );
+                }
+
+                // 分页
+                const displayPosts = posts.slice(0, POSTS_PER_PAGE);
 
                 if (snapshot.docs.length > 0) { lastDoc = snapshot.docs[snapshot.docs.length - 1]; }
 
-                const searchTerm = document.getElementById('search-input').value.toLowerCase();
-                const filteredPosts = searchTerm
-                    ? posts.filter(p => p.title.toLowerCase().includes(searchTerm) || p.content.toLowerCase().includes(searchTerm) || (p.tags && p.tags.some(t => t.toLowerCase().includes(searchTerm))))
-                    : posts;
-
-                renderPosts(filteredPosts, reset);
+                renderPosts(displayPosts, reset);
 
                 const loadMore = document.getElementById('load-more');
-                if (snapshot.docs.length === POSTS_PER_PAGE) { loadMore.classList.remove('hidden'); } else { loadMore.classList.add('hidden'); }
+                if (posts.length > POSTS_PER_PAGE || snapshot.docs.length === 100) {
+                    loadMore.classList.remove('hidden');
+                } else {
+                    loadMore.classList.add('hidden');
+                }
             } catch (e) {
                 console.error('Failed to load posts:', e);
                 document.getElementById('posts-list').innerHTML = `
@@ -1010,9 +1027,16 @@
 
                 document.getElementById('detail-title').textContent = post.title;
 
-                const commentsSnapshot = await db.collection('itlab_comments').where('postId', '==', postId).orderBy('createdAt', 'asc').get();
-                const comments = [];
+                // 使用单字段查询，客户端排序
+                const commentsSnapshot = await db.collection('itlab_comments').where('postId', '==', postId).get();
+                let comments = [];
                 commentsSnapshot.forEach(doc => { comments.push({ id: doc.id, ...doc.data() }); });
+                // 客户端按时间排序
+                comments.sort((a, b) => {
+                    const timeA = a.createdAt?.toDate?.() || new Date(0);
+                    const timeB = b.createdAt?.toDate?.() || new Date(0);
+                    return timeA - timeB;
+                });
 
                 contentDiv.innerHTML = `
                     <div class="p-6 md:p-8">
