@@ -728,7 +728,7 @@ window.ToolHandlers = {
     },
 
     'message-board': {
-        render: (container) => {
+        render: async (container) => {
             const settings = window.CMI_SETTINGS || {};
             const boardStatus = settings['board_status'] || 'enabled';
 
@@ -744,82 +744,115 @@ window.ToolHandlers = {
                 return;
             }
 
+            const user = window.currentUser;
+            const isLoggedIn = !!user;
+
             container.innerHTML = `
                 <div class="h-full flex flex-col max-w-2xl mx-auto">
                     <div class="flex-1 overflow-y-auto space-y-4 pr-2 mb-6 no-scrollbar" id="mb-list">
-                        <!-- Messages Injected Here -->
+                        <div class="text-center text-zinc-400 py-10 text-xs font-black uppercase tracking-widest">
+                            <i data-lucide="loader-2" class="animate-spin inline-block mr-2"></i> Loading messages...
+                        </div>
                     </div>
+                    ${isLoggedIn ? `
                     <div class="bg-zinc-100 dark:bg-white/5 p-4 rounded-[2rem] border border-zinc-200 dark:border-white/10 flex gap-4">
-                        <input type="text" id="mb-input" class="flex-1 bg-transparent border-none outline-none font-medium px-4" placeholder="Type a message..." maxlength="140">
+                        <input type="text" id="mb-input" class="flex-1 bg-transparent border-none outline-none font-medium px-4" placeholder="输入留言内容..." maxlength="140">
                         <button id="mb-send" class="p-4 rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all"><i data-lucide="send" size="20"></i></button>
                     </div>
+                    ` : `
+                    <div class="bg-zinc-100 dark:bg-white/5 p-4 rounded-[2rem] border border-zinc-200 dark:border-white/10 text-center">
+                        <p class="text-sm text-zinc-500">请先 <a href="javascript:void(0)" onclick="showLoginModal()" class="text-blue-500 font-bold hover:underline">登录</a> 后留言</p>
+                    </div>
+                    `}
                 </div>
             `;
 
-            const list = container.querySelector('#mb-list');
-            const msgs = window.CMI_MESSAGES || [];
-
-            if (msgs.length === 0) {
-                list.innerHTML = `<div class="text-center text-zinc-400 py-10 text-xs font-black uppercase tracking-widest">No messages yet</div>`;
-            } else {
-                list.innerHTML = msgs.map(m => `
-                    <div class="flex flex-col gap-1 p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-white/5 shadow-sm">
-                        <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-black uppercase tracking-widest ${m.is_admin ? 'text-blue-500' : 'text-zinc-500'}">${m.username} ${m.is_admin ? '<i data-lucide="badge-check" size="10" class="inline"></i>' : ''}</span>
-                            <span class="text-[9px] text-zinc-300 font-mono">${new Date(m.created_at).toLocaleDateString()}</span>
-                        </div>
-                        <p class="text-sm font-medium text-zinc-700 dark:text-zinc-300 break-all">${m.content}</p>
-                    </div>
-                `).join('');
-            }
-
             lucide.createIcons();
 
-            const submitBtn = container.querySelector('#mb-send');
-            const input = container.querySelector('#mb-input');
+            const list = container.querySelector('#mb-list');
 
-            const submitMsg = async () => {
-                const content = input.value.trim();
-                if (!content) return;
-
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i>';
-                lucide.createIcons();
-
+            // 从 Firestore 加载留言
+            async function loadMessages() {
                 try {
-                    const res = await fetch('api/messages.php', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: 'content=' + encodeURIComponent(content)
+                    const snapshot = await firebaseDB.collection('messages')
+                        .orderBy('createdAt', 'desc')
+                        .limit(50)
+                        .get();
+
+                    const messages = [];
+                    snapshot.forEach(doc => {
+                        messages.push({ id: doc.id, ...doc.data() });
                     });
-                    const d = await res.json();
-                    if (d.status === 'success') {
-                        input.value = '';
-                        // Optimistic update
-                        const div = document.createElement('div');
-                        div.className = "flex flex-col gap-1 p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-white/5 shadow-sm animate-fade-in-up";
-                        div.innerHTML = `
-                            <div class="flex items-center justify-between">
-                                <span class="text-[10px] font-black uppercase tracking-widest text-zinc-500">You</span>
-                                <span class="text-[9px] text-zinc-300 font-mono">Just now</span>
-                            </div>
-                            <p class="text-sm font-medium text-zinc-700 dark:text-zinc-300 break-all">${content}</p>
-                        `;
-                        list.prepend(div);
+
+                    if (messages.length === 0) {
+                        list.innerHTML = `<div class="text-center text-zinc-400 py-10 text-xs font-black uppercase tracking-widest">暂无留言，快来抢沙发吧！</div>`;
                     } else {
-                        alert(d.message);
+                        list.innerHTML = messages.map(m => `
+                            <div class="flex flex-col gap-1 p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-white/5 shadow-sm">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[10px] font-black uppercase tracking-widest ${m.isAdmin ? 'text-blue-500' : 'text-zinc-500'}">${m.username || 'Anonymous'} ${m.isAdmin ? '<i data-lucide="badge-check" size="10" class="inline"></i>' : ''}</span>
+                                    <span class="text-[9px] text-zinc-300 font-mono">${m.createdAt ? new Date(m.createdAt.toDate()).toLocaleDateString() : 'Just now'}</span>
+                                </div>
+                                <p class="text-sm font-medium text-zinc-700 dark:text-zinc-300 break-all">${m.content}</p>
+                            </div>
+                        `).join('');
+                        lucide.createIcons();
                     }
                 } catch (e) {
-                    alert('Error sending message');
-                } finally {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = '<i data-lucide="send" size="20"></i>';
-                    lucide.createIcons();
+                    console.error('加载留言失败:', e);
+                    list.innerHTML = `<div class="text-center text-red-400 py-10 text-xs">加载失败，请刷新重试</div>`;
                 }
-            };
+            }
 
-            submitBtn.onclick = submitMsg;
-            input.onkeydown = (e) => { if (e.key === 'Enter') submitMsg(); };
+            // 初始加载
+            await loadMessages();
+
+            // 如果已登录，绑定发送功能
+            if (isLoggedIn) {
+                const submitBtn = container.querySelector('#mb-send');
+                const input = container.querySelector('#mb-input');
+
+                const submitMsg = async () => {
+                    const content = input.value.trim();
+                    if (!content) return;
+
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i>';
+                    lucide.createIcons();
+
+                    try {
+                        // 获取用户信息
+                        const userDoc = await firebaseDB.collection('users').doc(user.uid).get();
+                        const userData = userDoc.exists ? userDoc.data() : {};
+                        const isAdmin = userData.role === 'admin';
+
+                        // 保存到 Firestore
+                        await firebaseDB.collection('messages').add({
+                            userId: user.uid,
+                            username: user.displayName || user.email.split('@')[0],
+                            content: content,
+                            isAdmin: isAdmin,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+
+                        input.value = '';
+
+                        // 重新加载留言列表
+                        await loadMessages();
+
+                    } catch (e) {
+                        console.error('发送留言失败:', e);
+                        alert('发送失败: ' + e.message);
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i data-lucide="send" size="20"></i>';
+                        lucide.createIcons();
+                    }
+                };
+
+                submitBtn.onclick = submitMsg;
+                input.onkeydown = (e) => { if (e.key === 'Enter') submitMsg(); };
+            }
         }
     },
 
