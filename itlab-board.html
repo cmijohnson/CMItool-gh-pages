@@ -2669,29 +2669,39 @@
                     return;
                 }
 
-                editingPostId = postId;
-                document.getElementById('post-title').value = post.title;
-                document.getElementById('post-content').value = post.content;
-                document.getElementById('post-tags').value = (post.tags || []).join(', ');
-                selectedCategory = post.category;
-
-                // 更新分类按钮状态
-                document.querySelectorAll('.category-btn').forEach(btn => {
-                    if (btn.dataset.cat === post.category) {
-                        btn.classList.add('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20');
-                        btn.classList.remove('border-transparent');
-                    } else {
-                        btn.classList.remove('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20');
-                        btn.classList.add('border-transparent');
-                    }
-                });
-
-                updatePreview();
+                // 先关闭帖子详情
                 hidePostDetail();
+
+                // 设置编辑模式
+                editingPostId = postId;
+
+                // 打开发帖模态框（会清空表单）
                 showNewPostModal();
 
-                // 修改提交按钮文本
-                document.getElementById('submit-btn').textContent = '保存修改';
+                // 延迟设置表单值，确保模态框已完全加载
+                setTimeout(() => {
+                    document.getElementById('post-title').value = post.title || '';
+                    document.getElementById('post-content').value = post.content || '';
+                    document.getElementById('post-tags').value = (post.tags || []).join(', ');
+                    selectedCategory = post.category;
+
+                    // 更新分类按钮状态
+                    document.querySelectorAll('.category-btn').forEach(btn => {
+                        if (btn.dataset.cat === post.category) {
+                            btn.classList.add('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20');
+                            btn.classList.remove('border-transparent');
+                        } else {
+                            btn.classList.remove('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20');
+                            btn.classList.add('border-transparent');
+                        }
+                    });
+
+                    // 更新预览
+                    updatePreview();
+
+                    // 修改提交按钮文本
+                    document.getElementById('submit-btn').textContent = '保存修改';
+                }, 100);
             } catch (e) {
                 alert('加载帖子失败: ' + e.message);
             }
