@@ -46,6 +46,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
 
     <!-- Marked.js for Markdown -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -272,6 +273,58 @@
         -webkit-text-fill-color: transparent;
         background-clip: text;
       }
+
+      /* 评论内容 Markdown 样式 */
+      .comment-content {
+        font-size: inherit;
+        line-height: 1.6;
+      }
+      .comment-content p { margin-bottom: 0.5em; }
+      .comment-content p:last-child { margin-bottom: 0; }
+      .comment-content code {
+        background: rgba(16, 185, 129, 0.1);
+        color: #059669;
+        padding: 0.1em 0.3em;
+        border-radius: 4px;
+        font-size: 0.9em;
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .dark .comment-content code {
+        background: rgba(52, 211, 153, 0.15);
+        color: #6ee7b7;
+      }
+      .comment-content pre {
+        background: #0f172a;
+        color: #e2e8f0;
+        padding: 0.75em;
+        border-radius: 8px;
+        overflow-x: auto;
+        margin: 0.5em 0;
+      }
+      .comment-content pre code {
+        background: none;
+        padding: 0;
+        color: inherit;
+      }
+      .comment-content a {
+        color: #059669;
+        text-decoration: underline;
+      }
+      .comment-content ul, .comment-content ol {
+        padding-left: 1.5em;
+        margin-bottom: 0.5em;
+      }
+      .comment-content blockquote {
+        border-left: 3px solid #10b981;
+        padding-left: 0.75em;
+        margin: 0.5em 0;
+        color: #64748b;
+      }
+      .comment-content img {
+        max-width: 100%;
+        border-radius: 8px;
+        margin: 0.5em 0;
+      }
     </style>
 </head>
 <body class="bg-zinc-50 dark:bg-[#08080c] text-zinc-900 dark:text-white transition-colors duration-300 min-h-screen">
@@ -291,7 +344,7 @@
                 <div class="flex items-center gap-3">
                     <a href="index.html" class="flex items-center gap-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-white transition-colors group">
                         <i data-lucide="arrow-left" size="18" class="group-hover:-translate-x-1 transition-transform"></i>
-                        <span class="text-xs font-bold uppercase tracking-widest hidden sm:inline">返回主页</span>
+                        <span class="text-xs font-bold uppercase tracking-widest hidden sm:inline">返回主站</span>
                     </a>
                     <div class="w-px h-6 bg-zinc-200 dark:bg-white/10 mx-2"></div>
                     <div class="flex items-center gap-3">
@@ -531,11 +584,47 @@
                             </div>
                         </label>
                         <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="radio" name="post-permission" value="moderator" class="w-4 h-4 text-blue-500 focus:ring-blue-500">
+                            <div>
+                                <p class="text-sm font-bold">管理员和版主</p>
+                                <p class="text-xs text-zinc-400">只有管理员和版主可以发帖</p>
+                            </div>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer">
                             <input type="radio" name="post-permission" value="admin" class="w-4 h-4 text-blue-500 focus:ring-blue-500">
                             <div>
                                 <p class="text-sm font-bold">仅管理员</p>
                                 <p class="text-xs text-zinc-400">只有管理员可以发帖</p>
                             </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 板块管理 -->
+                <div class="p-5 rounded-2xl bg-zinc-50 dark:bg-white/[0.03] border border-zinc-200 dark:border-white/5">
+                    <h3 class="font-bold text-sm mb-4">板块管理</h3>
+                    <div id="categories-list" class="space-y-2 mb-4">
+                        <!-- 板块列表 -->
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="new-cat-id" class="flex-1 px-3 py-2 rounded-lg bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500 text-xs" placeholder="板块ID (英文)">
+                        <input type="text" id="new-cat-name" class="flex-1 px-3 py-2 rounded-lg bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500 text-xs" placeholder="板块名称">
+                        <button onclick="addCategory()" class="px-4 py-2 rounded-lg bg-blue-500 text-white text-xs font-bold hover:bg-blue-600 transition-colors">
+                            添加
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 聊天室设置 -->
+                <div class="p-5 rounded-2xl bg-zinc-50 dark:bg-white/[0.03] border border-zinc-200 dark:border-white/5">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-bold text-sm">实时聊天室</h3>
+                            <p class="text-xs text-zinc-400 mt-1">开启或关闭实时聊天功能</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="setting-chat-enabled" class="sr-only peer">
+                            <div class="w-11 h-6 bg-zinc-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-zinc-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-zinc-600 peer-checked:bg-blue-500"></div>
                         </label>
                     </div>
                 </div>
@@ -579,34 +668,7 @@
                 <div>
                     <label class="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-2">选择分类</label>
                     <div class="grid grid-cols-4 gap-2" id="post-categories">
-                        <button onclick="selectCategory('sre')" class="category-btn p-3 rounded-xl text-center bg-zinc-50 dark:bg-white/5 border-2 border-transparent hover:border-emerald-500 transition-all" data-cat="sre">
-                            <i data-lucide="server" size="20" class="mx-auto mb-1 text-emerald-500"></i>
-                            <span class="text-xs font-bold">SRE</span>
-                        </button>
-                        <button onclick="selectCategory('security')" class="category-btn p-3 rounded-xl text-center bg-zinc-50 dark:bg-white/5 border-2 border-transparent hover:border-red-500 transition-all" data-cat="security">
-                            <i data-lucide="shield" size="20" class="mx-auto mb-1 text-red-500"></i>
-                            <span class="text-xs font-bold">网安</span>
-                        </button>
-                        <button onclick="selectCategory('devops')" class="category-btn p-3 rounded-xl text-center bg-zinc-50 dark:bg-white/5 border-2 border-transparent hover:border-amber-500 transition-all" data-cat="devops">
-                            <i data-lucide="settings" size="20" class="mx-auto mb-1 text-amber-500"></i>
-                            <span class="text-xs font-bold">运维</span>
-                        </button>
-                        <button onclick="selectCategory('frontend')" class="category-btn p-3 rounded-xl text-center bg-zinc-50 dark:bg-white/5 border-2 border-transparent hover:border-blue-500 transition-all" data-cat="frontend">
-                            <i data-lucide="layout" size="20" class="mx-auto mb-1 text-blue-500"></i>
-                            <span class="text-xs font-bold">前端</span>
-                        </button>
-                        <button onclick="selectCategory('backend')" class="category-btn p-3 rounded-xl text-center bg-zinc-50 dark:bg-white/5 border-2 border-transparent hover:border-violet-500 transition-all" data-cat="backend">
-                            <i data-lucide="database" size="20" class="mx-auto mb-1 text-violet-500"></i>
-                            <span class="text-xs font-bold">后端</span>
-                        </button>
-                        <button onclick="selectCategory('ai')" class="category-btn p-3 rounded-xl text-center bg-zinc-50 dark:bg-white/5 border-2 border-transparent hover:border-pink-500 transition-all" data-cat="ai">
-                            <i data-lucide="brain" size="20" class="mx-auto mb-1 text-pink-500"></i>
-                            <span class="text-xs font-bold">AI</span>
-                        </button>
-                        <button onclick="selectCategory('other')" class="category-btn p-3 rounded-xl text-center bg-zinc-50 dark:bg-white/5 border-2 border-transparent hover:border-gray-500 transition-all" data-cat="other">
-                            <i data-lucide="message-circle" size="20" class="mx-auto mb-1 text-gray-500"></i>
-                            <span class="text-xs font-bold">杂谈</span>
-                        </button>
+                        <!-- 板块按钮由 JavaScript 动态生成 -->
                     </div>
                 </div>
                 <div>
@@ -679,49 +741,8 @@
         </div>
 
         <!-- Category Cards -->
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-10">
-            <button onclick="filterByCategory('all')" class="category-card p-4 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-brand-500 shadow-lg shadow-brand-500/10 text-center transition-all hover:scale-[1.02]" data-cat="all">
-                <div class="w-10 h-10 rounded-xl bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center mx-auto mb-2">
-                    <i data-lucide="grid-3x3" size="20" class="text-brand-500"></i>
-                </div>
-                <span class="text-xs font-bold text-brand-600 dark:text-brand-400">全部</span>
-            </button>
-            <button onclick="filterByCategory('sre')" class="category-card p-4 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-transparent hover:border-emerald-500 shadow-sm hover:shadow-lg hover:shadow-emerald-500/10 text-center transition-all hover:scale-[1.02]" data-cat="sre">
-                <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-2">
-                    <i data-lucide="server" size="20" class="text-emerald-500"></i>
-                </div>
-                <span class="text-xs font-bold">SRE</span>
-            </button>
-            <button onclick="filterByCategory('security')" class="category-card p-4 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-transparent hover:border-red-500 shadow-sm hover:shadow-lg hover:shadow-red-500/10 text-center transition-all hover:scale-[1.02]" data-cat="security">
-                <div class="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center mx-auto mb-2">
-                    <i data-lucide="shield" size="20" class="text-red-500"></i>
-                </div>
-                <span class="text-xs font-bold">网安</span>
-            </button>
-            <button onclick="filterByCategory('devops')" class="category-card p-4 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-transparent hover:border-amber-500 shadow-sm hover:shadow-lg hover:shadow-amber-500/10 text-center transition-all hover:scale-[1.02]" data-cat="devops">
-                <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mx-auto mb-2">
-                    <i data-lucide="settings" size="20" class="text-amber-500"></i>
-                </div>
-                <span class="text-xs font-bold">运维</span>
-            </button>
-            <button onclick="filterByCategory('frontend')" class="category-card p-4 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-transparent hover:border-blue-500 shadow-sm hover:shadow-lg hover:shadow-blue-500/10 text-center transition-all hover:scale-[1.02]" data-cat="frontend">
-                <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mx-auto mb-2">
-                    <i data-lucide="layout" size="20" class="text-blue-500"></i>
-                </div>
-                <span class="text-xs font-bold">前端</span>
-            </button>
-            <button onclick="filterByCategory('backend')" class="category-card p-4 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-transparent hover:border-violet-500 shadow-sm hover:shadow-lg hover:shadow-violet-500/10 text-center transition-all hover:scale-[1.02]" data-cat="backend">
-                <div class="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center mx-auto mb-2">
-                    <i data-lucide="database" size="20" class="text-violet-500"></i>
-                </div>
-                <span class="text-xs font-bold">后端</span>
-            </button>
-            <button onclick="filterByCategory('ai')" class="category-card p-4 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-transparent hover:border-pink-500 shadow-sm hover:shadow-lg hover:shadow-pink-500/10 text-center transition-all hover:scale-[1.02]" data-cat="ai">
-                <div class="w-10 h-10 rounded-xl bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center mx-auto mb-2">
-                    <i data-lucide="brain" size="20" class="text-pink-500"></i>
-                </div>
-                <span class="text-xs font-bold">AI</span>
-            </button>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-10" id="category-cards">
+            <!-- 板块卡片由 JavaScript 动态生成 -->
         </div>
 
         <!-- Toolbar -->
@@ -764,25 +785,108 @@
         </div>
     </main>
 
-    <!-- Post Detail Modal -->
-    <div id="post-detail-modal" class="hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center px-4 py-8">
-        <div class="w-full max-w-4xl bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl overflow-hidden border border-zinc-200 dark:border-white/10 animate-fade-in-up max-h-[90vh] flex flex-col">
-            <div class="p-6 border-b border-zinc-200 dark:border-white/10 flex items-center justify-between flex-shrink-0">
-                <h2 id="detail-title" class="text-xl font-black truncate pr-4"></h2>
-                <button onclick="hidePostDetail()" class="p-2 rounded-xl text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 dark:hover:bg-white/10 transition-all flex-shrink-0">
-                    <i data-lucide="x" size="20"></i>
+    <!-- Chat Room Button (Fixed) -->
+    <button id="chat-toggle-btn" onclick="toggleChatRoom()" class="hidden fixed bottom-6 right-6 z-[90] w-14 h-14 rounded-full bg-gradient-to-r from-blue-500 to-teal-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-110 transition-all flex items-center justify-center">
+        <i data-lucide="message-circle" size="24"></i>
+    </button>
+
+    <!-- Chat Room Modal -->
+    <div id="chat-room-modal" class="hidden fixed bottom-24 right-6 z-[95] w-96 max-w-[calc(100vw-3rem)] bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-white/10 overflow-hidden animate-fade-in-up">
+        <!-- Chat Header -->
+        <div class="p-4 bg-gradient-to-r from-blue-500 to-teal-600 text-white flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+                    <i data-lucide="message-circle" size="18"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-sm">ITLab 实时聊天</h3>
+                    <p class="text-[10px] opacity-80" id="chat-online-count">0 人在线</p>
+                </div>
+            </div>
+            <button onclick="toggleChatRoom()" class="p-1.5 rounded-lg hover:bg-white/20 transition-colors">
+                <i data-lucide="x" size="18"></i>
+            </button>
+        </div>
+
+        <!-- Chat Messages -->
+        <div id="chat-messages" class="h-80 overflow-y-auto p-4 space-y-3">
+            <div class="text-center text-zinc-400 text-sm py-10">
+                <i data-lucide="loader-2" class="animate-spin inline-block mr-2"></i>
+                加载中...
+            </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="p-3 border-t border-zinc-200 dark:border-white/10">
+            <div class="flex gap-2">
+                <input type="text" id="chat-input" class="flex-1 px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500 text-sm" placeholder="输入消息..." maxlength="200">
+                <button onclick="sendChatMessage()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-teal-600 text-white text-sm font-bold hover:from-blue-600 hover:to-teal-700 transition-all">
+                    发送
                 </button>
             </div>
-            <div id="post-detail-content" class="flex-1 overflow-y-auto">
+            <p class="text-[10px] text-zinc-400 mt-1.5 text-center">按 Enter 发送 · 最多200字</p>
+        </div>
+    </div>
+
+    <!-- Chat Access Denied Modal -->
+    <div id="chat-access-modal" class="hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center px-4">
+        <div class="w-full max-w-sm bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl overflow-hidden border border-zinc-200 dark:border-white/10 animate-fade-in-up">
+            <div class="p-6 border-b border-zinc-200 dark:border-white/10">
+                <h2 class="text-xl font-black">进入聊天室</h2>
+                <p class="text-xs text-zinc-500 mt-1">需要管理员授权或邀请码</p>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-2">邀请码</label>
+                    <input type="text" id="chat-invite-code" class="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500 text-sm uppercase" placeholder="输入邀请码">
+                </div>
+                <div id="chat-access-error" class="hidden text-red-500 text-xs font-bold"></div>
+                <button onclick="verifyChatAccess()" class="w-full py-3 rounded-xl bg-gradient-to-r from-blue-500 to-teal-600 text-white font-bold text-sm hover:from-blue-600 hover:to-teal-700 transition-all shadow-lg shadow-blue-500/25">
+                    验证并进入
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Post Detail Full Page -->
+    <div id="post-detail-modal" class="hidden fixed inset-0 z-[100] bg-white dark:bg-zinc-950 overflow-y-auto">
+        <!-- Header -->
+        <header class="sticky top-0 z-50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl border-b border-zinc-200 dark:border-white/5">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+                <button onclick="hidePostDetail()" class="flex items-center gap-2 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors group">
+                    <div class="p-2 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 group-hover:border-blue-500/50 transition-all">
+                        <i data-lucide="arrow-left" size="18"></i>
+                    </div>
+                    <span class="text-sm font-bold hidden sm:inline">返回</span>
+                </button>
+                <h2 id="detail-title" class="text-lg font-black truncate px-4"></h2>
+                <div class="w-20"></div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+            <div id="post-detail-content">
                 <!-- Content loaded dynamically -->
             </div>
-            <div class="p-4 border-t border-zinc-200 dark:border-white/10 flex-shrink-0 bg-zinc-50 dark:bg-white/[0.02]">
+        </div>
+
+        <!-- Comment Input (Fixed Bottom) -->
+        <div class="sticky bottom-0 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl border-t border-zinc-200 dark:border-white/5">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 py-4">
+                <div id="reply-indicator" class="hidden mb-2 flex items-center gap-2 text-xs text-blue-500">
+                    <span id="reply-indicator-text">回复 XXX...</span>
+                    <button onclick="cancelReply()" class="p-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+                        <i data-lucide="x" size="12"></i>
+                    </button>
+                </div>
                 <div class="flex gap-3">
-                    <input type="text" id="comment-input" class="flex-1 px-4 py-3 rounded-xl bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all text-sm" placeholder="写下你的评论... (Enter 发送)">
-                    <button onclick="submitComment()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-brand-500 to-purple-600 text-white text-sm font-bold hover:from-brand-600 hover:to-purple-700 transition-all shadow-lg shadow-blue-500/25">
+                    <textarea id="comment-input" rows="1" class="flex-1 px-4 py-3 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-sm resize-none" placeholder="写下你的评论... 支持 Markdown (Ctrl+Enter 发送)" oninput="autoResize(this)"></textarea>
+                    <button onclick="submitComment()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-teal-600 text-white text-sm font-bold hover:from-blue-600 hover:to-teal-700 transition-all shadow-lg shadow-blue-500/25 self-end">
                         发送
                     </button>
                 </div>
+                <p class="text-[10px] text-zinc-400 mt-1.5">Ctrl + Enter 发送 · 支持换行</p>
             </div>
         </div>
     </div>
@@ -801,7 +905,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-6 text-xs text-zinc-400">
-                    <a href="index.html" class="hover:text-brand-500 transition-colors">CMItool 主页</a>
+                    <a href="index.html" class="hover:text-brand-500 transition-colors">返回主站</a>
                     <a href="https://github.com/cmijohnson/CMItool-gh-pages" target="_blank" class="hover:text-brand-500 transition-colors">GitHub</a>
                     <span>© 2025 ITLab · CMI Team</span>
                 </div>
@@ -825,15 +929,59 @@
         let isLoading = false;
         const POSTS_PER_PAGE = 20;
 
-        const CATEGORIES = {
+        // 默认板块（可从 Firestore 加载自定义板块）
+        const DEFAULT_CATEGORIES = {
             sre: { name: 'SRE', color: 'emerald', icon: 'server' },
             security: { name: '网安', color: 'red', icon: 'shield' },
-            devops: { name: '运维', color: 'amber', icon: 'settings' },
             frontend: { name: '前端', color: 'blue', icon: 'layout' },
             backend: { name: '后端', color: 'violet', icon: 'database' },
             ai: { name: 'AI', color: 'pink', icon: 'brain' },
             other: { name: '杂谈', color: 'gray', icon: 'message-circle' }
         };
+
+        let CATEGORIES = { ...DEFAULT_CATEGORIES };
+
+        // 从 Firestore 加载自定义板块
+        async function loadCategories() {
+            try {
+                const catDoc = await db.collection('itlab_settings').doc('categories').get();
+                if (catDoc.exists) {
+                    const customCats = catDoc.data();
+                    CATEGORIES = { ...DEFAULT_CATEGORIES, ...customCats };
+                }
+            } catch (e) {
+                console.warn('Failed to load categories:', e);
+            }
+        }
+
+        // 渲染主页板块卡片
+        function renderCategoryCards() {
+            const container = document.getElementById('category-cards');
+            if (!container) return;
+
+            let html = `
+                <button onclick="filterByCategory('all')" class="category-card p-4 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-blue-500 shadow-lg shadow-blue-500/10 text-center transition-all hover:scale-[1.02]" data-cat="all">
+                    <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mx-auto mb-2">
+                        <i data-lucide="grid-3x3" size="20" class="text-blue-500"></i>
+                    </div>
+                    <span class="text-xs font-bold text-blue-600 dark:text-blue-400">全部</span>
+                </button>
+            `;
+
+            Object.entries(CATEGORIES).forEach(([id, cat]) => {
+                html += `
+                    <button onclick="filterByCategory('${id}')" class="category-card p-4 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-transparent hover:border-${cat.color}-500 shadow-sm hover:shadow-lg hover:shadow-${cat.color}-500/10 text-center transition-all hover:scale-[1.02]" data-cat="${id}">
+                        <div class="w-10 h-10 rounded-xl bg-${cat.color}-100 dark:bg-${cat.color}-900/30 flex items-center justify-center mx-auto mb-2">
+                            <i data-lucide="${cat.icon}" size="20" class="text-${cat.color}-500"></i>
+                        </div>
+                        <span class="text-xs font-bold">${cat.name}</span>
+                    </button>
+                `;
+            });
+
+            container.innerHTML = html;
+            lucide.createIcons();
+        }
 
         function toggleTheme() {
             const isDark = document.documentElement.classList.toggle('dark');
@@ -900,16 +1048,28 @@
                     lastSeen: firebase.firestore.FieldValue.serverTimestamp()
                 }, { merge: true });
 
-                // 检查是否是 ITLab 社区管理员
-                try {
-                    const itlabUserDoc = await db.collection('itlab_users').doc(user.uid).get();
-                    if (itlabUserDoc.exists && itlabUserDoc.data().isAdmin) {
-                        document.getElementById('admin-link').classList.remove('hidden');
-                    }
-                } catch (e) {}
+                // 加载用户角色
+                await loadUserRoles();
+                if (checkIsModOrAdmin()) {
+                    document.getElementById('admin-link').classList.remove('hidden');
+                }
+
+                // 初始化聊天室
+                await initChatRoom();
             } else {
                 loginBtn.classList.remove('hidden');
                 userMenu.classList.add('hidden');
+                userRoles = { isAdmin: false, isModerator: false };
+                hasChatAccess = false;
+                document.getElementById('chat-toggle-btn').classList.add('hidden');
+                if (chatRoomOpen) {
+                    chatRoomOpen = false;
+                    document.getElementById('chat-room-modal').classList.add('hidden');
+                    if (chatUnsubscribe) {
+                        chatUnsubscribe();
+                        chatUnsubscribe = null;
+                    }
+                }
             }
         });
 
@@ -1195,12 +1355,17 @@
                 if (settingsDoc.exists) {
                     const settings = settingsDoc.data();
                     document.getElementById('setting-require-invite').checked = settings.requireInviteCode || false;
+                    document.getElementById('setting-chat-enabled').checked = settings.chatEnabled || false;
                     document.querySelector(`input[name="post-permission"][value="${settings.postPermission || 'all'}"]`).checked = true;
 
                     if (settings.requireInviteCode) {
                         document.getElementById('invite-code-management').classList.remove('hidden');
                     }
                 }
+
+                // 加载板块列表
+                await loadCategories();
+                renderCategoriesList();
 
                 // 加载用户列表
                 const usersSnapshot = await db.collection('itlab_users').orderBy('lastSeen', 'desc').limit(50).get();
@@ -1215,21 +1380,49 @@
                 usersSnapshot.forEach(doc => {
                     const user = doc.data();
                     const isUserAdmin = user.isAdmin || false;
+                    const isUserMod = user.isModerator || false;
+                    const modCategories = user.modCategories || []; // 版主管理的板块
+                    const roleLabel = isUserAdmin ? '<span class="px-2 py-1 rounded text-[10px] font-bold bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">管理员</span>' :
+                                    isUserMod ? `<span class="px-2 py-1 rounded text-[10px] font-bold bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">版主${modCategories.length > 0 ? ' (' + modCategories.map(c => CATEGORIES[c]?.name || c).join(', ') + ')' : ''}</span>` : '';
+
+                    // 生成板块选择下拉菜单
+                    const categoryOptions = Object.entries(CATEGORIES).map(([id, cat]) =>
+                        `<label class="flex items-center gap-2 px-3 py-1.5 hover:bg-zinc-100 dark:hover:bg-white/5 cursor-pointer">
+                            <input type="checkbox" value="${id}" ${modCategories.includes(id) ? 'checked' : ''} class="mod-cat-checkbox rounded text-blue-500" data-user-id="${doc.id}">
+                            <span class="text-xs">${cat.name}</span>
+                        </label>`
+                    ).join('');
+
                     html += `
-                        <div class="flex items-center justify-between p-3 rounded-xl bg-white dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5">
-                            <div class="flex items-center gap-3">
-                                <img src="${user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || 'U')}&background=10b981&color=fff`}" alt="" class="w-8 h-8 rounded-lg">
-                                <div>
-                                    <p class="text-sm font-bold">${user.displayName || '-'}</p>
-                                    <p class="text-xs text-zinc-400">${user.email || '-'}</p>
+                        <div class="p-3 rounded-xl bg-white dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <img src="${user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || 'U')}&background=10b981&color=fff`}" alt="" class="w-8 h-8 rounded-lg">
+                                    <div>
+                                        <p class="text-sm font-bold">${user.displayName || '-'}</p>
+                                        <p class="text-xs text-zinc-400">${user.email || '-'}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    ${roleLabel}
+                                    ${!isUserAdmin ? `<button onclick="toggleUserModerator('${doc.id}', ${isUserMod})" class="px-3 py-1.5 rounded-lg text-[10px] font-bold ${isUserMod ? 'bg-zinc-100 dark:bg-white/10 text-zinc-500' : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'} hover:scale-[1.02] transition-all">
+                                        ${isUserMod ? '取消版主' : '设为版主'}
+                                    </button>` : ''}
+                                    <button onclick="toggleUserAdmin('${doc.id}', ${isUserAdmin})" class="px-3 py-1.5 rounded-lg text-[10px] font-bold ${isUserAdmin ? 'bg-zinc-100 dark:bg-white/10 text-zinc-500' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'} hover:scale-[1.02] transition-all">
+                                        ${isUserAdmin ? '取消管理员' : '设为管理员'}
+                                    </button>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-2">
-                                ${isUserAdmin ? '<span class="px-2 py-1 rounded text-[10px] font-bold bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">管理员</span>' : ''}
-                                <button onclick="toggleUserAdmin('${doc.id}', ${isUserAdmin})" class="px-3 py-1.5 rounded-lg text-[10px] font-bold ${isUserAdmin ? 'bg-zinc-100 dark:bg-white/10 text-zinc-500' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'} hover:scale-[1.02] transition-all">
-                                    ${isUserAdmin ? '取消管理员' : '设为管理员'}
+                            ${isUserMod ? `
+                            <div class="mt-3 pt-3 border-t border-zinc-200 dark:border-white/10">
+                                <p class="text-[10px] text-zinc-400 mb-2">管理板块：</p>
+                                <div class="flex flex-wrap gap-2">
+                                    ${categoryOptions}
+                                </div>
+                                <button onclick="saveUserModCategories('${doc.id}')" class="mt-2 px-3 py-1.5 rounded-lg bg-blue-500 text-white text-[10px] font-bold hover:bg-blue-600 transition-colors">
+                                    保存板块权限
                                 </button>
-                            </div>
+                            </div>` : ''}
                         </div>
                     `;
                 });
@@ -1307,17 +1500,147 @@
             }
         }
 
+        // 板块管理函数
+        function renderCategoriesList() {
+            const listDiv = document.getElementById('categories-list');
+            if (!listDiv) return;
+
+            let html = '';
+            Object.entries(CATEGORIES).forEach(([id, cat]) => {
+                html += `
+                    <div class="flex items-center justify-between p-2.5 rounded-lg bg-white dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-lg bg-${cat.color}-100 dark:bg-${cat.color}-900/30 flex items-center justify-center">
+                                <i data-lucide="${cat.icon}" size="14" class="text-${cat.color}-500"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold">${cat.name}</p>
+                                <p class="text-[10px] text-zinc-400">${id}</p>
+                            </div>
+                        </div>
+                        ${!DEFAULT_CATEGORIES[id] ? `
+                        <button onclick="deleteCategory('${id}')" class="p-1.5 rounded-lg text-red-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                            <i data-lucide="x" size="14"></i>
+                        </button>` : ''}
+                    </div>
+                `;
+            });
+            listDiv.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        async function addCategory() {
+            const idInput = document.getElementById('new-cat-id');
+            const nameInput = document.getElementById('new-cat-name');
+            const id = idInput.value.trim().toLowerCase();
+            const name = nameInput.value.trim();
+
+            if (!id || !name) {
+                alert('请填写板块ID和名称');
+                return;
+            }
+
+            if (CATEGORIES[id]) {
+                alert('板块ID已存在');
+                return;
+            }
+
+            // 随机颜色
+            const colors = ['emerald', 'red', 'blue', 'violet', 'pink', 'amber', 'cyan'];
+            const icons = ['folder', 'tag', 'bookmark', 'hash', 'layers'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+
+            try {
+                // 更新本地
+                CATEGORIES[id] = { name, color: randomColor, icon: randomIcon };
+
+                // 保存到 Firestore
+                await db.collection('itlab_settings').doc('categories').set({
+                    [id]: { name, color: randomColor, icon: randomIcon }
+                }, { merge: true });
+
+                idInput.value = '';
+                nameInput.value = '';
+                renderCategoriesList();
+                alert('板块添加成功！');
+            } catch (e) {
+                alert('添加失败: ' + e.message);
+            }
+        }
+
+        async function deleteCategory(id) {
+            if (DEFAULT_CATEGORIES[id]) {
+                alert('默认板块不能删除');
+                return;
+            }
+
+            if (!confirm(`确定要删除板块 "${CATEGORIES[id]?.name}" 吗？`)) return;
+
+            try {
+                delete CATEGORIES[id];
+
+                // 从 Firestore 删除
+                await db.collection('itlab_settings').doc('categories').update({
+                    [id]: firebase.firestore.FieldValue.delete()
+                });
+
+                renderCategoriesList();
+                alert('板块删除成功！');
+            } catch (e) {
+                alert('删除失败: ' + e.message);
+            }
+        }
+
+        // 保存用户板块版主权限
+        async function saveUserModCategories(userId) {
+            try {
+                const checkboxes = document.querySelectorAll(`.mod-cat-checkbox[data-user-id="${userId}"]`);
+                const selectedCategories = [];
+                checkboxes.forEach(cb => {
+                    if (cb.checked) selectedCategories.push(cb.value);
+                });
+
+                await db.collection('itlab_users').doc(userId).update({
+                    modCategories: selectedCategories,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert('板块权限保存成功！');
+                loadAdminSettings();
+            } catch (e) {
+                alert('保存失败: ' + e.message);
+            }
+        }
+
+        async function toggleUserModerator(userId, currentIsMod) {
+            try {
+                await db.collection('itlab_users').doc(userId).update({
+                    isModerator: !currentIsMod,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                loadAdminSettings();
+            } catch (e) {
+                alert('更新失败: ' + e.message);
+            }
+        }
+
         async function saveAdminSettings() {
             const requireInvite = document.getElementById('setting-require-invite').checked;
             const postPermission = document.querySelector('input[name="post-permission"]:checked').value;
+            const chatEnabled = document.getElementById('setting-chat-enabled').checked;
 
             try {
                 await db.collection('itlab_settings').doc('general').set({
                     requireInviteCode: requireInvite,
                     postPermission,
+                    chatEnabled,
                     updatedBy: currentUser.uid,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 }, { merge: true });
+
+                // 更新聊天室状态
+                updateChatButtonState();
 
                 hideAdminSettingsModal();
                 alert('设置保存成功！');
@@ -1330,6 +1653,107 @@
             document.getElementById('user-dropdown').classList.add('hidden');
         }
 
+        // ========== 权限检查系统 ==========
+        let userRoles = { isAdmin: false, isModerator: false };
+        let currentUserData = null; // 保存当前用户完整数据
+
+        async function loadUserRoles() {
+            if (!currentUser) {
+                userRoles = { isAdmin: false, isModerator: false };
+                currentUserData = null;
+                return;
+            }
+            try {
+                const userDoc = await db.collection('itlab_users').doc(currentUser.uid).get();
+                if (userDoc.exists) {
+                    const data = userDoc.data();
+                    userRoles.isAdmin = data.isAdmin || false;
+                    userRoles.isModerator = data.isModerator || false;
+                    currentUserData = data;
+                }
+            } catch (e) {
+                console.warn('Failed to load user roles:', e);
+            }
+        }
+
+        function checkIsAdmin() {
+            return userRoles.isAdmin;
+        }
+
+        function checkIsModerator() {
+            return userRoles.isModerator;
+        }
+
+        function checkIsModOrAdmin() {
+            return userRoles.isAdmin || userRoles.isModerator;
+        }
+
+        function checkIsPostAuthor(post) {
+            return currentUser && post.authorId === currentUser.uid;
+        }
+
+        // 检查是否是该板块的版主
+        function isCategoryMod(category) {
+            if (!currentUser || !userRoles.isModerator) return false;
+            const userDoc = window.currentUserData;
+            if (!userDoc || !userDoc.modCategories) return false;
+            return userDoc.modCategories.includes(category);
+        }
+
+        function canEditPost(post) {
+            return checkIsPostAuthor(post) || checkIsAdmin();
+        }
+
+        function canDeletePost(post) {
+            if (checkIsPostAuthor(post)) return true;
+            if (checkIsAdmin()) return true;
+            if (userRoles.isModerator && isCategoryMod(post.category)) return true;
+            return false;
+        }
+
+        function canPinPost(post) {
+            if (checkIsAdmin()) return true;
+            if (userRoles.isModerator && isCategoryMod(post?.category)) return true;
+            return false;
+        }
+
+        function canFeaturePost(post) {
+            if (checkIsAdmin()) return true;
+            if (userRoles.isModerator && isCategoryMod(post?.category)) return true;
+            return false;
+        }
+
+        // ========== 帖子独立页面分享 ==========
+        function getShareUrl(postId) {
+            const baseUrl = window.location.origin + window.location.pathname;
+            return `${baseUrl}?post=${postId}`;
+        }
+
+        function copyShareLink(postId) {
+            const url = getShareUrl(postId);
+            navigator.clipboard.writeText(url).then(() => {
+                alert('链接已复制到剪贴板！');
+            }).catch(() => {
+                // Fallback
+                const input = document.createElement('input');
+                input.value = url;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                alert('链接已复制到剪贴板！');
+            });
+        }
+
+        // 检查 URL 中是否有帖子 ID
+        async function checkUrlForPost() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('post');
+            if (postId) {
+                await showPostDetail(postId);
+            }
+        }
+
         function showNewPostModal() {
             if (!currentUser) { showLoginModal(); return; }
             document.getElementById('new-post-modal').classList.remove('hidden');
@@ -1338,10 +1762,27 @@
             document.getElementById('post-tags').value = '';
             document.getElementById('post-preview').innerHTML = '<p class="text-zinc-400 text-sm text-center py-8">开始输入内容后这里会显示预览...</p>';
             selectedCategory = null;
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.remove('border-brand-500', 'bg-brand-50', 'dark:bg-brand-900/20');
-                btn.classList.add('border-transparent');
+
+            // 动态生成板块选择按钮
+            renderCategoryButtons();
+
+            lucide.createIcons();
+        }
+
+        function renderCategoryButtons() {
+            const container = document.getElementById('post-categories');
+            if (!container) return;
+
+            let html = '';
+            Object.entries(CATEGORIES).forEach(([id, cat]) => {
+                html += `
+                    <button onclick="selectCategory('${id}')" class="category-btn p-3 rounded-xl text-center bg-zinc-50 dark:bg-white/5 border-2 border-transparent hover:border-${cat.color}-500 transition-all" data-cat="${id}">
+                        <i data-lucide="${cat.icon}" size="20" class="mx-auto mb-1 text-${cat.color}-500"></i>
+                        <span class="text-xs font-bold">${cat.name}</span>
+                    </button>
+                `;
             });
+            container.innerHTML = html;
             lucide.createIcons();
         }
 
@@ -1407,51 +1848,78 @@
             if (!selectedCategory) { alert('请选择分类'); return; }
             if (!content) { alert('请输入内容'); return; }
 
-            // 检查发帖权限
-            try {
-                const settingsDoc = await db.collection('itlab_settings').doc('general').get();
-                if (settingsDoc.exists) {
-                    const settings = settingsDoc.data();
-                    const postPermission = settings.postPermission || 'all';
+            // 如果是编辑模式，跳过发帖权限检查
+            const isEditing = !!editingPostId;
 
-                    if (postPermission === 'admin') {
-                        // 检查是否是管理员
-                        const userDoc = await db.collection('itlab_users').doc(currentUser.uid).get();
-                        if (!userDoc.exists || !userDoc.data().isAdmin) {
-                            alert('只有管理员可以发帖');
-                            return;
+            if (!isEditing) {
+                // 检查发帖权限
+                try {
+                    const settingsDoc = await db.collection('itlab_settings').doc('general').get();
+                    if (settingsDoc.exists) {
+                        const settings = settingsDoc.data();
+                        const postPermission = settings.postPermission || 'all';
+
+                        switch (postPermission) {
+                            case 'admin':
+                                if (!checkIsAdmin()) {
+                                    alert('只有管理员可以发帖');
+                                    return;
+                                }
+                                break;
+                            case 'moderator':
+                                if (!checkIsModOrAdmin()) {
+                                    alert('只有管理员和版主可以发帖');
+                                    return;
+                                }
+                                break;
+                            case 'invite-only':
+                                // 暂时允许所有用户发帖
+                                break;
+                            case 'all':
+                            default:
+                                // 所有登录用户可发帖
+                                break;
                         }
-                    } else if (postPermission === 'invite-only') {
-                        // 检查是否使用邀请码注册（这里简化处理，实际可以检查用户注册方式）
-                        // 暂时允许所有用户发帖
                     }
+                } catch (e) {
+                    console.warn('Failed to check post permission:', e);
                 }
-            } catch (e) {
-                console.warn('Failed to check post permission:', e);
             }
 
             const submitBtn = document.getElementById('submit-btn');
             submitBtn.disabled = true;
-            submitBtn.textContent = '发布中...';
+            submitBtn.textContent = isEditing ? '保存中...' : '发布中...';
 
             try {
-                await db.collection('itlab_posts').add({
-                    title, content, category: selectedCategory, tags,
-                    authorId: currentUser.uid,
-                    authorName: currentUser.displayName || currentUser.email.split('@')[0],
-                    authorAvatar: currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.displayName || currentUser.email)}&background=10b981&color=fff`,
-                    likes: 0, likedBy: [], commentCount: 0,
-                    isPinned: false, isFeatured: false,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                if (isEditing) {
+                    // 编辑模式：更新帖子
+                    await db.collection('itlab_posts').doc(editingPostId).update({
+                        title, content, category: selectedCategory, tags,
+                        lastEditedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        lastEditedBy: currentUser.uid
+                    });
+                    editingPostId = null;
+                    alert('帖子已更新');
+                } else {
+                    // 新建模式：创建帖子
+                    await db.collection('itlab_posts').add({
+                        title, content, category: selectedCategory, tags,
+                        authorId: currentUser.uid,
+                        authorName: currentUser.displayName || currentUser.email.split('@')[0],
+                        authorAvatar: currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.displayName || currentUser.email)}&background=10b981&color=fff`,
+                        likes: 0, likedBy: [], commentCount: 0,
+                        isPinned: false, isFeatured: false,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
                 hideNewPostModal();
                 loadPosts(true);
             } catch (e) {
-                alert('发布失败: ' + e.message);
+                alert(isEditing ? '保存失败: ' + e.message : '发布失败: ' + e.message);
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.textContent = '发布帖子';
+                submitBtn.textContent = isEditing ? '保存修改' : '发布帖子';
             }
         }
 
@@ -1629,7 +2097,11 @@
             const modal = document.getElementById('post-detail-modal');
             const contentDiv = document.getElementById('post-detail-content');
 
+            // 显示全页面并禁用背景滚动
             modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            modal.scrollTop = 0;
+
             contentDiv.innerHTML = `
                 <div class="text-center py-20">
                     <div class="w-16 h-16 rounded-2xl bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center mx-auto mb-4 animate-pulse">
@@ -1678,19 +2150,46 @@
                                 ${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                             </div>
                         ` : ''}
-                        <div class="markdown-body p-6 rounded-2xl bg-zinc-50 dark:bg-white/[0.03] border border-zinc-200 dark:border-white/5 mb-6">
-                            ${marked.parse(post.content)}
+                        <div class="markdown-body p-6 rounded-2xl bg-zinc-50 dark:bg-white/[0.03] border border-zinc-200 dark:border-white/5 mb-6" id="post-content-body">
                         </div>
-                        <div class="flex items-center gap-4 pb-6 border-b border-zinc-200 dark:border-white/10">
-                            <button onclick="toggleLike('${postId}')" class="flex items-center gap-2 px-5 py-2.5 rounded-xl ${isLiked ? 'bg-red-50 dark:bg-red-900/20 text-red-500 border border-red-200 dark:border-red-800' : 'bg-zinc-100 dark:bg-white/5 text-zinc-500 border border-transparent'} hover:bg-red-100 dark:hover:bg-red-900/30 transition-all text-sm font-bold">
+                        <div class="flex items-center gap-3 flex-wrap pb-6 border-b border-zinc-200 dark:border-white/10">
+                            <button onclick="toggleLike('${postId}')" class="flex items-center gap-2 px-4 py-2 rounded-xl ${isLiked ? 'bg-red-50 dark:bg-red-900/20 text-red-500 border border-red-200 dark:border-red-800' : 'bg-zinc-100 dark:bg-white/5 text-zinc-500 border border-transparent'} hover:bg-red-100 dark:hover:bg-red-900/30 transition-all text-sm font-bold">
                                 <i data-lucide="heart" size="16" class="${isLiked ? 'fill-current' : ''}"></i>
-                                <span>${post.likes || 0} 点赞</span>
+                                <span>${post.likes || 0}</span>
                             </button>
                             <div class="flex items-center gap-2 text-sm text-zinc-400">
                                 <i data-lucide="message-square" size="16"></i>
-                                <span>${comments.length} 条评论</span>
+                                <span>${comments.length}</span>
                             </div>
+                            <div class="flex-1"></div>
+                            <button onclick="copyShareLink('${postId}')" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-zinc-100 dark:bg-white/5 text-zinc-500 text-xs font-bold hover:bg-zinc-200 dark:hover:bg-white/10 transition-all" title="分享">
+                                <i data-lucide="share-2" size="14"></i>
+                                <span class="hidden sm:inline">分享</span>
+                            </button>
+                            ${canEditPost(post) ? `
+                            <button onclick="editPost('${postId}')" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 text-xs font-bold hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-all" title="编辑">
+                                <i data-lucide="edit" size="14"></i>
+                                <span class="hidden sm:inline">编辑</span>
+                            </button>` : ''}
+                            ${canDeletePost(post) ? `
+                            <button onclick="deletePost('${postId}')" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-500 text-xs font-bold hover:bg-red-100 dark:hover:bg-red-900/30 transition-all" title="删除">
+                                <i data-lucide="trash-2" size="14"></i>
+                                <span class="hidden sm:inline">删除</span>
+                            </button>` : ''}
+                            ${canPinPost(post) ? `
+                            <button onclick="togglePin('${postId}')" class="flex items-center gap-1.5 px-3 py-2 rounded-xl ${post.isPinned ? 'bg-amber-100 dark:bg-amber-900/20 text-amber-600' : 'bg-zinc-100 dark:bg-white/5 text-zinc-500'} text-xs font-bold hover:bg-amber-50 dark:hover:bg-amber-900/10 transition-all" title="${post.isPinned ? '取消置顶' : '置顶'}">
+                                <i data-lucide="pin" size="14"></i>
+                            </button>` : ''}
+                            ${canFeaturePost(post) ? `
+                            <button onclick="toggleFeatured('${postId}')" class="flex items-center gap-1.5 px-3 py-2 rounded-xl ${post.isFeatured ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-600' : 'bg-zinc-100 dark:bg-white/5 text-zinc-500'} text-xs font-bold hover:bg-yellow-50 dark:hover:bg-yellow-900/10 transition-all" title="${post.isFeatured ? '取消精华' : '标记精华'}">
+                                <i data-lucide="star" size="14"></i>
+                            </button>` : ''}
                         </div>
+                        ${post.lastEditedAt ? `
+                        <div class="text-xs text-zinc-400 mt-3 flex items-center gap-1.5">
+                            <i data-lucide="clock" size="12"></i>
+                            最后修改于 ${new Date(post.lastEditedAt.toDate()).toLocaleString('zh-CN')}
+                        </div>` : ''}
                         <div class="mt-8 space-y-5" id="comments-list">
                             ${comments.length === 0 ? `
                                 <div class="text-center py-12">
@@ -1700,21 +2199,22 @@
                                     <p class="text-zinc-500 font-bold mb-1">暂无评论</p>
                                     <p class="text-zinc-400 text-sm">快来抢沙发吧！</p>
                                 </div>
-                            ` : comments.map(comment => `
-                                <div class="flex gap-3 animate-slide-in">
-                                    <img src="${comment.authorAvatar}" alt="" class="w-9 h-9 rounded-xl flex-shrink-0 object-cover">
-                                    <div class="flex-1 p-4 rounded-2xl bg-zinc-50 dark:bg-white/[0.03] border border-zinc-200 dark:border-white/5">
-                                        <div class="flex items-center gap-2 mb-2">
-                                            <span class="text-sm font-bold">${comment.authorName}</span>
-                                            <span class="text-xs text-zinc-400">${getTimeAgo(comment.createdAt?.toDate())}</span>
-                                        </div>
-                                        <p class="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">${comment.content}</p>
-                                    </div>
-                                </div>
-                            `).join('')}
+                            ` : renderComments(comments)}
+
                         </div>
                     </div>
                 `;
+
+                // 渲染帖子内容的 Markdown
+                const postContentBody = document.getElementById('post-content-body');
+                if (postContentBody) {
+                    try {
+                        postContentBody.innerHTML = marked.parse(post.content || '');
+                        postContentBody.querySelectorAll('pre code').forEach(block => { hljs.highlightElement(block); });
+                    } catch (e) {
+                        postContentBody.textContent = post.content || '';
+                    }
+                }
 
                 lucide.createIcons();
                 contentDiv.querySelectorAll('pre code').forEach(block => { hljs.highlightElement(block); });
@@ -1724,26 +2224,636 @@
             }
         }
 
-        function hidePostDetail() { document.getElementById('post-detail-modal').classList.add('hidden'); currentPostId = null; }
+        // 盖楼模式渲染评论
+        function renderComments(comments, parentId = null, depth = 0) {
+            let filtered = comments.filter(c => (c.parentId || null) === parentId);
+            if (filtered.length === 0) return '';
+
+            // 置顶评论排在最前面
+            filtered.sort((a, b) => {
+                if (a.isPinned && !b.isPinned) return -1;
+                if (!a.isPinned && b.isPinned) return 1;
+                return 0;
+            });
+
+            return filtered.map((comment, index) => {
+                const canDelete = currentUser && (comment.authorId === currentUser.uid || checkIsModOrAdmin());
+                const canPin = currentUser && checkIsModOrAdmin();
+                const replies = comments.filter(r => r.parentId === comment.id);
+                const floorNum = comments.filter(c => !c.parentId).indexOf(comment) + 1;
+                const isTopLevel = depth === 0;
+
+                // 渲染 Markdown 内容
+                let renderedContent;
+                try {
+                    renderedContent = marked.parse(comment.content || '');
+                } catch (e) {
+                    renderedContent = escapeHtml(comment.content || '');
+                }
+
+                return `
+                    <div class="${isTopLevel ? 'mb-4' : 'mt-3'} ${comment.isPinned ? 'bg-amber-50/50 dark:bg-amber-900/10 rounded-xl p-3 border border-amber-200 dark:border-amber-800/30' : ''}" id="comment-${comment.id}">
+                        <div class="flex gap-3">
+                            <!-- 头像 -->
+                            <div class="flex-shrink-0">
+                                <img src="${comment.authorAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(comment.authorName || 'U')}&background=10b981&color=fff`}" alt="" class="${isTopLevel ? 'w-10 h-10' : 'w-8 h-8'} rounded-full object-cover">
+                            </div>
+
+                            <!-- 评论内容 -->
+                            <div class="flex-1 min-w-0 group/comment">
+                                <!-- 评论头部 -->
+                                <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                                    ${comment.isPinned ? '<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">📌 置顶</span>' : ''}
+                                    <span class="${isTopLevel ? 'text-sm' : 'text-xs'} font-bold text-zinc-800 dark:text-zinc-200">${comment.authorName}</span>
+                                    ${isTopLevel ? `<span class="text-[10px] text-zinc-400">#${floorNum}</span>` : ''}
+                                    ${comment.replyTo ? `<span class="text-[10px] text-zinc-400">回复 <span class="text-blue-500">@${comment.replyTo}</span></span>` : ''}
+                                    <span class="text-[10px] text-zinc-400">${getTimeAgo(comment.createdAt?.toDate())}</span>
+                                    <div class="ml-auto flex items-center gap-1 opacity-0 group-hover/comment:opacity-100 transition-opacity">
+                                        ${canPin && isTopLevel ? `
+                                        <button onclick="toggleCommentPin('${comment.id}', ${comment.isPinned || false})" class="p-1 rounded-lg ${comment.isPinned ? 'text-amber-500 hover:text-amber-600' : 'text-zinc-400 hover:text-amber-500'} hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors" title="${comment.isPinned ? '取消置顶' : '置顶'}">
+                                            <i data-lucide="pin" size="12"></i>
+                                        </button>` : ''}
+                                        ${canDelete ? `
+                                        <button onclick="deleteComment('${comment.id}', '${comment.postId}')" class="p-1 rounded-lg text-red-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="删除">
+                                            <i data-lucide="trash-2" size="12"></i>
+                                        </button>` : ''}
+                                    </div>
+                                </div>
+
+                                <!-- 评论内容（支持 Markdown） -->
+                                <div class="${isTopLevel ? 'text-sm' : 'text-xs'} text-zinc-700 dark:text-zinc-300 leading-relaxed markdown-body comment-content">${renderedContent}</div>
+
+                                <!-- 操作栏 -->
+                                <div class="flex items-center gap-3 mt-2">
+                                    <button onclick="setReplyTo('${comment.id}', '${comment.authorName}')" class="text-[11px] text-zinc-400 hover:text-blue-500 font-bold transition-colors">
+                                        回复
+                                    </button>
+                                </div>
+
+                                <!-- 嵌套回复（盖楼） -->
+                                ${replies.length > 0 ? `
+                                <div class="mt-3 pl-4 border-l-2 border-zinc-200 dark:border-white/10 relative">
+                                    <!-- 连接线装饰 -->
+                                    <div class="absolute left-[-2px] top-0 w-0.5 h-4 bg-blue-500 rounded-full"></div>
+                                    ${renderComments(comments, comment.id, depth + 1)}
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function hidePostDetail() {
+            document.getElementById('post-detail-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+            currentPostId = null;
+        }
+
+        // ========== 实时聊天室 ==========
+        let chatRoomOpen = false;
+        let chatUnsubscribe = null;
+        let hasChatAccess = false;
+
+        // 屏蔽词列表
+        const BLOCKED_WORDS = [
+            '傻逼', '操你', '他妈', '狗日', '混蛋', '王八蛋', 'sb', 'SB',
+            'fuck', 'shit', 'damn', 'ass', 'bitch', 'dick', 'pussy',
+            '色情', '赌博', '毒品', '枪支', '暴力', '诈骗',
+            '广告', '代购', '刷单', '兼职'
+        ];
+
+        // 检查消息是否包含屏蔽词
+        function containsBlockedWord(message) {
+            const lowerMessage = message.toLowerCase();
+            return BLOCKED_WORDS.some(word => lowerMessage.includes(word.toLowerCase()));
+        }
+
+        // 初始化聊天室（登录后调用）
+        async function initChatRoom() {
+            if (!currentUser) return;
+
+            // 显示聊天按钮
+            document.getElementById('chat-toggle-btn').classList.remove('hidden');
+
+            // 更新按钮状态
+            await updateChatButtonState();
+        }
+
+        // 更新聊天按钮状态
+        async function updateChatButtonState() {
+            const btn = document.getElementById('chat-toggle-btn');
+            if (!btn) return;
+
+            try {
+                // 检查聊天室是否开启
+                const settingsDoc = await db.collection('itlab_settings').doc('general').get();
+                const chatEnabled = settingsDoc.exists && settingsDoc.data().chatEnabled;
+
+                if (!chatEnabled) {
+                    // 聊天室关闭状态
+                    btn.innerHTML = '<i data-lucide="message-circle" size="24"></i>';
+                    btn.classList.remove('from-blue-500', 'to-teal-600', 'shadow-blue-500/25');
+                    btn.classList.add('from-zinc-400', 'to-zinc-500', 'shadow-zinc-500/25', 'opacity-70');
+                    btn.onclick = () => alert('聊天室暂时关闭，请稍后再试');
+                } else {
+                    // 聊天室开启状态
+                    btn.innerHTML = '<i data-lucide="message-circle" size="24"></i>';
+                    btn.classList.remove('from-zinc-400', 'to-zinc-500', 'shadow-zinc-500/25', 'opacity-70');
+                    btn.classList.add('from-blue-500', 'to-teal-600', 'shadow-blue-500/25');
+                    btn.onclick = toggleChatRoom;
+
+                    // 检查用户权限
+                    await checkChatAccess();
+                }
+
+                lucide.createIcons();
+            } catch (e) {
+                console.warn('Failed to update chat button state:', e);
+            }
+        }
+
+        // 检查聊天权限
+        async function checkChatAccess() {
+            if (!currentUser) return false;
+
+            try {
+                // 检查用户是否有聊天权限
+                const userDoc = await db.collection('itlab_users').doc(currentUser.uid).get();
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    // 管理员和版主自动有权限
+                    if (userData.isAdmin || userData.isModerator) {
+                        hasChatAccess = true;
+                        return true;
+                    }
+                    // 检查是否已授权聊天
+                    if (userData.chatAuthorized) {
+                        hasChatAccess = true;
+                        return true;
+                    }
+                }
+
+                // 检查是否有聊天邀请码
+                const accessDoc = await db.collection('itlab_chat_access').doc(currentUser.uid).get();
+                if (accessDoc.exists) {
+                    hasChatAccess = true;
+                    // 更新用户文档
+                    await db.collection('itlab_users').doc(currentUser.uid).update({
+                        chatAuthorized: true
+                    });
+                    return true;
+                }
+
+                hasChatAccess = false;
+                return false;
+            } catch (e) {
+                console.warn('Failed to check chat access:', e);
+                hasChatAccess = false;
+                return false;
+            }
+        }
+
+        // 切换聊天室显示
+        async function toggleChatRoom() {
+            if (!currentUser) {
+                showLoginModal();
+                return;
+            }
+
+            // 检查聊天室是否开启
+            try {
+                const settingsDoc = await db.collection('itlab_settings').doc('general').get();
+                if (!settingsDoc.exists || !settingsDoc.data().chatEnabled) {
+                    alert('聊天室暂时关闭，请稍后再试');
+                    return;
+                }
+            } catch (e) {
+                console.warn('Failed to check chat settings:', e);
+            }
+
+            if (!hasChatAccess) {
+                // 检查是否已经验证过
+                const access = await checkChatAccess();
+                if (!access) {
+                    document.getElementById('chat-access-modal').classList.remove('hidden');
+                    return;
+                }
+            }
+
+            chatRoomOpen = !chatRoomOpen;
+            const modal = document.getElementById('chat-room-modal');
+
+            if (chatRoomOpen) {
+                modal.classList.remove('hidden');
+                await loadChatMessages();
+                subscribeToChatMessages();
+                document.getElementById('chat-input').focus();
+            } else {
+                modal.classList.add('hidden');
+                if (chatUnsubscribe) {
+                    chatUnsubscribe();
+                    chatUnsubscribe = null;
+                }
+            }
+        }
+
+        // 验证聊天邀请码
+        async function verifyChatAccess() {
+            const codeInput = document.getElementById('chat-invite-code');
+            const code = codeInput.value.trim().toUpperCase();
+            const errorDiv = document.getElementById('chat-access-error');
+
+            if (!code) {
+                errorDiv.textContent = '请输入邀请码';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                // 检查邀请码
+                const inviteDoc = await db.collection('itlab_invitations').doc(code).get();
+
+                if (!inviteDoc.exists) {
+                    errorDiv.textContent = '邀请码不存在';
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+
+                const inviteData = inviteDoc.data();
+
+                // 检查是否是聊天专用邀请码
+                if (inviteData.type !== 'chat') {
+                    errorDiv.textContent = '此邀请码不是聊天室邀请码';
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+
+                if (inviteData.isUsed) {
+                    errorDiv.textContent = '邀请码已被使用';
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+
+                // 标记邀请码已使用
+                await db.collection('itlab_invitations').doc(code).update({
+                    isUsed: true,
+                    usedBy: currentUser.uid,
+                    usedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // 授权用户聊天权限
+                await db.collection('itlab_chat_access').doc(currentUser.uid).set({
+                    userId: currentUser.uid,
+                    authorizedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    usedCode: code
+                });
+
+                // 更新用户文档
+                await db.collection('itlab_users').doc(currentUser.uid).update({
+                    chatAuthorized: true
+                });
+
+                hasChatAccess = true;
+                document.getElementById('chat-access-modal').classList.add('hidden');
+
+                // 打开聊天室
+                chatRoomOpen = true;
+                document.getElementById('chat-room-modal').classList.remove('hidden');
+                await loadChatMessages();
+                subscribeToChatMessages();
+
+            } catch (e) {
+                errorDiv.textContent = '验证失败: ' + e.message;
+                errorDiv.classList.remove('hidden');
+            }
+        }
+
+        // 加载聊天消息
+        async function loadChatMessages() {
+            const messagesDiv = document.getElementById('chat-messages');
+
+            try {
+                const snapshot = await db.collection('itlab_chat_messages')
+                    .orderBy('createdAt', 'desc')
+                    .limit(50)
+                    .get();
+
+                const messages = [];
+                snapshot.forEach(doc => messages.push({ id: doc.id, ...doc.data() }));
+                messages.reverse();
+
+                if (messages.length === 0) {
+                    messagesDiv.innerHTML = `
+                        <div class="text-center text-zinc-400 text-sm py-10">
+                            <i data-lucide="message-circle" size="32" class="inline-block mb-2 opacity-50"></i>
+                            <p>暂无消息，快来聊天吧！</p>
+                        </div>
+                    `;
+                } else {
+                    messagesDiv.innerHTML = messages.map(msg => renderChatMessage(msg)).join('');
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                }
+
+                lucide.createIcons();
+            } catch (e) {
+                console.error('Failed to load chat messages:', e);
+                messagesDiv.innerHTML = '<div class="text-center text-red-400 text-sm py-10">加载失败</div>';
+            }
+        }
+
+        // 订阅实时消息
+        function subscribeToChatMessages() {
+            if (chatUnsubscribe) chatUnsubscribe();
+
+            chatUnsubscribe = db.collection('itlab_chat_messages')
+                .orderBy('createdAt', 'desc')
+                .limit(50)
+                .onSnapshot(snapshot => {
+                    const messages = [];
+                    snapshot.forEach(doc => messages.push({ id: doc.id, ...doc.data() }));
+                    messages.reverse();
+
+                    const messagesDiv = document.getElementById('chat-messages');
+                    messagesDiv.innerHTML = messages.map(msg => renderChatMessage(msg)).join('');
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                    lucide.createIcons();
+                });
+        }
+
+        // 渲染单条消息
+        function renderChatMessage(msg) {
+            const isMe = currentUser && msg.userId === currentUser.uid;
+            const time = msg.createdAt ? new Date(msg.createdAt.toDate()).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }) : '';
+
+            return `
+                <div class="flex gap-2.5 ${isMe ? 'flex-row-reverse' : ''}">
+                    <img src="${msg.userAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(msg.userName || 'U')}&background=10b981&color=fff`}" alt="" class="w-8 h-8 rounded-full flex-shrink-0">
+                    <div class="max-w-[70%]">
+                        <div class="flex items-center gap-2 mb-1 ${isMe ? 'flex-row-reverse' : ''}">
+                            <span class="text-xs font-bold text-zinc-600 dark:text-zinc-300">${msg.userName || '匿名'}</span>
+                            <span class="text-[10px] text-zinc-400">${time}</span>
+                        </div>
+                        <div class="px-3.5 py-2 rounded-2xl text-sm ${isMe ? 'bg-gradient-to-r from-blue-500 to-teal-600 text-white rounded-tr-md' : 'bg-zinc-100 dark:bg-white/10 text-zinc-800 dark:text-zinc-200 rounded-tl-md'}">
+                            ${escapeHtml(msg.content)}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // HTML 转义
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 发送消息
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const content = input.value.trim();
+
+            if (!content) return;
+            if (!currentUser) {
+                showLoginModal();
+                return;
+            }
+
+            // 检查屏蔽词
+            if (containsBlockedWord(content)) {
+                alert('消息包含违规内容，请修改后重试');
+                return;
+            }
+
+            try {
+                await db.collection('itlab_chat_messages').add({
+                    userId: currentUser.uid,
+                    userName: currentUser.displayName || currentUser.email.split('@')[0],
+                    userAvatar: currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.displayName || currentUser.email)}&background=10b981&color=fff`,
+                    content: content,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                input.value = '';
+            } catch (e) {
+                alert('发送失败: ' + e.message);
+            }
+        }
+
+        // Enter 键发送聊天消息
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatInput = document.getElementById('chat-input');
+            if (chatInput) {
+                chatInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendChatMessage();
+                    }
+                });
+            }
+        });
+
+        // ========== 帖子编辑功能 ==========
+        let editingPostId = null;
+
+        async function editPost(postId) {
+            try {
+                const postDoc = await db.collection('itlab_posts').doc(postId).get();
+                if (!postDoc.exists) { alert('帖子不存在'); return; }
+
+                const post = postDoc.data();
+                if (!canEditPost(post)) {
+                    alert('没有编辑权限');
+                    return;
+                }
+
+                editingPostId = postId;
+                document.getElementById('post-title').value = post.title;
+                document.getElementById('post-content').value = post.content;
+                document.getElementById('post-tags').value = (post.tags || []).join(', ');
+                selectedCategory = post.category;
+
+                // 更新分类按钮状态
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                    if (btn.dataset.cat === post.category) {
+                        btn.classList.add('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20');
+                        btn.classList.remove('border-transparent');
+                    } else {
+                        btn.classList.remove('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20');
+                        btn.classList.add('border-transparent');
+                    }
+                });
+
+                updatePreview();
+                hidePostDetail();
+                showNewPostModal();
+
+                // 修改提交按钮文本
+                document.getElementById('submit-btn').textContent = '保存修改';
+            } catch (e) {
+                alert('加载帖子失败: ' + e.message);
+            }
+        }
+
+        async function deletePost(postId) {
+            if (!confirm('确定要删除这个帖子吗？此操作不可恢复！')) return;
+
+            try {
+                const postDoc = await db.collection('itlab_posts').doc(postId).get();
+                if (!postDoc.exists) { alert('帖子不存在'); return; }
+
+                const post = postDoc.data();
+                if (!canDeletePost(post)) {
+                    alert('没有删除权限');
+                    return;
+                }
+
+                // 删除帖子
+                await db.collection('itlab_posts').doc(postId).delete();
+
+                // 删除相关评论
+                const commentsSnapshot = await db.collection('itlab_comments').where('postId', '==', postId).get();
+                const batch = db.batch();
+                commentsSnapshot.forEach(doc => batch.delete(doc.ref));
+                await batch.commit();
+
+                hidePostDetail();
+                loadPosts(true);
+                alert('帖子已删除');
+            } catch (e) {
+                alert('删除失败: ' + e.message);
+            }
+        }
+
+        async function togglePin(postId) {
+            try {
+                const postDoc = await db.collection('itlab_posts').doc(postId).get();
+                if (!postDoc.exists) { alert('帖子不存在'); return; }
+
+                const post = postDoc.data();
+                if (!canPinPost(post)) {
+                    alert('没有置顶权限');
+                    return;
+                }
+
+                await db.collection('itlab_posts').doc(postId).update({
+                    isPinned: !post.isPinned
+                });
+
+                showPostDetail(postId);
+                loadPosts(true);
+            } catch (e) {
+                alert('操作失败: ' + e.message);
+            }
+        }
+
+        async function toggleFeatured(postId) {
+            try {
+                const postDoc = await db.collection('itlab_posts').doc(postId).get();
+                if (!postDoc.exists) { alert('帖子不存在'); return; }
+
+                const post = postDoc.data();
+                if (!canFeaturePost(post)) {
+                    alert('没有标记精华权限');
+                    return;
+                }
+
+                await db.collection('itlab_posts').doc(postId).update({
+                    isFeatured: !postDoc.data().isFeatured
+                });
+
+                showPostDetail(postId);
+                loadPosts(true);
+            } catch (e) {
+                alert('操作失败: ' + e.message);
+            }
+        }
+
+        // ========== 帖子独立页面分享 ==========
+        function getShareUrl(postId) {
+            const baseUrl = window.location.origin + window.location.pathname;
+            return `${baseUrl}?post=${postId}`;
+        }
+
+        function copyShareLink(postId) {
+            const url = getShareUrl(postId);
+            navigator.clipboard.writeText(url).then(() => {
+                alert('链接已复制到剪贴板！');
+            }).catch(() => {
+                const input = document.createElement('input');
+                input.value = url;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                alert('链接已复制到剪贴板！');
+            });
+        }
+
+        // 检查 URL 中是否有帖子 ID
+        async function checkUrlForPost() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('post');
+            if (postId) {
+                await showPostDetail(postId);
+            }
+        }
+
+        // 点赞防抖锁
+        const likeLocks = new Set();
 
         async function toggleLike(postId) {
             if (!currentUser) { showLoginModal(); return; }
+
+            // 防止重复点击
+            if (likeLocks.has(postId)) return;
+            likeLocks.add(postId);
+
             try {
                 const postRef = db.collection('itlab_posts').doc(postId);
-                const postDoc = await postRef.get();
-                const post = postDoc.data();
-                const likedBy = post.likedBy || [];
-                const isLiked = likedBy.includes(currentUser.uid);
 
-                if (isLiked) {
-                    await postRef.update({ likes: firebase.firestore.FieldValue.increment(-1), likedBy: firebase.firestore.FieldValue.arrayRemove(currentUser.uid) });
-                } else {
-                    await postRef.update({ likes: firebase.firestore.FieldValue.increment(1), likedBy: firebase.firestore.FieldValue.arrayUnion(currentUser.uid) });
-                }
+                // 使用事务确保数据一致性
+                await db.runTransaction(async (transaction) => {
+                    const postDoc = await transaction.get(postRef);
+                    const postData = postDoc.data();
+                    const likedBy = postData.likedBy || [];
+                    const currentLikes = postData.likes || 0;
+                    const isLiked = likedBy.includes(currentUser.uid);
+
+                    // 直接计算新的 likes 值，确保不会小于 0
+                    let newLikes;
+                    let newLikedBy;
+
+                    if (isLiked) {
+                        // 取消点赞
+                        newLikes = Math.max(0, currentLikes - 1);
+                        newLikedBy = likedBy.filter(uid => uid !== currentUser.uid);
+                    } else {
+                        // 点赞
+                        newLikes = currentLikes + 1;
+                        newLikedBy = [...likedBy, currentUser.uid];
+                    }
+
+                    transaction.update(postRef, {
+                        likes: newLikes,
+                        likedBy: newLikedBy
+                    });
+                });
+
                 showPostDetail(postId);
                 loadPosts(true);
-            } catch (e) { console.error('Failed to toggle like:', e); }
+            } catch (e) {
+                console.error('Failed to toggle like:', e);
+            } finally {
+                // 释放锁
+                likeLocks.delete(postId);
+            }
         }
+
+        // 追评相关变量
+        let replyingTo = null; // { commentId, authorName }
 
         async function submitComment() {
             if (!currentUser) { showLoginModal(); return; }
@@ -1752,22 +2862,127 @@
             if (!content) return;
 
             try {
-                await db.collection('itlab_comments').add({
+                const commentData = {
                     postId: currentPostId, content,
                     authorId: currentUser.uid,
                     authorName: currentUser.displayName || currentUser.email.split('@')[0],
                     authorAvatar: currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.displayName || currentUser.email)}&background=10b981&color=fff`,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                };
+
+                // 如果是追评，添加父评论信息
+                if (replyingTo) {
+                    commentData.parentId = replyingTo.commentId;
+                    commentData.replyTo = replyingTo.authorName;
+                }
+
+                await db.collection('itlab_comments').add(commentData);
                 await db.collection('itlab_posts').doc(currentPostId).update({ commentCount: firebase.firestore.FieldValue.increment(1) });
+
+                // 清除追评状态
+                replyingTo = null;
                 input.value = '';
+                input.placeholder = '写下你的评论... (Enter 发送)';
                 showPostDetail(currentPostId);
                 loadPosts(true);
             } catch (e) { alert('评论失败: ' + e.message); }
         }
 
+        // 置顶/取消置顶评论
+        async function toggleCommentPin(commentId, currentPinned) {
+            if (!checkIsModOrAdmin()) {
+                alert('没有置顶权限');
+                return;
+            }
+
+            try {
+                await db.collection('itlab_comments').doc(commentId).update({
+                    isPinned: !currentPinned
+                });
+                showPostDetail(currentPostId);
+            } catch (e) {
+                alert('操作失败: ' + e.message);
+            }
+        }
+
+        // 删除评论
+        async function deleteComment(commentId, postId) {
+            if (!confirm('确定要删除这条评论吗？')) return;
+
+            try {
+                const commentDoc = await db.collection('itlab_comments').doc(commentId).get();
+                if (!commentDoc.exists) { alert('评论不存在'); return; }
+
+                const comment = commentDoc.data();
+                const isAuthor = comment.authorId === currentUser.uid;
+                const isModOrAdmin = checkIsModOrAdmin();
+
+                if (!isAuthor && !isModOrAdmin) {
+                    alert('没有删除权限');
+                    return;
+                }
+
+                // 删除评论
+                await db.collection('itlab_comments').doc(commentId).delete();
+
+                // 删除该评论的所有追评
+                const repliesSnapshot = await db.collection('itlab_comments')
+                    .where('parentId', '==', commentId)
+                    .get();
+                const batch = db.batch();
+                repliesSnapshot.forEach(doc => batch.delete(doc.ref));
+                await batch.commit();
+
+                // 更新帖子评论数
+                const totalDeleted = 1 + repliesSnapshot.size;
+                await db.collection('itlab_posts').doc(postId).update({
+                    commentCount: firebase.firestore.FieldValue.increment(-totalDeleted)
+                });
+
+                // 刷新帖子详情
+                showPostDetail(postId);
+                loadPosts(true);
+            } catch (e) {
+                alert('删除失败: ' + e.message);
+            }
+        }
+
+        // 自动调整 textarea 高度
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 150) + 'px';
+        }
+
+        // 设置追评
+        function setReplyTo(commentId, authorName) {
+            replyingTo = { commentId, authorName };
+            const input = document.getElementById('comment-input');
+            const indicator = document.getElementById('reply-indicator');
+            const indicatorText = document.getElementById('reply-indicator-text');
+
+            indicatorText.textContent = `回复 ${authorName}...`;
+            indicator.classList.remove('hidden');
+            input.placeholder = `回复 ${authorName}...`;
+            input.focus();
+        }
+
+        // 取消追评
+        function cancelReply() {
+            replyingTo = null;
+            const input = document.getElementById('comment-input');
+            const indicator = document.getElementById('reply-indicator');
+
+            indicator.classList.add('hidden');
+            input.placeholder = '写下你的评论... (Ctrl+Enter 发送)';
+        }
+
+        // Ctrl+Enter 发送评论
         document.getElementById('comment-input').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitComment(); }
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                submitComment();
+            }
+            if (e.key === 'Escape') { cancelReply(); }
         });
 
         function getTimeAgo(date) {
@@ -1801,13 +3016,16 @@
             document.getElementById('online-count').textContent = Math.floor(Math.random() * 20) + 5;
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             lucide.createIcons();
+            await loadCategories(); // 加载板块
+            renderCategoryCards(); // 渲染板块卡片
             loadPosts(true);
             loadStats();
             updateOnlineCount();
             setInterval(updateOnlineCount, 30000);
             initWeather(); // 初始化天气
+            checkUrlForPost(); // 检查 URL 中的帖子 ID
         });
 
         document.addEventListener('keydown', (e) => {
