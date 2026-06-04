@@ -250,7 +250,7 @@ const TRANSLATIONS = {
 
 const TOOLS = [
     // --- Recommend ---
-    { id: 'itlab-board', name: { en: 'ITLab Community', zh: '🔥 ITLab 技术社区' }, description: { en: 'Jiangsu University ITLab technical community.', zh: '江苏大学ITLab技术社区，专注SRE、网安、运维、开发等方向，高质量技术交流平台。' }, icon: 'terminal', category: 'Recommend', size: 'large', url: 'itlab-board.html' },
+    { id: 'itlab-board', name: { en: 'ITLab Community', zh: '🔥 细米科技-技术社区' }, description: { en: 'Jiangsu University ITLab technical community.', zh: '江苏大学ITLab技术社区，专注SRE、网安、运维、开发等方向，高质量技术交流平台。' }, icon: 'terminal', category: 'Recommend', size: 'large', url: 'itlab-board.html' },
     { id: 'mytan-ai', name: { en: 'MyTan AI', zh: 'MyTan 人工智能助手' }, description: { en: 'Global leading AI assistant powered by Gemini.', zh: '全能人工智能助手，全球遥遥领先，集合Gemini等牛掰模型的内测服务。' }, icon: 'bot', category: 'Recommend', size: 'large', url: 'https://mytan.maiseed.com.cn/chat' },
     { id: 'blog-center', name: { en: 'Blog Center', zh: '博客中心' }, description: { en: 'CMI Team blog portal.', zh: 'CMI团队博客门户，获取最新动态、技术文章与社区互动。' }, icon: 'home', category: 'Recommend', size: 'medium', url: 'https://www.cmiteam.top/wordpress' },
     { id: 'isas-platform', name: { en: 'ISAS Platform', zh: 'ISAS起零平台' }, description: { en: 'High-quality API resources.', zh: '面向企业与个人提供免费、全面且高质量的 API 数据接口资源。' }, icon: 'zap', category: 'Recommend', size: 'medium', url: 'https://api.istero.com' },
